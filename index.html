@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>3D SHOWCASE v5.6</title>
+  <title>3D SHOWCASE v5.7</title>
   <style>
-    /* Reset & Theme Foundations */
+    /* Reset & Theme Setup */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -22,22 +22,36 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 20px 16px;
+      padding: 16px;
       overflow-x: hidden;
     }
 
     .app-container {
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-grow: 1;
+      position: relative;
+    }
+
+    /* Screen Context Engine Views */
+    .view-screen {
+      width: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
       flex-grow: 1;
     }
 
+    .hidden-view {
+      display: none !important;
+    }
+
     .app-header {
-      margin-top: 10px;
-      margin-bottom: 25px;
+      margin-top: 5px;
+      margin-bottom: 20px;
       text-align: center;
     }
 
@@ -56,24 +70,24 @@
       text-transform: lowercase;
     }
 
-    /* Top Row Layout for Controls */
+    /* Scanner Grid Layout Optimization */
     .scan-controls-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 20px;
       width: 100%;
-      margin-bottom: 30px;
+      margin-bottom: 25px;
     }
 
     .scan-column {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
       position: relative;
     }
 
-    /* Fixed v5.6 Premium Metallic Styling (No Icons) */
+    /* Premium Fancy Buttons (No Icons) */
     .scan-btn {
       width: 100%;
       background: linear-gradient(180deg, #18335c 0%, #0a1b35 100%);
@@ -88,10 +102,10 @@
       box-shadow: 0 0 12px rgba(230, 184, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1);
       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
       text-align: center;
-      pointer-events: none; /* Let clicks pass directly down to the camera overlay trigger */
+      pointer-events: none; /* Passes click directly to the input link below */
     }
 
-    /* Fixed Stacking: Transparent camera link rests cleanly on top */
+    /* Native Layer Inputs */
     .camera-trigger-overlay {
       position: absolute;
       top: 0;
@@ -101,19 +115,19 @@
       opacity: 0;
       cursor: pointer;
       -webkit-appearance: none;
-      z-index: 10;
+      z-index: 50;
     }
 
-    /* Trigger active pressed mechanics beautifully on the sibling button container */
     .camera-trigger-overlay:active + .scan-btn {
       transform: scale(0.96);
       background: linear-gradient(180deg, #0a1b35 0%, #040e1d 100%);
       box-shadow: 0 0 4px rgba(230, 184, 0, 0.15);
     }
 
+    /* Optimization: Enlarged Preview Anchors (+15%) */
     .preview-box {
-      width: 85px;
-      height: 120px;
+      width: 100px;
+      height: 140px;
       border: 2px dashed #e6b800;
       border-radius: 8px;
       display: flex;
@@ -134,9 +148,11 @@
       color: #4a628a;
       text-align: center;
       line-height: 1.4;
+      font-weight: bold;
+      text-transform: uppercase;
     }
 
-    /* Center 3D Interactive Stage Canvas Layout */
+    /* Optimization: Enlarged 3D Mesh Stage Canvas (+20%) */
     .mesh-view-stage {
       flex-grow: 1;
       width: 100%;
@@ -144,25 +160,26 @@
       align-items: center;
       justify-content: center;
       perspective: 1200px;
-      margin-bottom: 30px;
-      min-height: 310px;
+      margin-bottom: 25px;
+      min-height: 360px;
     }
 
     .card-3d-wrapper {
-      width: 210px;
-      height: 295px;
+      width: 250px;  /* Scaled up from 210px */
+      height: 350px; /* Scaled up from 295px */
       position: relative;
       transform-style: preserve-3d;
       transition: transform 0.1s ease-out;
       cursor: grab;
       touch-action: none;
+      z-index: 5;
     }
 
     .card-side {
       position: absolute;
       width: 100%;
       height: 100%;
-      border-radius: 14px;
+      border-radius: 16px;
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
       display: flex;
@@ -170,7 +187,7 @@
       justify-content: center;
       background: linear-gradient(135deg, rgba(25, 48, 84, 0.7), rgba(15, 32, 60, 0.8));
       border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      box-shadow: 0 25px 50px rgba(0,0,0,0.5);
       overflow: hidden;
     }
 
@@ -178,7 +195,7 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      border-radius: 14px;
+      border-radius: 16px;
     }
 
     .card-front {
@@ -214,11 +231,11 @@
 
     .wireframe-text {
       color: rgba(230, 184, 0, 0.4);
-      font-size: 11px;
+      font-size: 12px;
       text-transform: uppercase;
       font-weight: bold;
       letter-spacing: 1px;
-      margin-top: 60px;
+      margin-top: 75px;
       text-align: center;
       line-height: 1.4;
     }
@@ -229,7 +246,7 @@
       border-radius: 8px;
       padding: 14px;
       text-align: center;
-      margin-bottom: 95px; /* Give breathing space above footer anchor layout */
+      margin-bottom: 85px;
       background-color: rgba(230, 184, 0, 0.02);
     }
 
@@ -241,7 +258,7 @@
       text-transform: uppercase;
     }
 
-    /* Fixed Teal Bottom Pivot Interface */
+    /* Fixed Teal Bottom Pivot Interface Layout Elements */
     .bottom-action-anchor {
       position: fixed;
       bottom: 0;
@@ -256,7 +273,7 @@
 
     .evaluate-btn {
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
       background-color: #2ec4b6;
       border: none;
       color: #0b1f3f;
@@ -270,26 +287,16 @@
       box-shadow: 0 -4px 20px rgba(46, 196, 182, 0.25);
     }
 
-    /* v5.6 Slidable Evaluation Metrics Panel Engine Overlay */
-    .sliding-evaluation-panel {
+    /* Dedicated Dashboard Screen Context */
+    .dashboard-panel-content {
       width: 100%;
-      max-width: 400px;
-      background-color: #08162e;
-      border-top: 2px solid #2ec4b6;
-      height: 0; /* Animated dynamically open to 520px via script methods */
-      overflow-y: auto;
-      transition: height 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+      background-color: #0b1f3f;
       display: flex;
       flex-direction: column;
-      padding: 0 16px;
+      padding-top: 10px;
+      padding-bottom: 85px;
     }
 
-    .panel-open {
-      height: 520px;
-      padding: 20px 16px 40px 16px;
-    }
-
-    /* Evaluation Blocks Dashboard Structure styling */
     .metric-group {
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid rgba(255, 255, 255, 0.05);
@@ -327,9 +334,7 @@
 
     .metric-value.green { color: #2ecc71; }
     .metric-value.yellow { color: #f1c40f; }
-    .metric-value.red { color: #e74c3c; }
 
-    /* Net Profit Calculation Table Blocks Specific Formatting */
     .math-row {
       display: flex;
       justify-content: space-between;
@@ -355,45 +360,47 @@
 
   <div class="app-container">
     
-    <header class="app-header">
-      <h1 class="app-title">3D SHOWCASE <span class="app-version">v5.6</span></h1>
-    </header>
+    <!-- MAIN INTERACTIVE CANVAS VIEW -->
+    <div id="screen-showcase" class="view-screen">
+      <header class="app-header">
+        <h1 class="app-title">3D SHOWCASE <span class="app-version">v5.7</span></h1>
+      </header>
 
-    <section class="scan-controls-grid">
-      <!-- Front Scan Configuration Anchor -->
-      <div class="scan-column">
-        <input type="file" class="camera-trigger-overlay" accept="image/*" onchange="handleImageUpload(this, 'front')">
-        <button class="scan-btn">Scan Front</button>
-        <div class="preview-box" id="preview-front">
-          <div class="preview-placeholder">Front<br>Preview</div>
-        </div>
-      </div>
-      
-      <!-- Back Scan Configuration Anchor -->
-      <div class="scan-column">
-        <input type="file" class="camera-trigger-overlay" accept="image/*" onchange="handleImageUpload(this, 'back')">
-        <button class="scan-btn">Scan Back</button>
-        <div class="preview-box" id="preview-back">
-          <div class="preview-placeholder">Back<br>Preview</div>
-        </div>
-      </div>
-    </section>
-
-    <main class="mesh-view-stage" id="mesh-stage">
-      <div class="card-3d-wrapper" id="card-mesh">
-        
-        <div class="card-side card-front" id="mesh-front-side">
-          <div class="wireframe-blueprint">
-            <div class="wireframe-text">FRONT SIDE<br>PENDING</div>
+      <section class="scan-controls-grid">
+        <div class="scan-column">
+          <input type="file" class="camera-trigger-overlay" accept="image/*" onchange="handleImageUpload(this, 'front')">
+          <button class="scan-btn">Scan Front</button>
+          <div class="preview-box" id="preview-front">
+            <div class="preview-placeholder">Front<br>Preview</div>
           </div>
         </div>
         
-        <div class="card-side card-back" id="mesh-back-side">
-          <div class="wireframe-blueprint">
-            <div class="wireframe-text">BACK SIDE<br>PENDING</div>
+        <div class="scan-column">
+          <input type="file" class="camera-trigger-overlay" accept="image/*" onchange="handleImageUpload(this, 'back')">
+          <button class="scan-btn">Scan Back</button>
+          <div class="preview-box" id="preview-back">
+            <div class="preview-placeholder">Back<br>Preview</div>
           </div>
         </div>
-        
+      </section>
+
+      <main class="mesh-view-stage" id="mesh-stage">
+        <div class="card-3d-wrapper" id="card-mesh">
+          <div class="card-side card-front" id="mesh-front-side">
+            <div class="wireframe-blueprint">
+              <div class="wireframe-text">FRONT SIDE<br>PENDING</div>
+            </div>
+          </div>
+          <div class="card-side card-back" id="mesh-back-side">
+            <div class="wireframe-blueprint">
+              <div class="wireframe-text">BACK SIDE<br>PENDING</div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <div class="instruction-overlay">
+        <p class="instruction-text">Swipe card mesh area to spin in 3D</p>
       </div>
-    </main>
+    </div>
 
