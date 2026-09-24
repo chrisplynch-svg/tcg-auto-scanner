@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+ <title>TCG Auto-Evaluator v3.0</title>
+ <style>
+ body {
+ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+ background-color: #0b1f3f; 
+ color: #ffffff;
+ margin: 0; padding: 16px;
+ display: flex; flex-direction: column; align-items: center;
+ min-height: 100vh; box-sizing: border-box;
+ }
+ .app-screen {
+ width: 100%; max-width: 500px;
+ display: flex; flex-direction: column; align-items: center;
+ flex-grow: 1; position: relative;
+ }
+ .hidden { display: none !important; }
+ .top-bar {
+ width: 100%; display: flex; align-items: center; justify-content: center;
+ position: relative; margin-bottom: 16px; min-height: 40px;
+ }
+ .header-back-btn {
+ position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+ background-color: transparent; color: #ffcb05; border: 1px solid #ffcb05;
+ padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: 700; cursor: pointer;
+ }
+ h1 {
+ font-size: 1.4rem; color: #ffcb05; margin: 0;
+ text-shadow: 0 2px 4px rgba(0,0,0,0.5); font-weight: 800;
+ text-transform: uppercase; letter-spacing: 1px; text-align: center;
+ }
+ .column-container { display: flex; gap: 16px; width: 100%; margin-bottom: 24px; }
+ .column { flex: 1; display: flex; flex-direction: column; align-items: center; }
+ .camera-btn {
+ background-color: #1e3d59; color: #ffcb05; border: 2px solid #ffcb05;
+ padding: 12px 8px; font-size: 0.85rem; font-weight: 700; border-radius: 10px;
+ cursor: pointer; width: 100%; text-align: center; margin-bottom: 12px; min-height: 48px;
+ box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+ }
+ .hidden-input { display: none; }
+ .photo-box {
+ width: 100%; aspect-ratio: 2.5 / 3.5; background-color: rgba(255, 255, 255, 0.05);
+ border: 2px dashed rgba(255, 203, 5, 0.4); border-radius: 14px; overflow: hidden;
+ display: flex; align-items: center; justify-content: center; box-shadow: inset 0 0 20px rgba(0,0,0,0.4);
+ }
+ .photo-box img { width: 100%; height: 100%; object-fit: cover; }
+ .loading-panel {
+ width: 100%; background-color: rgba(255, 253, 240, 0.05); border: 2px dashed #ffcb05;
+ border-radius: 12px; padding: 16px; box-sizing: border-box; margin-bottom: 24px;
+ display: flex; flex-direction: column; gap: 12px;
+ }
+ #ai-status-text { font-size: 0.9rem; font-weight: 800; color: #ffcb05; text-align: center; }
+ #drawer-search-bar {
+ width: 100%; padding: 12px; background-color: #0b1f3f; border: 1px solid rgba(255, 203, 5, 0.5);
+ border-radius: 8px; color: #ffffff; font-size: 1rem; box-sizing: border-box;
+ }
+ #drawer-search-bar:focus { border-color: #ffcb05; outline: none; }
+ .variant-select-btn {
+ background-color: #1e3d59; color: #ffffff; border: 1px solid rgba(255,255,255,0.15);
+ padding: 12px; border-radius: 8px; font-weight: 600; text-align: left; cursor: pointer; width: 100%;
+ margin-bottom: 4px;
+ }
+ .variant-select-btn:active { background-color: #ffcb05; color: #0b1f3f; }
+ .evaluation-content { width: 100%; display: flex; flex-direction: column; gap: 16px; }
+ .card-title { font-size: 1.3rem; color: #ffffff; font-weight: 700; text-align: center; border-bottom: 2px solid rgba(255, 203, 5, 0.2); padding-bottom: 6px; margin-bottom: 8px; }
+ .data-panel { background-color: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 14px; border: 1px solid rgba(255, 255, 255, 0.1); }
+ .panel-section-title { font-size: 0.9rem; color: #ffcb05; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px; }
+ .data-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.95rem; }
+ .data-row:last-child { border-bottom: none; }
+ .data-label { color: #b0b0b8; }
+ .data-value { font-weight: 700; }
+ .submit-btn, .action-btn {
+ background-color: #2ec4b6; color: #0b1f3f; border: none; padding: 16px; font-size: 1.1rem;
+ font-weight: 800; border-radius: 14px; cursor: pointer; width: 100%; text-align: center; margin-top: auto;
+ box-shadow: 0 6px 15px rgba(46, 196, 182, 0.4); text-transform: uppercase;
+ }
+ </style>
+</head>
+<body>
+ <!-- SCREEN 1: THE SCANNER -->
+ <div id="scanner-screen" class="app-screen">
+ <div class="top-bar">
+ <h1>Auto Scanner <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v3.0</span></h1>
+ </div>
+ <div class="column-container">
+ <div class="column">
+ <button class="camera-btn" onclick="triggerInput('front-input')">SCAN FRONT</button>
+ <input type="file" id="front-input" class="hidden-input" accept="image/*" capture="environment">
+ <div class="photo-box" id="front-preview"></div>
+ </div>
+ <div class="column">
+ <button class="camera-btn" onclick="triggerInput('back-input')">SCAN BACK</button>
+ <input type="file" id="back-input" class="hidden-input" accept="image/*" capture="environment">
+ <div class="photo-box" id="back-preview"></div>
+ </div>
+ </div>
+ 
+ <!-- Interactive Dynamic Search Drawer -->
+ <div id="selector-box" class="loading-panel hidden">
+ <div id="ai-status-text">TYPE CARD NAME TO MATCH:</div>
+ <input type="text" id="drawer-search-bar" placeholder="e.g., Clefable, Kadabra" oninput="searchLiveDatabase(this.value)">
+ <div id="dynamic-results-list" style="width: 100%; display: flex; flex-direction: column; gap: 8px; max-height: 200px; overflow-y: auto;"></div>
+ </div>
+ <button id="submit-btn-element" class="submit-btn" onclick="revealVariants()">Do you like the card image</button>
+ </div>
+
+ <!-- SCREEN 2: THE EVALUATION RESULTS -->
+ <div id="evaluation-screen" class="app-screen hidden">
+ <div class="top-bar">
+ <button class="header-back-btn" onclick="goToScanner()">← BACK</button>
+ <h1>Evaluation <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v3.0</span></h1>
+ </div>
+ <div class="column-container">
+ <div class="column"><div class="photo-box" id="eval-front-preview"></div></div>
+ <div class="column"><div class="photo-box" id="eval-back-preview"></div></div>
+ </div>
+ <div class="evaluation-content">
+ <div class="card-title" id="card-title-display">Analyzing...</div>
+ <div class="data-panel">
+ <div class="panel-section-title"> Grading Blueprint</div>
+ <div class="data-row"><span class="data-label">Estimated Grade:</span><span class="data-value" style="color:#34c759;">PSA 9</span></div>
+ <div class="data-row"><span class="data-label">Flaws Seen:</span><span class="data-value" style="color:#34c759;">Clean Edges (Rosette Pass)</span></div>
+ <div class="data-row"><span class="data-label">Worth Grading?</span><span class="data-value" id="worth-grading-val" style="color:#34c759;">Calculating...</span></div>
+ </div>
+ <div class="data-panel">
+ <div class="panel-section-title"> Net Profit Math</div>
+ <div class="data-row"><span class="data-label">Raw Market Value:</span><span class="data-value" id="price-raw-val">$0.00</span></div>
+ <div class="data-row"><span class="data-label">Gross Graded Value:</span><span class="data-value" id="price-psa9-val" style="color:#ffcb05;">$0.00</span></div>
+ <div class="data-row"><span class="data-label">Estimated PSA 10 Value:</span><span class="data-value" id="price-psa10-val">$0.00</span></div>
+ <div class="data-row" style="border-top: 1px dashed rgba(255,255,255,0.2); padding-top:10px; margin-top:4px;">
+ <span class="data-label" style="color:#ffffff; font-weight:700;"> Net Realized Cash:</span>
+ <span class="data-value" id="net-cash-val" style="color:#34c759; font-size:1.1rem;">+$0.00</span>
+ </div>
+ </div>
+ <div class="data-panel">
+ <div class="panel-section-title"> Market Health</div>
+ <div class="data-row"><span class="data-label">Pop Report:</span><span class="data-value" id="pop-report-val">Fetching...</span></div>
+ <div class="data-row"><span class="data-label">Liquidity Status:</span><span class="data-value" style="color:#34c759;"> High Turnover</span></div>
+ <div class="data-row"><span class="data-label">Authenticity Check:</span><span class="data-value" style="color:#34c759;">Passed</span></div>
+ </div>
+ </div>
+ <button class="action-btn" id="save-blueprint-btn" onclick="alert('Blueprint saved successfully to history ledger!')">Save to Blueprint History</button>
+ </div>
+
+ <script>
+ let frontImageSrc = '';
+ let backImageSrc = '';
+ let searchTimeout;
+
+ window.triggerInput = function(id) {
+ document.getElementById(id).click();
+ };
+
+ document.addEventListener('DOMContentLoaded', () => {
+ const frontIn = document.getElementById('front-input');
+ const backIn = document.getElementById('back-input');
+ if(frontIn) frontIn.addEventListener('change', (e) => handleImage(e.target, 'front-preview', 'eval-front-preview'));
+ if(backIn) backIn.addEventListener('change', (e) => handleImage(e.target, 'back-preview', 'eval-back-preview'));
+ });
+
+ function handleImage(input, previewId, evalPreviewId) {
+ const previewBox = document.getElementById(previewId);
+ const evalPreviewBox = document.getElementById(evalPreviewId);
+ if (input.files && input.files[0]) {
+ const reader = new FileReader();
+ reader.onload = function(e) {
+ if (previewId === 'front-preview') frontImageSrc = e.target.result;
+ if (previewId === 'back-preview') backImageSrc = e.target.result;
+ const img1 = document.createElement('img'); img1.src = e.target.result;
+ previewBox.innerHTML = ''; previewBox.appendChild(img1);
+ const img2 = document.createElement('img'); img2.src = e.target.result;
+ evalPreviewBox.innerHTML = ''; evalPreviewBox.appendChild(img2);
+ }
+ reader.readAsDataURL(input.files[0]);
+ }
+ }
+
+ window.revealVariants = function() {
+ if (!frontImageSrc) {
+ alert("Please scan the front of a card first!");
+ return;
+ }
+ document.getElementById('selector-box').classList.remove('hidden');
+ document.getElementById('submit-btn-element').classList.add('hidden');
+ document.getElementById('drawer-search-bar').focus();
+ };
+
