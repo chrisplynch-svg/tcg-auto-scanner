@@ -3,7 +3,7 @@
 <head>
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
- <title>TCG Auto-Evaluator v3.5</title>
+ <title>TCG Auto-Evaluator v3.6</title>
  <style>
  body {
  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -36,15 +36,18 @@
  .column-container { display: flex; gap: 16px; width: 100%; margin-bottom: 24px; }
  .column { flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; }
  
- .camera-label-wrapper {
- display: block; width: 100%; background-color: #1e3d59; color: #ffcb05; border: 2px solid #ffcb05;
+ /* FIXED FOR STANDALONE IOS WRAPPERS: Fake button shell holds a real, fully invisible input layout layered directly on top */
+ .camera-btn-shell {
+ position: relative; width: 100%; background-color: #1e3d59; color: #ffcb05; border: 2px solid #ffcb05;
  padding: 12px 8px; font-size: 0.85rem; font-weight: 700; border-radius: 10px;
  text-align: center; margin-bottom: 12px; min-height: 48px; box-sizing: border-box;
- box-shadow: 0 4px 6px rgba(0,0,0,0.3); cursor: pointer; text-transform: uppercase;
- line-height: 20px;
+ box-shadow: 0 4px 6px rgba(0,0,0,0.3); text-transform: uppercase;
+ line-height: 20px; overflow: hidden;
  }
- .camera-label-wrapper:active { background-color: #ffcb05; color: #0b1f3f; }
- .ios-camera-input { display: none; }
+ .ios-camera-input-overlay {
+ position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+ opacity: 0; cursor: pointer; font-size: 100px;
+ }
  
  .photo-box {
  width: 100%; aspect-ratio: 2.5 / 3.5; background-color: rgba(255, 255, 255, 0.05);
@@ -95,17 +98,21 @@
  <!-- SCREEN 1: THE SCANNER -->
  <div id="scanner-screen" class="app-screen">
  <div class="top-bar">
- <h1>Auto Scanner <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v3.5</span></h1>
+ <h1>Auto Scanner <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v3.6</span></h1>
  </div>
  <div class="column-container">
  <div class="column">
- <label class="camera-label-wrapper" for="front-input">SCAN FRONT</label>
- <input type="file" id="front-input" class="ios-camera-input" accept="image/*">
+ <div class="camera-btn-shell">
+ SCAN FRONT
+ <input type="file" id="front-input" class="ios-camera-input-overlay" accept="image/*" onchange="processDirectFile(this, true)">
+ </div>
  <div class="photo-box" id="front-preview"></div>
  </div>
  <div class="column">
- <label class="camera-label-wrapper" for="back-input">SCAN BACK</label>
- <input type="file" id="back-input" class="ios-camera-input" accept="image/*">
+ <div class="camera-btn-shell">
+ SCAN BACK
+ <input type="file" id="back-input" class="ios-camera-input-overlay" accept="image/*" onchange="processDirectFile(this, false)">
+ </div>
  <div class="photo-box" id="back-preview"></div>
  </div>
  </div>
@@ -125,7 +132,7 @@
  <div id="evaluation-screen" class="app-screen hidden">
  <div class="top-bar">
  <button class="header-back-btn" onclick="goToScanner()">← BACK</button>
- <h1>Evaluation <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v3.5</span></h1>
+ <h1>Evaluation <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v3.6</span></h1>
  </div>
  <div class="column-container">
  <div class="column"><div class="photo-box" id="eval-front-preview"></div></div>
@@ -172,28 +179,16 @@
  }
  }
 
- // FIXED FOR APP ENGINE: Correctly maps native files array indexes to prevent system freezes
- function setupCameraListeners() {
- const frontIn = document.getElementById('front-input');
- const backIn = document.getElementById('back-input');
- 
- if(frontIn) {
- frontIn.addEventListener('change', function(e) {
+ // REFACTORED V3.6: Inline script intercepts raw image selections directly from the input container element
+ window.processDirectFile = function(inputElement, isFront) {
  try {
- if (e.target.files && e.target.files[0]) {
- updateDebugText("Front photo captured! Generating stream URL...", "#34c759");
- handleBlobRender(e.target.files[0], 'front-preview', 'eval-front-preview', true);
- } else {
- updateDebugText("Warning: Image array is empty.", "#ff3b30");
- }
- } catch (err) {
- updateDebugText("Error Front: " + err.message, "#ff3b30");
- }
- });
- }
+ if (inputElement.files && inputElement.files[0]) {
+ const rawFile = inputElement.files[0];
+ updateDebugText(`Photo verified: ${rawFile.name}. Rendering stream link...`, "#34c759");
  
- if(backIn) {
- backIn.addEventListener('change', function(e) {
- try {
- if (e.target.files && e.target.files[0]) {
- updateDebugText("Back photo captured! Generating stream URL...", "#34c759");
+ const blobUrl = URL.createObjectURL(rawFile);
+ if (isFront) { frontImageSrc = blobUrl; } else { backImageSrc = blobUrl; }
+ 
+ const previewId = isFront ? 'front-preview' : 'back-preview';
+ const evalPreviewId = isFront ? 'eval-front-preview' : 'eval-back-preview';
+ 
