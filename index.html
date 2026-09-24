@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>3D SHOWCASE v5.3</title>
+  <title>3D SHOWCASE v5.4</title>
   <style>
     * {
       box-sizing: border-box;
@@ -97,12 +97,10 @@
       overflow: hidden;
     }
 
-    /* Optimization #1: Image layout handling for raw images */
     .preview-box img {
       width: 100%;
       height: 100%;
-      object-fit: contain; /* Keeps full uncropped photo safe for future grading */
-      background-color: #051329;
+      object-fit: cover;
     }
 
     .preview-placeholder {
@@ -138,7 +136,7 @@
       height: 295px;
       position: relative;
       transform-style: preserve-3d;
-      transition: transform 0.05s ease-out;
+      transition: transform 0.1s ease-out;
       cursor: grab;
       touch-action: none;
     }
@@ -159,11 +157,10 @@
       overflow: hidden;
     }
 
-    /* Optimization #1: Automatic Aspect-Ratio Clipping for 3D Mesh Card Face */
     .card-side img {
       width: 100%;
       height: 100%;
-      object-fit: cover; /* Centers and slices extra table space seamlessly */
+      object-fit: cover;
       border-radius: 14px;
     }
 
@@ -175,7 +172,7 @@
       transform: rotateY(180deg);
     }
 
-    /* Optimization #4: Neon Wireframe Placeholder Blueprints */
+    /* Stable Wireframe Placeholder Blueprints */
     .wireframe-blueprint {
       width: 85%;
       height: 85%;
@@ -253,11 +250,10 @@
   <div class="app-container">
     
     <header class="app-header">
-      <h1 class="app-title">3D SHOWCASE <span class="app-version">v5.3</span></h1>
+      <h1 class="app-title">3D SHOWCASE <span class="app-version">v5.4</span></h1>
     </header>
 
     <section class="scan-controls-grid">
-      <!-- Front Scan Stack -->
       <div class="scan-column">
         <button class="scan-btn">Scan Front</button>
         <input type="file" class="camera-trigger-overlay" accept="image/*" onchange="handleImageUpload(this, 'front')">
@@ -266,7 +262,6 @@
         </div>
       </div>
       
-      <!-- Back Scan Stack -->
       <div class="scan-column">
         <button class="scan-btn">Scan Back</button>
         <input type="file" class="camera-trigger-overlay" accept="image/*" onchange="handleImageUpload(this, 'back')">
@@ -279,14 +274,12 @@
     <main class="mesh-view-stage" id="mesh-stage">
       <div class="card-3d-wrapper" id="card-mesh">
         
-        <!-- Upgraded Placeholder Front -->
         <div class="card-side card-front" id="mesh-front-side">
           <div class="wireframe-blueprint">
             <div class="wireframe-text">FRONT SIDE<br>PENDING</div>
           </div>
         </div>
         
-        <!-- Upgraded Placeholder Back -->
         <div class="card-side card-back" id="mesh-back-side">
           <div class="wireframe-blueprint">
             <div class="wireframe-text">BACK SIDE<br>PENDING</div>
@@ -310,37 +303,34 @@
     let currentRotationY = 0;
     let isDragging = false;
     let startX = 0;
-    
-    // Tracking markers for fluid haptic intervals
-    let passedFrontFlip = false;
-    let passedBackFlip = false;
 
     const cardMesh = document.getElementById('card-mesh');
     const meshStage = document.getElementById('mesh-stage');
 
+    // FIXED: Safe explicit file array mapping execution
     function handleImageUpload(input, side) {
       if (input.files && input.files[0]) {
-        const file = input.files[0];
         const reader = new FileReader();
         
         reader.onload = function(e) {
           const imageSrc = e.target.result;
           
           const previewBox = document.getElementById(`preview-${side}`);
-          if(previewBox) {
+          if (previewBox) {
             previewBox.innerHTML = `<img src="${imageSrc}" alt="${side} preview">`;
           }
           
           const meshSide = document.getElementById(`mesh-${side}-side`);
-          if(meshSide) {
+          if (meshSide) {
             meshSide.innerHTML = `<img src="${imageSrc}" alt="${side} card surface">`;
           }
         };
         
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(input.files[0]);
       }
     }
 
+    // Touch and Gesture Interaction Script for smooth 3D spinning
     function startDrag(e) {
       isDragging = true;
       startX = e.pageX || (e.touches && e.touches[0].pageX);
@@ -355,29 +345,6 @@
       currentRotationY += deltaX * 0.7;
       cardMesh.style.transform = `rotateY(${currentRotationY}deg)`;
       
-      // Optimization #2: Calculate accurate angles to trigger native haptic ticks
-      let normalizedAngle = Math.abs(currentRotationY % 360);
-      
-      // Check for 90-degree crossing point
-      if (normalizedAngle > 80 && normalizedAngle < 100) {
-        if (!passedFrontFlip) {
-          triggerHapticFeedback();
-          passedFrontFlip = true;
-        }
-      } else {
-        passedFrontFlip = false;
-      }
-
-      // Check for 270-degree crossing point
-      if (normalizedAngle > 260 && normalizedAngle < 280) {
-        if (!passedBackFlip) {
-          triggerHapticFeedback();
-          passedBackFlip = true;
-        }
-      } else {
-        passedBackFlip = false;
-      }
-      
       startX = currentX;
     }
 
@@ -385,5 +352,13 @@
       isDragging = false;
     }
 
-    // Helper engine checking permission status before attempting vibration pulses
-    function triggerHapticFeedback() {
+    meshStage.addEventListener('mousedown', startDrag);
+    window.addEventListener('mousemove', moveDrag);
+    window.addEventListener('mouseup', endDrag);
+
+    meshStage.addEventListener('touchstart', startDrag, { passive: true });
+    window.addEventListener('touchmove', moveDrag, { passive: true });
+    window.addEventListener('touchend', endDrag);
+  </script>
+</body>
+</html>
