@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>3D SHOWCASE v5.1</title>
+  <title>3D SHOWCASE v5.2</title>
   <style>
     * {
       box-sizing: border-box;
@@ -15,7 +15,7 @@
     
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: #0b1f3f; /* Deep Blue Background */
+      background-color: #0b1f3f;
       color: #ffffff;
       min-height: 100vh;
       display: flex;
@@ -34,7 +34,6 @@
       flex-grow: 1;
     }
 
-    /* Top Title Header */
     .app-header {
       margin-top: 10px;
       margin-bottom: 20px;
@@ -42,7 +41,7 @@
     }
 
     .app-title {
-      color: #e6b800; /* Yellow Gold */
+      color: #e6b800;
       font-size: 24px;
       font-weight: 800;
       text-transform: uppercase;
@@ -56,7 +55,6 @@
       text-transform: lowercase;
     }
 
-    /* Scanner Grid Layout */
     .scan-controls-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -70,9 +68,9 @@
       flex-direction: column;
       align-items: center;
       gap: 16px;
+      position: relative; /* Anchor for camera triggers */
     }
 
-    /* Gold Buttons from your image */
     .scan-btn {
       width: 100%;
       background: transparent;
@@ -87,7 +85,6 @@
       letter-spacing: 0.5px;
     }
 
-    /* Yellow Dashed Preview Boxes */
     .preview-box {
       width: 85px;
       height: 120px;
@@ -113,7 +110,18 @@
       line-height: 1.4;
     }
 
-    /* Center 3D Card Display Container */
+    /* v5.2 Transparent Camera Layer Trick */
+    .camera-trigger-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 45px; /* Matches button height precisely */
+      opacity: 0;   /* Completely invisible but completely clickable */
+      cursor: pointer;
+      -webkit-appearance: none;
+    }
+
     .mesh-view-stage {
       flex-grow: 1;
       width: 100%;
@@ -134,7 +142,6 @@
       touch-action: none;
     }
 
-    /* Blue Translucent Card Body */
     .card-side {
       position: absolute;
       width: 100%;
@@ -173,7 +180,6 @@
       line-height: 1.5;
     }
 
-    /* Yellow Dashed Instructional Footer Bar */
     .instruction-overlay {
       width: 100%;
       border: 2px dashed #e6b800;
@@ -192,7 +198,6 @@
       text-transform: uppercase;
     }
 
-    /* Fixed Teal Bottom Panel Action Button */
     .bottom-action-anchor {
       width: 100%;
       margin-top: auto;
@@ -200,7 +205,7 @@
 
     .evaluate-btn {
       width: 100%;
-      background-color: #2ec4b6; /* Teal Bright Accent */
+      background-color: #2ec4b6;
       border: none;
       color: #0b1f3f;
       padding: 16px;
@@ -211,10 +216,6 @@
       text-transform: uppercase;
       letter-spacing: 0.8px;
     }
-
-    .hidden-camera-input {
-      display: none;
-    }
   </style>
 </head>
 <body>
@@ -222,40 +223,39 @@
   <div class="app-container">
     
     <header class="app-header">
-      <h1 class="app-title">3D SHOWCASE <span class="app-version">v5.1</span></h1>
+      <h1 class="app-title">3D SHOWCASE <span class="app-version">v5.2</span></h1>
     </header>
 
     <section class="scan-controls-grid">
+      <!-- Front Scan Stack -->
       <div class="scan-column">
-        <button class="scan-btn" onclick="triggerCamera('front')">Scan Front</button>
+        <button class="scan-btn">Scan Front</button>
+        <!-- The invisible file selector sits directly on top of the button -->
+        <input type="file" class="camera-trigger-overlay" accept="image/*" onchange="handleImageUpload(this, 'front')">
         <div class="preview-box" id="preview-front">
           <div class="preview-placeholder">Front<br>Preview</div>
         </div>
       </div>
       
+      <!-- Back Scan Stack -->
       <div class="scan-column">
-        <button class="scan-btn" onclick="triggerCamera('back')">Scan Back</button>
+        <button class="scan-btn">Scan Back</button>
+        <!-- The invisible file selector sits directly on top of the button -->
+        <input type="file" class="camera-trigger-overlay" accept="image/*" onchange="handleImageUpload(this, 'back')">
         <div class="preview-box" id="preview-back">
           <div class="preview-placeholder">Back<br>Preview</div>
         </div>
       </div>
     </section>
 
-    <!-- Camera trigger mechanisms with fixed upload handlers -->
-    <input type="file" id="input-front" class="hidden-camera-input" accept="image/*" capture="environment" onchange="handleImageUpload(this, 'front')">
-    <input type="file" id="input-back" class="hidden-camera-input" accept="image/*" capture="environment" onchange="handleImageUpload(this, 'back')">
-
     <main class="mesh-view-stage" id="mesh-stage">
       <div class="card-3d-wrapper" id="card-mesh">
-        
         <div class="card-side card-front" id="mesh-front-side">
           <div class="card-side-placeholder">Scan Front to View Image</div>
         </div>
-        
         <div class="card-side card-back" id="mesh-back-side">
           <div class="card-side-placeholder">Scan Back to View Image</div>
         </div>
-        
       </div>
     </main>
 
@@ -277,16 +277,6 @@
     const cardMesh = document.getElementById('card-mesh');
     const meshStage = document.getElementById('mesh-stage');
 
-    // Forces mobile phone native camera app sequence open
-    function triggerCamera(side) {
-      const inputField = document.getElementById(`input-${side}`);
-      if(inputField) {
-        inputField.value = ''; // Resets field state so you can take multiple shots back-to-back
-        inputField.click();
-      }
-    }
-
-    // Handles processing the image safely onto the cards
     function handleImageUpload(input, side) {
       if (input.files && input.files[0]) {
         const file = input.files[0];
@@ -295,13 +285,11 @@
         reader.onload = function(e) {
           const imageSrc = e.target.result;
           
-          // 1. Populates image inside the corresponding small dashed box element
           const previewBox = document.getElementById(`preview-${side}`);
           if(previewBox) {
             previewBox.innerHTML = `<img src="${imageSrc}" alt="${side} preview">`;
           }
           
-          // 2. Replaces placeholder text and paints image onto the 3D card layout face directly
           const meshSide = document.getElementById(`mesh-${side}-side`);
           if(meshSide) {
             meshSide.innerHTML = `<img src="${imageSrc}" alt="${side} card surface">`;
@@ -324,7 +312,7 @@
       const currentX = e.pageX || (e.touches && e.touches[0].pageX);
       const deltaX = currentX - startX;
       
-      currentRotationY += deltaX * 0.7; // Speed factor of the card spin rotation
+      currentRotationY += deltaX * 0.7;
       cardMesh.style.transform = `rotateY(${currentRotationY}deg)`;
       
       startX = currentX;
@@ -334,7 +322,6 @@
       isDragging = false;
     }
 
-    // Event binding targets
     meshStage.addEventListener('mousedown', startDrag);
     window.addEventListener('mousemove', moveDrag);
     window.addEventListener('mouseup', endDrag);
