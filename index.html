@@ -3,7 +3,7 @@
 <head>
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
- <title>TCG Auto-Evaluator v3.6</title>
+ <title>TCG Auto-Evaluator v3.7</title>
  <style>
  body {
  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -36,7 +36,6 @@
  .column-container { display: flex; gap: 16px; width: 100%; margin-bottom: 24px; }
  .column { flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; }
  
- /* FIXED FOR STANDALONE IOS WRAPPERS: Fake button shell holds a real, fully invisible input layout layered directly on top */
  .camera-btn-shell {
  position: relative; width: 100%; background-color: #1e3d59; color: #ffcb05; border: 2px solid #ffcb05;
  padding: 12px 8px; font-size: 0.85rem; font-weight: 700; border-radius: 10px;
@@ -98,20 +97,20 @@
  <!-- SCREEN 1: THE SCANNER -->
  <div id="scanner-screen" class="app-screen">
  <div class="top-bar">
- <h1>Auto Scanner <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v3.6</span></h1>
+ <h1>Auto Scanner <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v3.7</span></h1>
  </div>
  <div class="column-container">
  <div class="column">
  <div class="camera-btn-shell">
  SCAN FRONT
- <input type="file" id="front-input" class="ios-camera-input-overlay" accept="image/*" onchange="processDirectFile(this, true)">
+ <input type="file" id="front-input" class="ios-camera-input-overlay" accept="image/*" onchange="processSecureFile(this, true)">
  </div>
  <div class="photo-box" id="front-preview"></div>
  </div>
  <div class="column">
  <div class="camera-btn-shell">
  SCAN BACK
- <input type="file" id="back-input" class="ios-camera-input-overlay" accept="image/*" onchange="processDirectFile(this, false)">
+ <input type="file" id="back-input" class="ios-camera-input-overlay" accept="image/*" onchange="processSecureFile(this, false)">
  </div>
  <div class="photo-box" id="back-preview"></div>
  </div>
@@ -132,7 +131,7 @@
  <div id="evaluation-screen" class="app-screen hidden">
  <div class="top-bar">
  <button class="header-back-btn" onclick="goToScanner()">← BACK</button>
- <h1>Evaluation <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v3.6</span></h1>
+ <h1>Evaluation <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v3.7</span></h1>
  </div>
  <div class="column-container">
  <div class="column"><div class="photo-box" id="eval-front-preview"></div></div>
@@ -179,16 +178,20 @@
  }
  }
 
- // REFACTORED V3.6: Inline script intercepts raw image selections directly from the input container element
- window.processDirectFile = function(inputElement, isFront) {
+ // REFACTORED V3.7: Secure FileReader text-encoder reads image bytes completely inside the app container boundaries
+ window.processSecureFile = function(inputElement, isFront) {
  try {
  if (inputElement.files && inputElement.files[0]) {
- const rawFile = inputElement.files[0];
- updateDebugText(`Photo verified: ${rawFile.name}. Rendering stream link...`, "#34c759");
+ const file = inputElement.files[0];
+ updateDebugText(`File received: ${file.name}. Encoding pixels...`, "#ffcb05");
  
- const blobUrl = URL.createObjectURL(rawFile);
- if (isFront) { frontImageSrc = blobUrl; } else { backImageSrc = blobUrl; }
+ const reader = new FileReader();
+ reader.onload = function(event) {
+ try {
+ const base64Data = event.target.result;
+ if (isFront) { frontImageSrc = base64Data; } else { backImageSrc = base64Data; }
  
  const previewId = isFront ? 'front-preview' : 'back-preview';
  const evalPreviewId = isFront ? 'eval-front-preview' : 'eval-back-preview';
  
+ document.getElementById(previewId).innerHTML = `<img src="${base64Data}">`;
