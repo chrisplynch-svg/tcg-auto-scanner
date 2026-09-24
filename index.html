@@ -3,7 +3,7 @@
 <head>
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
- <title>TCG 3D Showcase v5.0</title>
+ <title>TCG 3D Showcase v5.1</title>
  <style>
  body {
  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -29,59 +29,57 @@
  text-shadow: 0 2px 4px rgba(0,0,0,0.5); font-weight: 800;
  text-transform: uppercase; letter-spacing: 1px; text-align: center;
  }
- .column-container { display: flex; gap: 12px; width: 100%; margin-bottom: 16px; }
- .column { flex: 1; display: flex; flex-direction: column; align-items: center; }
+ .column-container { display: flex; gap: 16px; width: 100%; margin-bottom: 16px; }
+ .column { flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; }
  
- .action-input-btn {
- background-color: #1e3d59; color: #ffcb05; border: 2px solid #ffcb05;
- padding: 10px 4px; font-size: 0.8rem; font-weight: 700; border-radius: 8px;
- cursor: pointer; width: 100%; text-align: center; margin-bottom: 8px; min-height: 40px;
- box-shadow: 0 4px 6px rgba(0,0,0,0.3); text-transform: uppercase;
+ /* PREMIUM THEMED CAMERA LABELS: Formatted to work securely with iOS gesture systems */
+ .camera-input-label {
+ display: block; width: 100%; background-color: #1e3d59; color: #ffcb05; border: 2px solid #ffcb05;
+ padding: 12px 4px; font-size: 0.8rem; font-weight: 700; border-radius: 10px;
+ text-align: center; margin-bottom: 12px; min-height: 44px; box-sizing: border-box;
+ box-shadow: 0 4px 6px rgba(0,0,0,0.3); text-transform: uppercase; cursor: pointer;
+ line-height: 18px;
  }
+ .camera-input-label:active { background-color: #ffcb05; color: #0b1f3f; }
+ .hidden-system-input { display: none; }
+ 
  .mini-preview-box {
- width: 60px; height: 84px; background-color: rgba(255, 255, 255, 0.05);
- border: 1px dashed rgba(255, 203, 5, 0.4); border-radius: 8px; overflow: hidden;
- display: flex; align-items: center; justify-content: center;
+ width: 64px; height: 90px; background-color: rgba(255, 255, 255, 0.05);
+ border: 2px dashed rgba(255, 203, 5, 0.3); border-radius: 10px; overflow: hidden;
+ display: flex; align-items: center; justify-content: center; box-shadow: inset 0 0 10px rgba(0,0,0,0.4);
  }
  .mini-preview-box img { width: 100%; height: 100%; object-fit: cover; }
  
- /* 3D CARD WORKSPACE VIEWS: Configures the spatial perspectives for touch mechanics */
+ /* 3D CANVAS MATRIX ASSEMBLY */
  .stage-3d-container {
  width: 100%; height: 320px; perspective: 1000px;
  display: flex; align-items: center; justify-content: center;
- margin: 16px 0; position: relative; touch-action: none;
+ margin: 12px 0; position: relative; touch-action: none;
  }
  .card-3d-wrapper {
  width: 200px; height: 280px; position: relative;
- transform-style: preserve-3d; transition: transform 0.1s ease-out;
- box-shadow: 0 15px 35px rgba(0,0,0,0.6); border-radius: 14px;
+ transform-style: preserve-3d; transition: transform 0.05s ease-out;
+ box-shadow: 0 15px 40px rgba(0,0,0,0.6); border-radius: 14px;
  }
  .card-side-face {
  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
  backface-visibility: hidden; border-radius: 14px; overflow: hidden;
  border: 1px solid rgba(255, 253, 240, 0.15);
+ background-color: #1a2a44; background-size: cover; background-position: center;
  }
- .card-face-front {
- background-color: #1e3d59; background-size: cover; background-position: center;
- }
- .card-face-back {
- background-color: #8c1c1c; background-size: cover; background-position: center;
- transform: rotateY(180deg);
- }
+ .card-face-front { /* Blends empty slate canvas */ }
+ .card-face-back { transform: rotateY(180deg); }
+ 
  .placeholder-text {
  position: absolute; width: 100%; text-align: center; top: 50%;
- transform: translateY(-50%); font-size: 0.8rem; font-weight: 700; color: rgba(255,255,255,0.4);
- padding: 0 12px; box-sizing: border-box; text-transform: uppercase;
+ transform: translateY(-50%); font-size: 0.75rem; font-weight: 800; color: rgba(255,203,5,0.4);
+ padding: 0 12px; box-sizing: border-box; text-transform: uppercase; letter-spacing: 0.5px;
  }
  
  .loading-panel {
  width: 100%; background-color: rgba(255, 253, 240, 0.05); border: 2px dashed #ffcb05;
  border-radius: 12px; padding: 16px; box-sizing: border-box; margin-bottom: 24px;
  display: flex; flex-direction: column; gap: 12px;
- }
- #drawer-search-bar {
- width: 100%; padding: 12px; background-color: #0b1f3f; border: 1px solid rgba(255, 203, 5, 0.5);
- border-radius: 8px; color: #ffffff; font-size: 1rem; box-sizing: border-box;
  }
  .submit-btn {
  background-color: #2ec4b6; color: #0b1f3f; border: none; padding: 16px; font-size: 1.1rem;
@@ -93,38 +91,38 @@
 <body>
  <div id="scanner-screen" class="app-screen">
  <div class="top-bar">
- <h1>3D Showcase <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v5.0</span></h1>
+ <h1>3D Showcase <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v5.1</span></h1>
  </div>
  
- <!-- Shrunk row containers with direct url assignment actions -->
  <div class="column-container">
  <div class="column">
- <button class="action-input-btn" onclick="assignImageLink(true)">Link Front</button>
+ <label class="camera-input-label" for="front-camera-file">Scan Front</label>
+ <input type="file" id="front-camera-file" class="hidden-system-input" accept="image/*" onchange="projectCameraToMesh(this, true)">
  <div class="mini-preview-box" id="front-mini-view"></div>
  </div>
  <div class="column">
- <button class="action-input-btn" onclick="assignImageLink(false)">Link Back</button>
+ <label class="camera-input-label" for="back-camera-file">Scan Back</label>
+ <input type="file" id="back-camera-file" class="hidden-system-input" accept="image/*" onchange="projectCameraToMesh(this, false)">
  <div class="mini-preview-box" id="back-mini-view"></div>
  </div>
  </div>
  
- <!-- NEW 3D STAGE AREA: Touch/Swipe directly on the card to flip it around inside the spatial container -->
+ <!-- THE INTERACTIVE 3D STAGE MODULE -->
  <div class="stage-3d-container" id="interaction-3d-stage">
  <div class="card-3d-wrapper" id="live-3d-card-mesh">
  <div class="card-side-face card-face-front" id="front-3d-canvas">
- <div class="placeholder-text" id="front-txt-node">Front Artwork Missing</div>
+  <div class="placeholder-text" id="front-txt-node">Front Image Empty</div>
  </div>
  <div class="card-side-face card-face-back" id="back-3d-canvas">
- <div class="placeholder-text" id="back-txt-node">Standard Card Back</div>
+  <div class="placeholder-text" id="back-txt-node">Back Image Empty</div>
  </div>
  </div>
  </div>
  
  <div class="loading-panel">
- <div style="font-size: 0.85rem; font-weight: 800; color: #ffcb05; text-align: center; text-transform: uppercase; letter-spacing: 0.5px;">Swipe to Spin Card Front to Back</div>
- <input type="text" id="drawer-search-bar" placeholder="Swipe mesh area or type card query...">
+ <div style="font-size: 0.85rem; font-weight: 800; color: #ffcb05; text-align: center; text-transform: uppercase; letter-spacing: 0.5px;">Swipe card mesh area to spin in 3D</div>
  </div>
- <button class="submit-btn" onclick="alert('3D Mesh Blueprint locked successfully!')">Evaluate 3D Showcase Blueprint</button>
+ <button class="submit-btn" onclick="alert('3D Live Mesh Blueprint locked successfully!')">Evaluate 3D Showcase Blueprint</button>
  </div>
 
  <script>
@@ -132,30 +130,40 @@
  let isDraggingCard = false;
  let startTouchX = 0;
  
- // Secure fallback assets loaded instantly into layout structures
- const standardTcgBack = "https://pokemontcg.io";
- document.getElementById('back-3d-canvas').style.backgroundImage = `url('${standardTcgBack}')`;
- const backTxt = document.getElementById('back-txt-node'); if(backTxt) backTxt.remove();
-
- window.assignImageLink = function(isFront) {
- const promptText = isFront ? "Paste Front Image Web Link Address:" : "Paste Back Image Web Link Address:";
- const defaultLink = isFront ? "https://pokemontcg.io" : standardTcgBack;
+ // SECURE PIPELINE METHOD: FileReader text-encoder reads picture data seamlessly on direct label input trigger events
+ window.projectCameraToMesh = function(inputNode, isFrontMaterial) {
+ try {
+ if (inputNode.files && inputNode.files[0]) {
+ const rawImageFile = inputNode.files[0];
  
- const inboundUrl = prompt(promptText, defaultLink);
- if(inboundUrl && inboundUrl.trim().length > 10) {
- const cleanUrl = inboundUrl.trim();
- if(isFront) {
- document.getElementById('front-3d-canvas').style.backgroundImage = `url('${cleanUrl}')`;
- document.getElementById('front-mini-view').innerHTML = `<img src="${cleanUrl}">`;
- const txtNode = document.getElementById('front-txt-node'); if(txtNode) txtNode.remove();
+ const encoder = new FileReader();
+ encoder.onload = function(event) {
+ try {
+ const secureBase64String = event.target.result;
+ 
+ if (isFrontMaterial) {
+ // Projects image directly onto the large 3D canvas front face
+ document.getElementById('front-3d-canvas').style.backgroundImage = `url('${secureBase64String}')`;
+ document.getElementById('front-mini-view').innerHTML = `<img src="${secureBase64String}">`;
+ const textNode = document.getElementById('front-txt-node'); if(textNode) textNode.remove();
  } else {
- document.getElementById('back-3d-canvas').style.backgroundImage = `url('${cleanUrl}')`;
- document.getElementById('back-mini-view').innerHTML = `<img src="${cleanUrl}">`;
+ // Projects image directly onto the large 3D canvas back face
+ document.getElementById('back-3d-canvas').style.backgroundImage = `url('${secureBase64String}')`;
+ document.getElementById('back-mini-view').innerHTML = `<img src="${secureBase64String}">`;
+ const textNode = document.getElementById('back-txt-node'); if(textNode) textNode.remove();
  }
+ } catch (renderErr) {
+ console.error("Render error: " + renderErr.message);
+ }
+ };
+ encoder.readAsDataURL(rawImageFile);
+ }
+ } catch (err) {
+ console.error("Input processing error: " + err.message);
  }
  };
 
- // INTERACTIVE 3D TOUCH ENGINE: Translates swiping drag parameters into visual spatial angles
+ // INTERACTIVE 3D TOUCH HANDLING ENGINE
  const touchStage = document.getElementById('interaction-3d-stage');
  const cardMesh = document.getElementById('live-3d-card-mesh');
 
@@ -170,8 +178,7 @@
  const movementDeltaX = currentX - startTouchX;
  startTouchX = currentX;
  
- // Adjust values to tweak rotation sensitivity
- currentRotationY += movementDeltaX * 0.6;
+ currentRotationY += movementDeltaX * 0.7;
  cardMesh.style.transform = `rotateY(${currentRotationY}deg)`;
  });
 
