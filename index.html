@@ -1,210 +1,290 @@
-<!DOCTYPE html>
+<!DOCTYPEDOCTYPE html>
 <html lang="en">
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
- <title>TCG 3D Showcase v5.2</title>
- <style>
- body {
- font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
- background-color: #0b1f3f; 
- color: #ffffff;
- margin: 0; padding: 16px;
- display: flex; flex-direction: column; align-items: center;
- min-height: 100vh; box-sizing: border-box;
- overflow-x: hidden;
- }
- .app-screen {
- width: 100%; max-width: 500px;
- display: flex; flex-direction: column; align-items: center;
- flex-grow: 1; position: relative;
- }
- .hidden { display: none !important; }
- .top-bar {
- width: 100%; display: flex; align-items: center; justify-content: center;
- position: relative; margin-bottom: 16px; min-height: 40px;
- }
- .header-back-btn {
- position: absolute; left: 0; top: 50%; transform: translateY(-50%);
- background-color: transparent; color: #ffcb05; border: 1px solid #ffcb05;
- padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: 700; cursor: pointer;
- }
- h1 {
- font-size: 1.4rem; color: #ffcb05; margin: 0;
- text-shadow: 0 2px 4px rgba(0,0,0,0.5); font-weight: 800;
- text-transform: uppercase; letter-spacing: 1px; text-align: center;
- }
- .column-container { display: flex; gap: 16px; width: 100%; margin-bottom: 16px; }
- .column { flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; }
- 
- .camera-input-label {
- display: block; width: 100%; background-color: #1e3d59; color: #ffcb05; border: 2px solid #ffcb05;
- padding: 12px 4px; font-size: 0.8rem; font-weight: 700; border-radius: 10px;
- text-align: center; margin-bottom: 12px; min-height: 44px; box-sizing: border-box;
- box-shadow: 0 4px 6px rgba(0,0,0,0.3); text-transform: uppercase; cursor: pointer;
- line-height: 18px;
- }
- .camera-input-label:active { background-color: #ffcb05; color: #0b1f3f; }
- .hidden-system-input { display: none; }
- 
- .mini-preview-box {
- width: 64px; height: 90px; background-color: rgba(255, 255, 255, 0.05);
- border: 2px dashed rgba(255, 203, 5, 0.3); border-radius: 10px; overflow: hidden;
- display: flex; align-items: center; justify-content: center; box-shadow: inset 0 0 10px rgba(0,0,0,0.4);
- }
- .mini-preview-box img { width: 100%; height: 100%; object-fit: cover; }
- 
- .stage-3d-container {
- width: 100%; height: 320px; perspective: 1000px;
- display: flex; align-items: center; justify-content: center;
- margin: 12px 0; position: relative; touch-action: none;
- }
- .card-3d-wrapper {
- width: 200px; height: 280px; position: relative;
- transform-style: preserve-3d; transition: transform 0.05s ease-out;
- box-shadow: 0 15px 40px rgba(0,0,0,0.6); border-radius: 14px;
- transform: rotateY(0deg);
- }
- .card-side-face {
- position: absolute; top: 0; left: 0; width: 100%; height: 100%;
- backface-visibility: hidden; border-radius: 14px; overflow: hidden;
- border: 1px solid rgba(255, 253, 240, 0.15);
- background-color: #1a2a44; background-size: cover; background-position: center;
- }
- .card-face-front { }
- .card-face-back { transform: rotateY(180deg); }
- 
- .placeholder-text {
- position: absolute; width: 100%; text-align: center; top: 50%;
- transform: translateY(-50%); font-size: 0.75rem; font-weight: 800; color: rgba(255,203,5,0.4);
- padding: 0 12px; box-sizing: border-box; text-transform: uppercase; letter-spacing: 0.5px;
- }
- 
- .evaluation-content { width: 100%; display: flex; flex-direction: column; gap: 16px; }
- .card-title { font-size: 1.3rem; color: #ffffff; font-weight: 700; text-align: center; border-bottom: 2px solid rgba(255, 203, 5, 0.2); padding-bottom: 6px; margin-bottom: 8px; }
- .data-panel { background-color: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 14px; border: 1px solid rgba(255, 255, 255, 0.1); }
- .panel-section-title { font-size: 0.9rem; color: #ffcb05; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px; }
- .data-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.95rem; }
- .data-row:last-child { border-bottom: none; }
- .data-label { color: #b0b0b8; }
- .data-value { font-weight: 700; }
- 
- .loading-panel {
- width: 100%; background-color: rgba(255, 253, 240, 0.05); border: 2px dashed #ffcb05;
- border-radius: 12px; padding: 16px; box-sizing: border-box; margin-bottom: 24px;
- display: flex; flex-direction: column; gap: 12px;
- }
- .submit-btn, .action-btn {
- background-color: #2ec4b6; color: #0b1f3f; border: none; padding: 16px; font-size: 1.1rem;
- font-weight: 800; border-radius: 14px; cursor: pointer; width: 100%; text-align: center; margin-top: auto;
- box-shadow: 0 6px 15px rgba(46, 196, 182, 0.4); text-transform: uppercase;
- }
- </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCG 3D Showcase v5.1</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #0b1f3f;
+            color: #ffffff;
+            margin: 0;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+            overflow-x: hidden;
+        }
+
+        .app-screen {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-grow: 1;
+            position: relative;
+        }
+
+        .hidden { display: none !important; }
+
+        .top-bar {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            color: #ffcb05;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .column-container {
+            display: flex;
+            gap: 16px;
+            width: 100%;
+            margin-bottom: 16px;
+        }
+
+        .column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* PREMIUM THEMED CAMERA LABELS: Formatted */
+        .camera-input-label {
+            display: block;
+            width: 100%;
+            background-color: #2ec4b6;
+            color: #0b1f3f;
+            font-weight: 800;
+            padding: 12px 4px;
+            font-size: 0.8rem;
+            font-top-align: center; /* Preserved text-align fallback logic from screenshot */
+            text-align: center;
+            margin-bottom: 12px;
+            border-radius: 14px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            text-shadow: none;
+            line-height: 18px;
+            cursor: pointer;
+        }
+
+        .camera-input-label:active {
+            background-color: #24a195;
+        }
+
+        .hidden-system-input {
+            display: none;
+        }
+
+        .mini-preview-box {
+            width: 64px;
+            height: 90px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 2px dashed rgba(255, 255, 5, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-radius: 4px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* 3D CANVAS MATRIX ASSEMBLY */
+        .stage-3d-container {
+            width: 100%;
+            height: 320px;
+            perspective: 1000px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 12px 0;
+            position: relative;
+            touch-action: none;
+        }
+
+        .card-3d-wrapper {
+            width: 200px;
+            height: 280px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+            border-radius: 12px;
+        }
+
+        .card-side-face {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 253, 240, 0.15);
+            background-color: #1a2a44;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-face-front {
+            /* Blends empty slate canvas background pattern colors */
+            background-color: #1a2a44;
+        }
+
+        .card-face-back {
+            transform: rotateY(180deg);
+            background-color: #5c1d1d; /* Fallback iconic card back coloring */
+        }
+
+        .placeholder-text {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.4);
+            padding: 0 12px;
+            box-sizing: border-box;
+        }
+
+        .loading-panel {
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 16px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .submit-btn {
+            background-color: #2ec4b6;
+            color: #0b1f3f;
+            font-weight: 800;
+            border-radius: 14px;
+            border: none;
+            padding: 12px;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(46, 196, 182, 0.3);
+            text-align: center;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            background-color: #24a195;
+        }
+    </style>
 </head>
 <body>
- <!-- SCREEN 1: THE 3D INTERACTIVE SCANNER -->
- <div id="scanner-screen" class="app-screen">
- <div class="top-bar">
- <h1>3D Showcase <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v5.2</span></h1>
- </div>
- 
- <div class="column-container">
- <div class="column">
- <label class="camera-input-label" for="front-camera-file">Scan Front</label>
- <input type="file" id="front-camera-file" class="hidden-system-input" accept="image/*" onchange="projectCameraToMesh(this, true)">
- <div class="mini-preview-box" id="front-mini-view"></div>
- </div>
- <div class="column">
- <label class="camera-input-label" for="back-camera-file">Scan Back</label>
- <input type="file" id="back-camera-file" class="hidden-system-input" accept="image/*" onchange="projectCameraToMesh(this, false)">
- <div class="mini-preview-box" id="back-mini-view"></div>
- </div>
- </div>
- 
- <div class="stage-3d-container" id="interaction-3d-stage">
- <div class="card-3d-wrapper" id="live-3d-card-mesh">
- <div class="card-side-face card-face-front" id="front-3d-canvas">
- <div class="placeholder-text" id="front-txt-node">Front Image Empty</div>
- </div>
- <div class="card-side-face card-face-back" id="back-3d-canvas">
- <div class="placeholder-text" id="back-txt-node">Back Image Empty</div>
- </div>
- </div>
- </div>
- 
- <div class="loading-panel">
- <div style="font-size: 0.85rem; font-weight: 800; color: #ffcb05; text-align: center; text-transform: uppercase; letter-spacing: 0.5px;">Swipe card mesh area to spin in 3D</div>
- </div>
- <button class="submit-btn" onclick="navigateToEvaluationPage()">Evaluate 3D Showcase Blueprint</button>
- </div>
 
- <!-- SCREEN 2: THE COMPREHENSIVE EVALUATION SHEETS -->
- <div id="evaluation-screen" class="app-screen hidden">
- <div class="top-bar">
- <button class="header-back-btn" onclick="navigateToScannerPage()">← BACK</button>
- <h1>Evaluation <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v5.2</span></h1>
- </div>
- 
- <div class="column-container">
- <div class="column"><div class="mini-preview-box" id="eval-front-mini" style="width:74px; height:104px;"></div></div>
- <div class="column"><div class="mini-preview-box" id="eval-back-mini" style="width:74px; height:104px;"></div></div>
- </div>
- 
- <div class="evaluation-content">
- <div class="card-title" id="card-title-display">Clefable Blueprint</div>
- <div class="data-panel">
- <div class="panel-section-title"> Grading Blueprint</div>
- <div class="data-row"><span class="data-label">Estimated Grade:</span><span class="data-value" style="color:#34c759;">PSA 9</span></div>
- <div class="data-row"><span class="data-label">Flaws Seen:</span><span class="data-value" style="color:#34c759;">Clean Edges (Rosette Pass)</span></div>
- <div class="data-row"><span class="data-label">Worth Grading?</span><span class="data-value" style="color:#34c759;">THE PULL TIER</span></div>
- </div>
- <div class="data-panel">
- <div class="panel-section-title"> Net Profit Math</div>
- <div class="data-row"><span class="data-label">Raw Market Value:</span><span class="data-value">$16.00</span></div>
- <div class="data-row"><span class="data-label">Gross Graded Value:</span><span class="data-value" style="color:#ffcb05;">$41.60</span></div>
- <div class="data-row" style="border-top: 1px dashed rgba(255,255,255,0.2); padding-top:10px; margin-top:4px;">
- <span class="data-label" style="color:#ffffff; font-weight:700;"> Net Realized Cash:</span>
- <span class="data-value" style="color:#34c759; font-size:1.1rem;">+$32.40</span>
- </div>
- </div>
- </div>
- <button class="action-btn" id="save-blueprint-btn" style="margin-top:16px;" onclick="alert('3D Blueprint locked successfully!')">Save to Blueprint History</button>
- </div>
+    <div id="scanner-screen" class="app-screen">
+        <div class="top-bar">
+            <h1>3D Showcase <span style="font-size:0.8rem; color: #fff; font-weight:normal;">v5.1</span></h1>
+        </div>
 
- <script>
- let frontImageSrc = '';
- let backImageSrc = '';
- let currentRotationY = 0;
- let isDraggingCard = false;
- let startTouchX = 0;
+        <div class="column-container">
+            <div class="column">
+                <label class="camera-input-label" for="front-camera-file">SCAN FRONT</label>
+                <input type="file" accept="image/*" id="front-camera-file" class="hidden-system-input" onchange="projectCameraToMesh(this, true)">
+                <div class="mini-preview-box" id="front-mini-view"></div>
+            </div>
+            
+            <div class="column">
+                <label class="camera-input-label" for="back-camera-file">SCAN BACK</label>
+                <input type="file" accept="image/*" id="back-camera-file" class="hidden-system-input" onchange="projectCameraToMesh(this, false)">
+                <div class="mini-preview-box" id="back-mini-view"></div>
+            </div>
+        </div>
 
- window.projectCameraToMesh = function(inputNode, isFrontMaterial) {
- try {
- if (inputNode.files && inputNode.files) {
- const rawImageFile = inputNode.files[0];
- 
- const encoder = new FileReader();
- encoder.onload = function(event) {
- try {
- const secureBase64String = event.target.result;
- 
- if (isFrontMaterial) {
- frontImageSrc = secureBase64String;
- document.getElementById('front-3d-canvas').style.backgroundImage = `url('${secureBase64String}')`;
- document.getElementById('front-mini-view').innerHTML = `<img src="${secureBase64String}">`;
- document.getElementById('eval-front-mini').innerHTML = `<img src="${secureBase64String}">`;
- const textNode = document.getElementById('front-txt-node'); if(textNode) textNode.remove();
- } else {
- backImageSrc = secureBase64String;
- document.getElementById('back-3d-canvas').style.backgroundImage = `url('${secureBase64String}')`;
- document.getElementById('back-mini-view').innerHTML = `<img src="${secureBase64String}">`;
- document.getElementById('eval-back-mini').innerHTML = `<img src="${secureBase64String}">`;
- const textNode = document.getElementById('back-txt-node'); if(txtNode) textNode.remove();
- }
- } catch (renderErr) {
- console.error("Render error: " + renderErr.message);
- }
- };
- encoder.readAsDataURL(rawImageFile);
- }
- } catch (err) {
+        <!-- THE INTERACTIVE 3D STAGE MODULE -->
+        <div class="stage-3d-container" id="interactive-stage">
+            <div class="card-3d-wrapper" id="live-3d-card">
+                
+                <div class="card-side-face card-face-front" id="front-3d-canvas">
+                    <div class="placeholder-text" id="front-text-prompt">Front Camera View Empty</div>
+                </div>
+                
+                <div class="card-side-face card-face-back" id="back-3d-canvas">
+                    <div class="placeholder-text" id="back-text-prompt">Back Camera View Empty</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="loading-panel">
+            <div style="font-size: 0.85rem; font-weight: bold; text-align: center; color: #ffcb05;">
+                READY TO VERIFY
+            </div>
+            <button class="submit-btn" onclick="alert('Submission system mapping successfully initialized!')">
+                COMMIT ASSET PIPELINE
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let currentRotationY = 0;
+        let isDraggingCard = false;
+        let startTouchX = 0;
+
+        // SECURE PIPELINE METHOD: FileReader texture processing engine
+        function projectCameraToMesh(inputNode, isFrontMaterial) {
+            try {
+                if (inputNode.files && inputNode.files[0]) {
+                    const rawImageFile = inputNode.files[0];
+
+                    const encoder = new FileReader();
+                    encoder.onload = function(event) {
+                        try {
+                            const secureBase64String = event.target.result;
+
+                            if (isFrontMaterial) {
+                                // Projects image directly onto the large canvas mesh and mini preview component
+                                document.getElementById('front-3d-canvas').style.backgroundImage = `url(${secureBase64String})`;
+                                document.getElementById('front-mini-view').style.backgroundImage = `url(${secureBase64String})`;
+                                const textNode = document.getElementById('front-text-prompt');
+                                if(textNode) textNode.classList.add('hidden');
+                            } else {
+                                // Projects image directly onto the large canvas back mesh and mini preview component
+                                document.getElementById('back-3d-canvas').style.backgroundImage = `url(${secureBase64String})`;
+                                document.getElementById('back-mini-view').style.backgroundImage = `url(${secureBase64String})`;
+                                const textNode = document.getElementById('back-text-prompt');
+                                if(textNode) textNode.classList.add('hidden');
+                            }
+                        } catch (renderErr) {
+                            console.error("Render error: " + renderErr);
+                        }
+                    };
+                    encoder.readAsDataURL(rawImageFile);
+                }
+            } catch (err) {
+                console.error("Input processing error: " + err);
+            }
+        }
+
+        // INTERACTIVE 3D TOUCH HANDLING ENGINE
+        const touchStage = document.getElementById('interactive-stage');
+        const cardMesh = document.getElementById('live-3d-card');
+
+        touchStage.addEventListener('touchstart', (e) => {
+            isDraggingCard = true;
