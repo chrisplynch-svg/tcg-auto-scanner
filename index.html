@@ -3,7 +3,7 @@
 <head>
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
- <title>TCG Auto-Evaluator v3.3</title>
+ <title>TCG Auto-Evaluator v3.4</title>
  <style>
  body {
  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -52,6 +52,14 @@
  display: flex; align-items: center; justify-content: center; box-shadow: inset 0 0 20px rgba(0,0,0,0.4);
  }
  .photo-box img { width: 100%; height: 100%; object-fit: cover; }
+ 
+ /* New debugging console display for tracking direct phone system logs */
+ .debug-log-panel {
+ width: 100%; background-color: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.15);
+ border-radius: 8px; padding: 10px; font-size: 0.75rem; font-family: monospace; color: #a0a0a8;
+ margin-bottom: 16px; text-align: center; box-sizing: border-box;
+ }
+ 
  .loading-panel {
  width: 100%; background-color: rgba(255, 253, 240, 0.05); border: 2px dashed #ffcb05;
  border-radius: 12px; padding: 16px; box-sizing: border-box; margin-bottom: 24px;
@@ -88,7 +96,7 @@
  <!-- SCREEN 1: THE SCANNER -->
  <div id="scanner-screen" class="app-screen">
  <div class="top-bar">
- <h1>Auto Scanner <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v3.3</span></h1>
+ <h1>Auto Scanner <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v3.4</span></h1>
  </div>
  <div class="column-container">
  <div class="column">
@@ -103,6 +111,8 @@
  </div>
  </div>
  
+ <div id="app-debug-log" class="debug-log-panel">System Status: Waiting for card scan gesture...</div>
+ 
  <!-- Interactive Dynamic Search Drawer -->
  <div id="selector-box" class="loading-panel hidden">
  <div id="ai-status-text">TYPE CARD NAME TO MATCH:</div>
@@ -116,7 +126,7 @@
  <div id="evaluation-screen" class="app-screen hidden">
  <div class="top-bar">
  <button class="header-back-btn" onclick="goToScanner()">← BACK</button>
- <h1>Evaluation <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v3.3</span></h1>
+ <h1>Evaluation <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v3.4</span></h1>
  </div>
  <div class="column-container">
  <div class="column"><div class="photo-box" id="eval-front-preview"></div></div>
@@ -155,44 +165,35 @@
  let backImageSrc = '';
  let searchTimeout;
 
- // FIXED FOR IOS HOMESCREEN SAFARI WRAPPERS: Targets files[0] directly via manual value mapping
+ function updateDebugText(msg, color="#a0a0a8") {
+ const logger = document.getElementById('app-debug-log');
+ if(logger) {
+ logger.innerText = msg;
+ logger.style.color = color;
+ }
+ }
+
  function setupCameraListeners() {
  const frontIn = document.getElementById('front-input');
  const backIn = document.getElementById('back-input');
  
  if(frontIn) {
  frontIn.addEventListener('change', function(e) {
+ try {
  if (this.files && this.files[0]) {
- handleDirectRender(this.files[0], 'front-preview', 'eval-front-preview', true);
+ updateDebugText("Front photo captured! Streaming object link...", "#34c759");
+ handleBlobRender(this.files[0], 'front-preview', 'eval-front-preview', true);
+ } else {
+ updateDebugText("Warning: No file array detected inside front input.", "#ff3b30");
+ }
+ } catch (err) {
+ updateDebugText("Error Front: " + err.message, "#ff3b30");
  }
  });
  }
+ 
  if(backIn) {
  backIn.addEventListener('change', function(e) {
+ try {
  if (this.files && this.files[0]) {
- handleDirectRender(this.files[0], 'back-preview', 'eval-back-preview', false);
- }
- });
- }
- }
-
- function handleDirectRender(fileObject, previewId, evalPreviewId, isFront) {
- const previewBox = document.getElementById(previewId);
- const evalPreviewBox = document.getElementById(evalPreviewId);
- 
- const reader = new FileReader();
- reader.onload = function(event) {
- const targetSrcData = event.target.result;
- if (isFront) { frontImageSrc = targetSrcData; } else { backImageSrc = targetSrcData; }
- 
- // Inject image element smoothly inside layout boundaries
- previewBox.innerHTML = `<img src="${targetSrcData}" style="width:100%; height:100%; object-fit:cover;">`;
- evalPreviewBox.innerHTML = `<img src="${targetSrcData}" style="width:100%; height:100%; object-fit:cover;">`;
- };
- reader.readAsDataURL(fileObject);
- }
-
- document.addEventListener('DOMContentLoaded', setupCameraListeners);
- setTimeout(setupCameraListeners, 400);
-
- window.revealVariants = function() {
+ updateDebugText("Back photo captured! Streaming object link...", "#34c759");
