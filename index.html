@@ -3,7 +3,7 @@
 <head>
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
- <title>TCG 3D Showcase v5.1</title>
+ <title>TCG 3D Showcase v5.3</title>
  <style>
  body {
  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -24,6 +24,11 @@
  width: 100%; display: flex; align-items: center; justify-content: center;
  position: relative; margin-bottom: 16px; min-height: 40px;
  }
+ .header-back-btn {
+ position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+ background-color: transparent; color: #ffcb05; border: 1px solid #ffcb05;
+ padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: 700; cursor: pointer;
+ }
  h1 {
  font-size: 1.4rem; color: #ffcb05; margin: 0;
  text-shadow: 0 2px 4px rgba(0,0,0,0.5); font-weight: 800;
@@ -32,7 +37,6 @@
  .column-container { display: flex; gap: 16px; width: 100%; margin-bottom: 16px; }
  .column { flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; }
  
- /* PREMIUM THEMED CAMERA LABELS: Formatted to work securely with iOS gesture systems */
  .camera-input-label {
  display: block; width: 100%; background-color: #1e3d59; color: #ffcb05; border: 2px solid #ffcb05;
  padding: 12px 4px; font-size: 0.8rem; font-weight: 700; border-radius: 10px;
@@ -50,7 +54,6 @@
  }
  .mini-preview-box img { width: 100%; height: 100%; object-fit: cover; }
  
- /* 3D CANVAS MATRIX ASSEMBLY */
  .stage-3d-container {
  width: 100%; height: 320px; perspective: 1000px;
  display: flex; align-items: center; justify-content: center;
@@ -67,7 +70,6 @@
  border: 1px solid rgba(255, 253, 240, 0.15);
  background-color: #1a2a44; background-size: cover; background-position: center;
  }
- .card-face-front { /* Blends empty slate canvas */ }
  .card-face-back { transform: rotateY(180deg); }
  
  .placeholder-text {
@@ -76,27 +78,55 @@
  padding: 0 12px; box-sizing: border-box; text-transform: uppercase; letter-spacing: 0.5px;
  }
  
+ .evaluation-content { width: 100%; display: flex; flex-direction: column; gap: 16px; }
+ .card-title { font-size: 1.3rem; color: #ffffff; font-weight: 700; text-align: center; border-bottom: 2px solid rgba(255, 203, 5, 0.2); padding-bottom: 6px; margin-bottom: 8px; }
+ .data-panel { background-color: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 14px; border: 1px solid rgba(255, 255, 255, 0.1); }
+ .panel-section-title { font-size: 0.9rem; color: #ffcb05; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px; }
+ .data-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.95rem; }
+ .data-row:last-child { border-bottom: none; }
+ .data-label { color: #b0b0b8; }
+ .data-value { font-weight: 700; }
+ 
  .loading-panel {
  width: 100%; background-color: rgba(255, 253, 240, 0.05); border: 2px dashed #ffcb05;
  border-radius: 12px; padding: 16px; box-sizing: border-box; margin-bottom: 24px;
  display: flex; flex-direction: column; gap: 12px;
  }
- .submit-btn {
+ #ai-status-text { font-size: 0.9rem; font-weight: 800; color: #ffcb05; text-align: center; }
+ #drawer-search-bar {
+ width: 100%; padding: 12px; background-color: #0b1f3f; border: 1px solid rgba(255, 203, 5, 0.5);
+ border-radius: 8px; color: #ffffff; font-size: 1rem; box-sizing: border-box;
+ }
+ #drawer-search-bar:focus { border-color: #ffcb05; outline: none; }
+ .variant-select-btn {
+ background-color: #1e3d59; color: #ffffff; border: 1px solid rgba(255,255,255,0.15);
+ padding: 12px; border-radius: 8px; font-weight: 600; text-align: left; cursor: pointer; width: 100%;
+ margin-bottom: 4px;
+ }
+ .variant-select-btn:active { background-color: #ffcb05; color: #0b1f3f; }
+ .submit-btn, .action-btn {
  background-color: #2ec4b6; color: #0b1f3f; border: none; padding: 16px; font-size: 1.1rem;
  font-weight: 800; border-radius: 14px; cursor: pointer; width: 100%; text-align: center;
- box-shadow: 0 6px 15px rgba(46, 196, 182, 0.4); text-transform: uppercase; margin-top: auto;
+ box-shadow: 0 6px 15px rgba(46, 196, 182, 0.4); text-transform: uppercase;
+ }
+ .secondary-reset-btn {
+ background-color: transparent; color: #ff3b30; border: 2px solid #ff3b30; padding: 14px;
+ font-size: 1rem; font-weight: 800; border-radius: 14px; cursor: pointer; width: 100%;
+ text-align: center; margin-top: 12px; text-transform: uppercase; box-sizing: border-box;
  }
  </style>
 </head>
 <body>
+ <!-- SCREEN 1: THE 3D INTERACTIVE SCANNER -->
  <div id="scanner-screen" class="app-screen">
  <div class="top-bar">
- <h1>3D Showcase <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v5.1</span></h1>
+ <h1>3D Showcase <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v5.3</span></h1>
  </div>
  
  <div class="column-container">
  <div class="column">
- <label class="camera-input-label" for="front-camera-file">Scan Front</label>
+ <!-- MODIFIED TRIGGER: Tapping front camera instantly fires the workspace memory purge loop -->
+ <label class="camera-input-label" for="front-camera-file" onclick="handleFrontInputClick()">Scan Front</label>
  <input type="file" id="front-camera-file" class="hidden-system-input" accept="image/*" onchange="projectCameraToMesh(this, true)">
  <div class="mini-preview-box" id="front-mini-view"></div>
  </div>
@@ -107,83 +137,53 @@
  </div>
  </div>
  
- <!-- THE INTERACTIVE 3D STAGE MODULE -->
  <div class="stage-3d-container" id="interaction-3d-stage">
  <div class="card-3d-wrapper" id="live-3d-card-mesh">
- <div class="card-side-face card-face-front" id="front-3d-canvas">
-  <div class="placeholder-text" id="front-txt-node">Front Image Empty</div>
- </div>
- <div class="card-side-face card-face-back" id="back-3d-canvas">
-  <div class="placeholder-text" id="back-txt-node">Back Image Empty</div>
- </div>
+ <div class="card-side-face card-face-front" id="front-3d-canvas"></div>
+ <div class="card-side-face card-face-back" id="back-3d-canvas"></div>
  </div>
  </div>
  
  <div class="loading-panel">
  <div style="font-size: 0.85rem; font-weight: 800; color: #ffcb05; text-align: center; text-transform: uppercase; letter-spacing: 0.5px;">Swipe card mesh area to spin in 3D</div>
  </div>
- <button class="submit-btn" onclick="alert('3D Live Mesh Blueprint locked successfully!')">Evaluate 3D Showcase Blueprint</button>
+ <button class="submit-btn" onclick="navigateToEvaluationPage()">Evaluate 3D Showcase Blueprint</button>
  </div>
 
- <script>
- let currentRotationY = 0;
- let isDraggingCard = false;
- let startTouchX = 0;
+ <!-- SCREEN 2: THE COMPREHENSIVE EVALUATION SHEETS -->
+ <div id="evaluation-screen" class="app-screen hidden">
+ <div class="top-bar">
+ <button class="header-back-btn" onclick="navigateToScannerPage()">← BACK</button>
+ <h1>Evaluation <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v5.3</span></h1>
+ </div>
  
- // SECURE PIPELINE METHOD: FileReader text-encoder reads picture data seamlessly on direct label input trigger events
- window.projectCameraToMesh = function(inputNode, isFrontMaterial) {
- try {
- if (inputNode.files && inputNode.files[0]) {
- const rawImageFile = inputNode.files[0];
+ <div class="column-container">
+ <div class="column"><div class="mini-preview-box" id="eval-front-mini" style="width:74px; height:104px;"></div></div>
+ <div class="column"><div class="mini-preview-box" id="eval-back-mini" style="width:74px; height:104px;"></div></div>
+ </div>
  
- const encoder = new FileReader();
- encoder.onload = function(event) {
- try {
- const secureBase64String = event.target.result;
+ <div id="selector-box" class="loading-panel">
+ <div id="ai-status-text">TYPE SCANNED CARD NAME TO SYNC:</div>
+ <input type="text" id="drawer-search-bar" placeholder="e.g., Clefable, Kadabra" oninput="searchLiveDatabaseLogs(this.value)">
+ <div id="dynamic-results-list" style="width: 100%; display: flex; flex-direction: column; gap: 8px; max-height: 180px; overflow-y: auto;"></div>
+ </div>
  
- if (isFrontMaterial) {
- // Projects image directly onto the large 3D canvas front face
- document.getElementById('front-3d-canvas').style.backgroundImage = `url('${secureBase64String}')`;
- document.getElementById('front-mini-view').innerHTML = `<img src="${secureBase64String}">`;
- const textNode = document.getElementById('front-txt-node'); if(textNode) textNode.remove();
- } else {
- // Projects image directly onto the large 3D canvas back face
- document.getElementById('back-3d-canvas').style.backgroundImage = `url('${secureBase64String}')`;
- document.getElementById('back-mini-view').innerHTML = `<img src="${secureBase64String}">`;
- const textNode = document.getElementById('back-txt-node'); if(textNode) textNode.remove();
- }
- } catch (renderErr) {
- console.error("Render error: " + renderErr.message);
- }
- };
- encoder.readAsDataURL(rawImageFile);
- }
- } catch (err) {
- console.error("Input processing error: " + err.message);
- }
- };
-
- // INTERACTIVE 3D TOUCH HANDLING ENGINE
- const touchStage = document.getElementById('interaction-3d-stage');
- const cardMesh = document.getElementById('live-3d-card-mesh');
-
- touchStage.addEventListener('touchstart', (e) => {
- isDraggingCard = true;
- startTouchX = e.touches[0].clientX;
- });
-
- touchStage.addEventListener('touchmove', (e) => {
- if (!isDraggingCard) return;
- const currentX = e.touches[0].clientX;
- const movementDeltaX = currentX - startTouchX;
- startTouchX = currentX;
- 
- currentRotationY += movementDeltaX * 0.7;
- cardMesh.style.transform = `rotateY(${currentRotationY}deg)`;
- });
-
- touchStage.addEventListener('touchend', () => { isDraggingCard = false; });
- touchStage.addEventListener('touchcancel', () => { isDraggingCard = false; });
- </script>
-</body>
-</html>
+ <div class="evaluation-content">
+ <div class="card-title" id="card-title-display">Awaiting Database Selection...</div>
+ <div class="data-panel">
+ <div class="panel-section-title"> Grading Blueprint</div>
+ <div class="data-row"><span class="data-label">Estimated Grade:</span><span class="data-value" style="color:#34c759;">PSA 9</span></div>
+ <div class="data-row"><span class="data-label">Flaws Seen:</span><span class="data-value" style="color:#34c759;">Clean Edges (Rosette Pass)</span></div>
+ <div class="data-row"><span class="data-label">Worth Grading?</span><span class="data-value" id="worth-grading-val" style="color:#34c759;">Calculating...</span></div>
+ </div>
+ <div class="data-panel">
+ <div class="panel-section-title"> Net Profit Math</div>
+ <div class="data-row"><span class="data-label">Raw Market Value:</span><span class="data-value" id="price-raw-val">$0.00</span></div>
+ <div class="data-row"><span class="data-label">Gross Graded Value:</span><span class="data-value" id="price-psa9-val" style="color:#ffcb05;">$0.00</span></div>
+ <div class="data-row"><span class="data-label">Estimated PSA 10 Value:</span><span class="data-value" id="price-psa10-val">$0.00</span></div>
+ <div class="data-row" style="border-top: 1px dashed rgba(255,255,255,0.2); padding-top:10px; margin-top:4px;">
+ <span class="data-label" style="color:#ffffff; font-weight:700;"> Net Realized Cash:</span>
+ <span class="data-value" id="net-cash-val" style="color:#34c759; font-size:1.1rem;">+$0.00</span>
+ </div>
+ </div>
+ </div>
