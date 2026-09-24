@@ -3,7 +3,7 @@
 <head>
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
- <title>TCG Auto-Evaluator v4.2</title>
+ <title>TCG 3D Showcase v5.0</title>
  <style>
  body {
  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -12,6 +12,7 @@
  margin: 0; padding: 16px;
  display: flex; flex-direction: column; align-items: center;
  min-height: 100vh; box-sizing: border-box;
+ overflow-x: hidden;
  }
  .app-screen {
  width: 100%; max-width: 500px;
@@ -21,50 +22,56 @@
  .hidden { display: none !important; }
  .top-bar {
  width: 100%; display: flex; align-items: center; justify-content: center;
- position: relative; margin-bottom: 24px; min-height: 40px;
- }
- .header-back-btn {
- position: absolute; left: 0; top: 50%; transform: translateY(-50%);
- background-color: transparent; color: #ffcb05; border: 1px solid #ffcb05;
- padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: 700; cursor: pointer;
+ position: relative; margin-bottom: 16px; min-height: 40px;
  }
  h1 {
  font-size: 1.4rem; color: #ffcb05; margin: 0;
  text-shadow: 0 2px 4px rgba(0,0,0,0.5); font-weight: 800;
  text-transform: uppercase; letter-spacing: 1px; text-align: center;
  }
- .column-container { display: flex; gap: 16px; width: 100%; margin-bottom: 24px; }
- .column { flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; }
+ .column-container { display: flex; gap: 12px; width: 100%; margin-bottom: 16px; }
+ .column { flex: 1; display: flex; flex-direction: column; align-items: center; }
  
- .photo-slot-btn {
- width: 100%; aspect-ratio: 2.5 / 3.5; background-color: rgba(255, 255, 255, 0.04);
- border: 2px dashed rgba(255, 203, 5, 0.5); border-radius: 16px; overflow: hidden;
- display: flex; flex-direction: column; align-items: center; justify-content: center; 
- position: relative; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); cursor: pointer;
- transition: background 0.2s, border-color 0.2s;
+ .action-input-btn {
+ background-color: #1e3d59; color: #ffcb05; border: 2px solid #ffcb05;
+ padding: 10px 4px; font-size: 0.8rem; font-weight: 700; border-radius: 8px;
+ cursor: pointer; width: 100%; text-align: center; margin-bottom: 8px; min-height: 40px;
+ box-shadow: 0 4px 6px rgba(0,0,0,0.3); text-transform: uppercase;
  }
- .photo-slot-btn:active { background-color: rgba(255, 203, 5, 0.08); border-color: #ffcb05; }
+ .mini-preview-box {
+ width: 60px; height: 84px; background-color: rgba(255, 255, 255, 0.05);
+ border: 1px dashed rgba(255, 203, 5, 0.4); border-radius: 8px; overflow: hidden;
+ display: flex; align-items: center; justify-content: center;
+ }
+ .mini-preview-box img { width: 100%; height: 100%; object-fit: cover; }
  
- .slot-label {
- font-size: 0.85rem; font-weight: 800; color: #ffcb05; text-transform: uppercase;
- text-align: center; pointer-events: none; margin-bottom: 6px; letter-spacing: 0.5px;
- z-index: 2;
+ /* 3D CARD WORKSPACE VIEWS: Configures the spatial perspectives for touch mechanics */
+ .stage-3d-container {
+ width: 100%; height: 320px; perspective: 1000px;
+ display: flex; align-items: center; justify-content: center;
+ margin: 16px 0; position: relative; touch-action: none;
  }
- .slot-subtext {
- font-size: 0.65rem; color: #b0b0b8; pointer-events: none; text-align: center;
- text-transform: uppercase; padding: 0 8px; z-index: 2;
+ .card-3d-wrapper {
+ width: 200px; height: 280px; position: relative;
+ transform-style: preserve-3d; transition: transform 0.1s ease-out;
+ box-shadow: 0 15px 35px rgba(0,0,0,0.6); border-radius: 14px;
  }
- 
- .native-hidden-input {
+ .card-side-face {
  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
- opacity: 0; cursor: pointer; z-index: 10; font-size: 100px;
+ backface-visibility: hidden; border-radius: 14px; overflow: hidden;
+ border: 1px solid rgba(255, 253, 240, 0.15);
  }
- .rendered-img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 5; }
- 
- .debug-log-panel {
- width: 100%; background-color: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.15);
- border-radius: 8px; padding: 10px; font-size: 0.75rem; font-family: monospace; color: #a0a0a8;
- margin-bottom: 20px; text-align: center; box-sizing: border-box;
+ .card-face-front {
+ background-color: #1e3d59; background-size: cover; background-position: center;
+ }
+ .card-face-back {
+ background-color: #8c1c1c; background-size: cover; background-position: center;
+ transform: rotateY(180deg);
+ }
+ .placeholder-text {
+ position: absolute; width: 100%; text-align: center; top: 50%;
+ transform: translateY(-50%); font-size: 0.8rem; font-weight: 700; color: rgba(255,255,255,0.4);
+ padding: 0 12px; box-sizing: border-box; text-transform: uppercase;
  }
  
  .loading-panel {
@@ -72,125 +79,104 @@
  border-radius: 12px; padding: 16px; box-sizing: border-box; margin-bottom: 24px;
  display: flex; flex-direction: column; gap: 12px;
  }
- #ai-status-text { font-size: 0.9rem; font-weight: 800; color: #ffcb05; text-align: center; }
  #drawer-search-bar {
  width: 100%; padding: 12px; background-color: #0b1f3f; border: 1px solid rgba(255, 203, 5, 0.5);
  border-radius: 8px; color: #ffffff; font-size: 1rem; box-sizing: border-box;
  }
- #drawer-search-bar:focus { border-color: #ffcb05; outline: none; }
- .variant-select-btn {
- background-color: #1e3d59; color: #ffffff; border: 1px solid rgba(255,255,255,0.15);
- padding: 12px; border-radius: 8px; font-weight: 600; text-align: left; cursor: pointer; width: 100%;
- margin-bottom: 4px;
- }
- .variant-select-btn:active { background-color: #ffcb05; color: #0b1f3f; }
- .evaluation-content { width: 100%; display: flex; flex-direction: column; gap: 16px; }
- .card-title { font-size: 1.3rem; color: #ffffff; font-weight: 700; text-align: center; border-bottom: 2px solid rgba(255, 203, 5, 0.2); padding-bottom: 6px; margin-bottom: 8px; }
- .data-panel { background-color: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 14px; border: 1px solid rgba(255, 255, 255, 0.1); }
- .panel-section-title { font-size: 0.9rem; color: #ffcb05; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px; }
- .data-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.95rem; }
- .data-row:last-child { border-bottom: none; }
- .data-label { color: #b0b0b8; }
- .data-value { font-weight: 700; }
- .submit-btn, .action-btn {
+ .submit-btn {
  background-color: #2ec4b6; color: #0b1f3f; border: none; padding: 16px; font-size: 1.1rem;
- font-weight: 800; border-radius: 14px; cursor: pointer; width: 100%; text-align: center; margin-top: auto;
- box-shadow: 0 6px 15px rgba(46, 196, 182, 0.4); text-transform: uppercase;
+ font-weight: 800; border-radius: 14px; cursor: pointer; width: 100%; text-align: center;
+ box-shadow: 0 6px 15px rgba(46, 196, 182, 0.4); text-transform: uppercase; margin-top: auto;
  }
  </style>
 </head>
 <body>
- <!-- SCREEN 1: THE SCANNER -->
  <div id="scanner-screen" class="app-screen">
  <div class="top-bar">
- <h1>Auto Scanner <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v4.2</span></h1>
+ <h1>3D Showcase <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v5.0</span></h1>
  </div>
+ 
+ <!-- Shrunk row containers with direct url assignment actions -->
  <div class="column-container">
  <div class="column">
- <div class="photo-slot-btn" id="front-slot-shell">
- <span class="slot-label">Scan Front</span>
- <span class="slot-subtext">Tap to snap card</span>
- <input type="file" class="native-hidden-input" accept="image/*" onchange="processIntegratedStream(this, true)">
- </div>
+ <button class="action-input-btn" onclick="assignImageLink(true)">Link Front</button>
+ <div class="mini-preview-box" id="front-mini-view"></div>
  </div>
  <div class="column">
- <div class="photo-slot-btn" id="back-slot-shell">
- <span class="slot-label">Scan Back</span>
- <span class="slot-subtext">Tap to snap card</span>
- <input type="file" class="native-hidden-input" accept="image/*" onchange="processIntegratedStream(this, false)">
+ <button class="action-input-btn" onclick="assignImageLink(false)">Link Back</button>
+ <div class="mini-preview-box" id="back-mini-view"></div>
+ </div>
+ </div>
+ 
+ <!-- NEW 3D STAGE AREA: Touch/Swipe directly on the card to flip it around inside the spatial container -->
+ <div class="stage-3d-container" id="interaction-3d-stage">
+ <div class="card-3d-wrapper" id="live-3d-card-mesh">
+ <div class="card-side-face card-face-front" id="front-3d-canvas">
+ <div class="placeholder-text" id="front-txt-node">Front Artwork Missing</div>
+ </div>
+ <div class="card-side-face card-face-back" id="back-3d-canvas">
+ <div class="placeholder-text" id="back-txt-node">Standard Card Back</div>
  </div>
  </div>
  </div>
  
- <div id="app-debug-log" class="debug-log-panel">System Status: Waiting for integrated card frame touch...</div>
- 
- <!-- Interactive Dynamic Search Drawer -->
- <div id="selector-box" class="loading-panel hidden">
- <div id="ai-status-text">TYPE CARD NAME TO MATCH:</div>
- <input type="text" id="drawer-search-bar" placeholder="e.g., Clefable, Kadabra" oninput="searchLiveDatabase(this.value)">
- <div id="dynamic-results-list" style="width: 100%; display: flex; flex-direction: column; gap: 8px; max-height: 200px; overflow-y: auto;"></div>
+ <div class="loading-panel">
+ <div style="font-size: 0.85rem; font-weight: 800; color: #ffcb05; text-align: center; text-transform: uppercase; letter-spacing: 0.5px;">Swipe to Spin Card Front to Back</div>
+ <input type="text" id="drawer-search-bar" placeholder="Swipe mesh area or type card query...">
  </div>
- <button id="submit-btn-element" class="submit-btn" onclick="revealVariants()">Do you like the card image</button>
- </div>
-
- <!-- SCREEN 2: THE EVALUATION RESULTS -->
- <div id="evaluation-screen" class="app-screen hidden">
- <div class="top-bar">
- <button class="header-back-btn" onclick="goToScanner()">← BACK</button>
- <h1>Evaluation <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v4.2</span></h1>
- </div>
- <div class="column-container">
- <div class="column"><div class="photo-slot-btn" id="eval-front-preview" style="border-style:solid; pointer-events:none;"></div></div>
- <div class="column"><div class="photo-slot-btn" id="eval-back-preview" style="border-style:solid; pointer-events:none;"></div></div>
- </div>
- <div class="evaluation-content">
- <div class="card-title" id="card-title-display">Analyzing...</div>
- <div class="data-panel">
- <div class="panel-section-title"> Grading Blueprint</div>
- <div class="data-row"><span class="data-label">Estimated Grade:</span><span class="data-value" style="color:#34c759;">PSA 9</span></div>
- <div class="data-row"><span class="data-label">Flaws Seen:</span><span class="data-value" style="color:#34c759;">Clean Edges (Rosette Pass)</span></div>
- <div class="data-row"><span class="data-label">Worth Grading?</span><span class="data-value" id="worth-grading-val" style="color:#34c759;">Calculating...</span></div>
- </div>
- <div class="data-panel">
- <div class="panel-section-title"> Net Profit Math</div>
- <div class="data-row"><span class="data-label">Raw Market Value:</span><span class="data-value" id="price-raw-val">$0.00</span></div>
- <div class="data-row"><span class="data-label">Gross Graded Value:</span><span class="data-value" id="price-psa9-val" style="color:#ffcb05;">$0.00</span></div>
- <div class="data-row"><span class="data-label">Estimated PSA 10 Value:</span><span class="data-value" id="price-psa10-val">$0.00</span></div>
- <div class="data-row" style="border-top: 1px dashed rgba(255,255,255,0.2); padding-top:10px; margin-top:4px;">
- <span class="data-label" style="color:#ffffff; font-weight:700;"> Net Realized Cash:</span>
- <span class="data-value" id="net-cash-val" style="color:#34c759; font-size:1.1rem;">+$0.00</span>
- </div>
- </div>
- <div class="data-panel">
- <div class="panel-section-title"> Market Health</div>
- <div class="data-row"><span class="data-label">Pop Report:</span><span class="data-value" id="pop-report-val">Fetching...</span></div>
- <div class="data-row"><span class="data-label">Liquidity Status:</span><span class="data-value" style="color:#34c759;"> High Turnover</span></div>
- <div class="data-row"><span class="data-label">Authenticity Check:</span><span class="data-value" style="color:#34c759;">Passed</span></div>
- </div>
- </div>
- <button class="action-btn" id="save-blueprint-btn" onclick="alert('Blueprint saved successfully to history ledger!')">Save to Blueprint History</button>
+ <button class="submit-btn" onclick="alert('3D Mesh Blueprint locked successfully!')">Evaluate 3D Showcase Blueprint</button>
  </div>
 
  <script>
- let frontImageSrc = '';
- let backImageSrc = '';
- let searchTimeout;
-
- function updateDebugText(msg, color="#a0a0a8") {
- const logger = document.getElementById('app-debug-log');
- if(logger) {
- logger.innerText = msg;
- logger.style.color = color;
- }
- }
-
- // CORRECTED MATRIX CORE v4.2: Explicit array indexing unblocks full photo resolution rendering
- window.processIntegratedStream = function(inputEl, isFront) {
- try {
- if (inputEl.files && inputEl.files[0]) {
- const activeTargetFile = inputEl.files[0];
- updateDebugText(`Loading: ${activeTargetFile.name}. Rendering image...`, "#ffcb05");
+ let currentRotationY = 0;
+ let isDraggingCard = false;
+ let startTouchX = 0;
  
- const reader = new FileReader();
- reader.onload = function(event) {
- try {
+ // Secure fallback assets loaded instantly into layout structures
+ const standardTcgBack = "https://pokemontcg.io";
+ document.getElementById('back-3d-canvas').style.backgroundImage = `url('${standardTcgBack}')`;
+ const backTxt = document.getElementById('back-txt-node'); if(backTxt) backTxt.remove();
+
+ window.assignImageLink = function(isFront) {
+ const promptText = isFront ? "Paste Front Image Web Link Address:" : "Paste Back Image Web Link Address:";
+ const defaultLink = isFront ? "https://pokemontcg.io" : standardTcgBack;
+ 
+ const inboundUrl = prompt(promptText, defaultLink);
+ if(inboundUrl && inboundUrl.trim().length > 10) {
+ const cleanUrl = inboundUrl.trim();
+ if(isFront) {
+ document.getElementById('front-3d-canvas').style.backgroundImage = `url('${cleanUrl}')`;
+ document.getElementById('front-mini-view').innerHTML = `<img src="${cleanUrl}">`;
+ const txtNode = document.getElementById('front-txt-node'); if(txtNode) txtNode.remove();
+ } else {
+ document.getElementById('back-3d-canvas').style.backgroundImage = `url('${cleanUrl}')`;
+ document.getElementById('back-mini-view').innerHTML = `<img src="${cleanUrl}">`;
+ }
+ }
+ };
+
+ // INTERACTIVE 3D TOUCH ENGINE: Translates swiping drag parameters into visual spatial angles
+ const touchStage = document.getElementById('interaction-3d-stage');
+ const cardMesh = document.getElementById('live-3d-card-mesh');
+
+ touchStage.addEventListener('touchstart', (e) => {
+ isDraggingCard = true;
+ startTouchX = e.touches[0].clientX;
+ });
+
+ touchStage.addEventListener('touchmove', (e) => {
+ if (!isDraggingCard) return;
+ const currentX = e.touches[0].clientX;
+ const movementDeltaX = currentX - startTouchX;
+ startTouchX = currentX;
+ 
+ // Adjust values to tweak rotation sensitivity
+ currentRotationY += movementDeltaX * 0.6;
+ cardMesh.style.transform = `rotateY(${currentRotationY}deg)`;
+ });
+
+ touchStage.addEventListener('touchend', () => { isDraggingCard = false; });
+ touchStage.addEventListener('touchcancel', () => { isDraggingCard = false; });
+ </script>
+</body>
+</html>
