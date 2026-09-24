@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>3D SHOWCASE v5.4</title>
+  <title>3D SHOWCASE v5.5</title>
   <style>
     * {
       box-sizing: border-box;
@@ -71,18 +71,33 @@
       position: relative;
     }
 
+    /* Upgraded v5.5 Premium Fancy Scan Buttons */
     .scan-btn {
       width: 100%;
-      background: transparent;
+      background: linear-gradient(180deg, #162f56 0%, #0d2242 100%);
       border: 2px solid #e6b800;
       color: #e6b800;
       padding: 12px 6px;
-      font-weight: bold;
-      font-size: 13px;
+      font-weight: 800;
+      font-size: 12px;
       border-radius: 8px;
       cursor: pointer;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 1px;
+      box-shadow: 0 0 10px rgba(230, 184, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+      transition: all 0.1s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    /* Tactile Pressed State for Buttons */
+    .scan-btn:active {
+      transform: scale(0.96);
+      background: linear-gradient(180deg, #0d2242 0%, #05142b 100%);
+      box-shadow: 0 0 4px rgba(230, 184, 0, 0.1);
     }
 
     .preview-box {
@@ -119,6 +134,7 @@
       opacity: 0;
       cursor: pointer;
       -webkit-appearance: none;
+      z-index: 5;
     }
 
     .mesh-view-stage {
@@ -172,7 +188,6 @@
       transform: rotateY(180deg);
     }
 
-    /* Stable Wireframe Placeholder Blueprints */
     .wireframe-blueprint {
       width: 85%;
       height: 85%;
@@ -242,6 +257,11 @@
       cursor: pointer;
       text-transform: uppercase;
       letter-spacing: 0.8px;
+      transition: background-color 0.1s ease;
+    }
+
+    .evaluate-btn:active {
+      background-color: #24a397;
     }
   </style>
 </head>
@@ -250,21 +270,25 @@
   <div class="app-container">
     
     <header class="app-header">
-      <h1 class="app-title">3D SHOWCASE <span class="app-version">v5.4</span></h1>
+      <h1 class="app-title">3D SHOWCASE <span class="app-version">v5.5</span></h1>
     </header>
 
     <section class="scan-controls-grid">
+      <!-- Front Scan Column -->
       <div class="scan-column">
-        <button class="scan-btn">Scan Front</button>
-        <input type="file" class="camera-trigger-overlay" accept="image/*" onchange="handleImageUpload(this, 'front')">
+        <!-- Upgraded Button Presentation -->
+        <button class="scan-btn"><span>[ 📷 ]</span> Scan Front</button>
+        <input type="file" class="camera-trigger-overlay" accept="image/*" onchange="handleImageUpload(this, 'front')" onclick="triggerHaptic(15)">
         <div class="preview-box" id="preview-front">
           <div class="preview-placeholder">Front<br>Preview</div>
         </div>
       </div>
       
+      <!-- Back Scan Column -->
       <div class="scan-column">
-        <button class="scan-btn">Scan Back</button>
-        <input type="file" class="camera-trigger-overlay" accept="image/*" onchange="handleImageUpload(this, 'back')">
+        <!-- Upgraded Button Presentation -->
+        <button class="scan-btn"><span>[ 📷 ]</span> Scan Back</button>
+        <input type="file" class="camera-trigger-overlay" accept="image/*" onchange="handleImageUpload(this, 'back')" onclick="triggerHaptic(15)">
         <div class="preview-box" id="preview-back">
           <div class="preview-placeholder">Back<br>Preview</div>
         </div>
@@ -294,7 +318,7 @@
     </div>
 
     <footer class="bottom-action-anchor">
-      <button class="evaluate-btn">Evaluate 3D Showcase Blueprint</button>
+      <button class="evaluate-btn" onclick="triggerHaptic(20)">Evaluate 3D Showcase Blueprint</button>
     </footer>
 
   </div>
@@ -303,11 +327,13 @@
     let currentRotationY = 0;
     let isDragging = false;
     let startX = 0;
+    
+    // Haptic gate tracking markers
+    let lastHapticAngle = 0;
 
     const cardMesh = document.getElementById('card-mesh');
     const meshStage = document.getElementById('mesh-stage');
 
-    // FIXED: Safe explicit file array mapping execution
     function handleImageUpload(input, side) {
       if (input.files && input.files[0]) {
         const reader = new FileReader();
@@ -330,7 +356,6 @@
       }
     }
 
-    // Touch and Gesture Interaction Script for smooth 3D spinning
     function startDrag(e) {
       isDragging = true;
       startX = e.pageX || (e.touches && e.touches[0].pageX);
@@ -345,6 +370,15 @@
       currentRotationY += deltaX * 0.7;
       cardMesh.style.transform = `rotateY(${currentRotationY}deg)`;
       
+      // Calculate rotation passing increments for fluid haptic feedback ticks
+      let normalizedAngle = Math.abs(Math.round(currentRotationY));
+      let currentSection = Math.floor((normalizedAngle + 90) / 180);
+      
+      if (currentSection !== lastHapticAngle) {
+        triggerHaptic(10); // Generates a light 10ms click as card flips sides
+        lastHapticAngle = currentSection;
+      }
+      
       startX = currentX;
     }
 
@@ -352,13 +386,3 @@
       isDragging = false;
     }
 
-    meshStage.addEventListener('mousedown', startDrag);
-    window.addEventListener('mousemove', moveDrag);
-    window.addEventListener('mouseup', endDrag);
-
-    meshStage.addEventListener('touchstart', startDrag, { passive: true });
-    window.addEventListener('touchmove', moveDrag, { passive: true });
-    window.addEventListener('touchend', endDrag);
-  </script>
-</body>
-</html>
