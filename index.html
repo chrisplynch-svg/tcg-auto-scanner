@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TCG Auto-Evaluator v5.1</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>3D SHOWCASE v5.1</title>
   <style>
-    /* Reset & Theme Setup */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -15,37 +14,35 @@
     }
     
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: #0b1f3f; /* Dark Navy Background */
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #0b1f3f; /* Deep Blue Background */
       color: #ffffff;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 16px;
-      overflow-x: hidden;
+      padding: 20px 16px;
+      overflow: hidden;
     }
 
     .app-container {
       width: 100%;
-      max-width: 450px;
+      max-width: 400px;
       display: flex;
       flex-direction: column;
       align-items: center;
       flex-grow: 1;
-      position: relative;
-      padding-bottom: 80px; /* Space for the bottom fixed button */
     }
 
-    /* Header Title */
+    /* Top Title Header */
     .app-header {
       margin-top: 10px;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
       text-align: center;
     }
 
     .app-title {
-      color: #e6b800; /* Gold text */
+      color: #e6b800; /* Yellow Gold */
       font-size: 24px;
       font-weight: 800;
       text-transform: uppercase;
@@ -56,58 +53,51 @@
       color: #8fa3c7;
       font-size: 14px;
       font-weight: normal;
-      text-transform: none;
-      vertical-align: middle;
+      text-transform: lowercase;
     }
 
-    /* Top Row Layout for Scanning Controls */
+    /* Scanner Grid Layout */
     .scan-controls-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
+      gap: 20px;
       width: 100%;
-      margin-bottom: 30px;
+      margin-bottom: 40px;
     }
 
     .scan-column {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
+      gap: 16px;
     }
 
-    /* Buttons styled identically to your UI blueprint */
+    /* Gold Buttons from your image */
     .scan-btn {
       width: 100%;
       background: transparent;
       border: 2px solid #e6b800;
       color: #e6b800;
-      padding: 12px 8px;
+      padding: 12px 6px;
       font-weight: bold;
       font-size: 13px;
       border-radius: 8px;
       cursor: pointer;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      transition: background 0.2s;
     }
 
-    .scan-btn:active {
-      background: rgba(230, 184, 0, 0.1);
-    }
-
-    /* Small Preview Anchors below buttons */
+    /* Yellow Dashed Preview Boxes */
     .preview-box {
-      width: 75px;
-      height: 105px;
+      width: 85px;
+      height: 120px;
       border: 2px dashed #e6b800;
-      border-radius: 6px;
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: rgba(255, 255, 255, 0.05);
+      background-color: rgba(255, 255, 255, 0.02);
       overflow: hidden;
-      position: relative;
     }
 
     .preview-box img {
@@ -117,59 +107,54 @@
     }
 
     .preview-placeholder {
-      font-size: 10px;
-      color: #5c7499;
+      font-size: 11px;
+      color: #4a628a;
       text-align: center;
-      padding: 4px;
+      line-height: 1.4;
     }
 
-    /* Interactive 3D Mesh Container Area */
+    /* Center 3D Card Display Container */
     .mesh-view-stage {
       flex-grow: 1;
       width: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      perspective: 1000px; /* Crucial for 3D depth perception */
-      margin: 20px 0;
-      min-height: 320px;
+      perspective: 1200px;
+      margin-bottom: 40px;
     }
 
-    /* The 3D Card Parent structure */
     .card-3d-wrapper {
-      width: 200px;
-      height: 280px;
+      width: 210px;
+      height: 295px;
       position: relative;
       transform-style: preserve-3d;
+      transition: transform 0.1s ease-out;
       cursor: grab;
-      touch-action: none; /* Prevents mobile scrolling when turning the card */
+      touch-action: none;
     }
 
-    .card-3d-wrapper:active {
-      cursor: grabbing;
-    }
-
-    /* Card Sides Styling */
+    /* Blue Translucent Card Body */
     .card-side {
       position: absolute;
       width: 100%;
       height: 100%;
-      border-radius: 10px;
+      border-radius: 14px;
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.5);
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: linear-gradient(135deg, rgba(25, 48, 84, 0.7), rgba(15, 32, 60, 0.8));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
     }
 
     .card-side img {
       width: 100%;
       height: 100%;
       object-fit: fill;
-      border-radius: 10px;
+      border-radius: 14px;
     }
 
     .card-front {
@@ -180,59 +165,53 @@
       transform: rotateY(180deg);
     }
 
-    /* Default Placeholder Content if images aren't scanned yet */
     .card-side-placeholder {
-      color: #5c7499;
-      font-size: 14px;
+      color: #4a628a;
+      font-size: 13px;
       text-align: center;
-      padding: 20px;
+      padding: 24px;
+      line-height: 1.5;
     }
 
-    /* Instructional Guidance Banner */
+    /* Yellow Dashed Instructional Footer Bar */
     .instruction-overlay {
       width: 100%;
       border: 2px dashed #e6b800;
       border-radius: 8px;
-      padding: 12px;
+      padding: 14px;
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
+      background-color: rgba(230, 184, 0, 0.02);
     }
 
     .instruction-text {
       color: #e6b800;
       font-size: 12px;
       font-weight: bold;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.8px;
       text-transform: uppercase;
     }
 
-    /* Bottom Fixed Evaluation Action Bar */
+    /* Fixed Teal Bottom Panel Action Button */
     .bottom-action-anchor {
-      position: fixed;
-      bottom: 16px;
-      left: 16px;
-      right: 16px;
-      max-width: 418px;
-      margin: 0 auto;
-      z-index: 100;
+      width: 100%;
+      margin-top: auto;
     }
 
     .evaluate-btn {
       width: 100%;
-      background-color: #2ec4b6; /* Teal / Turquoise color from your design */
+      background-color: #2ec4b6; /* Teal Bright Accent */
       border: none;
       color: #0b1f3f;
       padding: 16px;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: bold;
       border-radius: 10px;
       cursor: pointer;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      box-shadow: 0 4px 15px rgba(46, 196, 182, 0.3);
+      letter-spacing: 0.8px;
     }
 
-    /* Hidden Hidden Inputs to trigger native device camera hardware */
     .hidden-camera-input {
       display: none;
     }
@@ -242,42 +221,37 @@
 
   <div class="app-container">
     
-    <!-- Title Area -->
     <header class="app-header">
-      <h1 class="app-title">3D Showcase <span class="app-version">v5.1</span></h1>
+      <h1 class="app-title">3D SHOWCASE <span class="app-version">v5.1</span></h1>
     </header>
 
-    <!-- Scan Management Row -->
     <section class="scan-controls-grid">
       <div class="scan-column">
         <button class="scan-btn" onclick="triggerCamera('front')">Scan Front</button>
         <div class="preview-box" id="preview-front">
-          <div class="preview-placeholder">Front Preview</div>
+          <div class="preview-placeholder">Front<br>Preview</div>
         </div>
       </div>
       
       <div class="scan-column">
         <button class="scan-btn" onclick="triggerCamera('back')">Scan Back</button>
         <div class="preview-box" id="preview-back">
-          <div class="preview-placeholder">Back Preview</div>
+          <div class="preview-placeholder">Back<br>Preview</div>
         </div>
       </div>
     </section>
 
-    <!-- Native Camera Hooks -->
+    <!-- Camera trigger mechanisms with fixed upload handlers -->
     <input type="file" id="input-front" class="hidden-camera-input" accept="image/*" capture="environment" onchange="handleImageUpload(this, 'front')">
     <input type="file" id="input-back" class="hidden-camera-input" accept="image/*" capture="environment" onchange="handleImageUpload(this, 'back')">
 
-    <!-- Interactive 3D Spinning Mesh Stage -->
     <main class="mesh-view-stage" id="mesh-stage">
       <div class="card-3d-wrapper" id="card-mesh">
         
-        <!-- Front Surface of Card -->
         <div class="card-side card-front" id="mesh-front-side">
           <div class="card-side-placeholder">Scan Front to View Image</div>
         </div>
         
-        <!-- Back Surface of Card -->
         <div class="card-side card-back" id="mesh-back-side">
           <div class="card-side-placeholder">Scan Back to View Image</div>
         </div>
@@ -285,20 +259,17 @@
       </div>
     </main>
 
-    <!-- UI Overlay Guides -->
     <div class="instruction-overlay">
       <p class="instruction-text">Swipe card mesh area to spin in 3D</p>
     </div>
 
-    <!-- Pricing/Expansion Pivot -->
     <footer class="bottom-action-anchor">
-      <button class="evaluate-btn" onclick="handleEvaluationClick()">Evaluate 3D Showcase Blueprint</button>
+      <button class="evaluate-btn">Evaluate 3D Showcase Blueprint</button>
     </footer>
 
   </div>
 
   <script>
-    // State management variables
     let currentRotationY = 0;
     let isDragging = false;
     let startX = 0;
@@ -306,61 +277,71 @@
     const cardMesh = document.getElementById('card-mesh');
     const meshStage = document.getElementById('mesh-stage');
 
-    // Open native camera app depending on button clicked
+    // Forces mobile phone native camera app sequence open
     function triggerCamera(side) {
-      document.getElementById(`input-${side}`).click();
+      const inputField = document.getElementById(`input-${side}`);
+      if(inputField) {
+        inputField.value = ''; // Resets field state so you can take multiple shots back-to-back
+        inputField.click();
+      }
     }
 
-    // Capture photo data, update preview windows, and populate 3D structure card faces
+    // Handles processing the image safely onto the cards
     function handleImageUpload(input, side) {
       if (input.files && input.files[0]) {
+        const file = input.files[0];
         const reader = new FileReader();
         
         reader.onload = function(e) {
           const imageSrc = e.target.result;
           
-          // 1. Update the small preview node box
+          // 1. Populates image inside the corresponding small dashed box element
           const previewBox = document.getElementById(`preview-${side}`);
-          previewBox.innerHTML = `<img src="${imageSrc}" alt="${side} preview">`;
+          if(previewBox) {
+            previewBox.innerHTML = `<img src="${imageSrc}" alt="${side} preview">`;
+          }
           
-          // 2. Map image to corresponding face layout inside 3D environment wrapper
+          // 2. Replaces placeholder text and paints image onto the 3D card layout face directly
           const meshSide = document.getElementById(`mesh-${side}-side`);
-          meshSide.innerHTML = `<img src="${imageSrc}" alt="${side} card face">`;
+          if(meshSide) {
+            meshSide.innerHTML = `<img src="${imageSrc}" alt="${side} card surface">`;
+          }
         };
         
-        reader.readAsDataURL(input.files[0]);
+        reader.readAsDataURL(file);
       }
     }
 
-    // Handle touch interactions to drag/spin the mesh card
+    // Touch and Gesture Interaction Script for smooth 3D spinning
     function startDrag(e) {
       isDragging = true;
-      startX = e.pageX || e.touches[0].pageX;
+      startX = e.pageX || (e.touches && e.touches[0].pageX);
     }
 
     function moveDrag(e) {
       if (!isDragging) return;
       
-      const currentX = e.pageX || e.touches[0].pageX;
+      const currentX = e.pageX || (e.touches && e.touches[0].pageX);
       const deltaX = currentX - startX;
       
-      // Calculate rotation adjustments dynamically based on user movement distance
-      currentRotationY += deltaX * 0.6;
+      currentRotationY += deltaX * 0.7; // Speed factor of the card spin rotation
       cardMesh.style.transform = `rotateY(${currentRotationY}deg)`;
       
-      startX = currentX; // Reset base tracking position
+      startX = currentX;
     }
 
     function endDrag() {
       isDragging = false;
     }
 
-    // Set up touch and mouse drag rotation event bindings
+    // Event binding targets
     meshStage.addEventListener('mousedown', startDrag);
     window.addEventListener('mousemove', moveDrag);
     window.addEventListener('mouseup', endDrag);
 
     meshStage.addEventListener('touchstart', startDrag, { passive: true });
-    window.addEventListener('touchmove', moveDrag, { passive: false });
+    window.addEventListener('touchmove', moveDrag, { passive: true });
     window.addEventListener('touchend', endDrag);
-
+  </script>
+</body>
+</html>
