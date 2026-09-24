@@ -3,7 +3,7 @@
 <head>
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
- <title>TCG Auto-Evaluator v3.8</title>
+ <title>TCG Auto-Evaluator v3.9</title>
  <style>
  body {
  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -36,16 +36,13 @@
  .column-container { display: flex; gap: 16px; width: 100%; margin-bottom: 24px; }
  .column { flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; }
  
- .camera-btn-shell {
- position: relative; width: 100%; background-color: #1e3d59; color: #ffcb05; border: 2px solid #ffcb05;
- padding: 12px 8px; font-size: 0.85rem; font-weight: 700; border-radius: 10px;
+ /* FIXED FOR NATIVE IOS HOME SCREEN PERMISSIONS: Standard styled inputs bypass WebKit gesture filters completely */
+ .native-ios-input {
+ width: 100%; background-color: #1e3d59; color: #ffcb05; border: 2px solid #ffcb05;
+ padding: 10px 4px; font-size: 0.75rem; font-weight: 700; border-radius: 10px;
  text-align: center; margin-bottom: 12px; min-height: 48px; box-sizing: border-box;
  box-shadow: 0 4px 6px rgba(0,0,0,0.3); text-transform: uppercase;
- line-height: 20px; overflow: hidden;
- }
- .ios-camera-input-overlay {
- position: absolute; top: 0; left: 0; width: 100%; height: 100%;
- opacity: 0; cursor: pointer; font-size: 100px;
+ cursor: pointer;
  }
  
  .photo-box {
@@ -97,26 +94,21 @@
  <!-- SCREEN 1: THE SCANNER -->
  <div id="scanner-screen" class="app-screen">
  <div class="top-bar">
- <h1>Auto Scanner <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v3.8</span></h1>
+ <h1>Auto Scanner <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v3.9</span></h1>
  </div>
  <div class="column-container">
  <div class="column">
- <div class="camera-btn-shell">
- SCAN FRONT
- <input type="file" id="front-input" class="ios-camera-input-overlay" accept="image/*" onchange="processSecureFile(this, true)">
- </div>
+ <!-- Real native visible upload field guarantees direct browser stream pipeline unblocking -->
+ <input type="file" id="front-input" class="native-ios-input" accept="image/*" onchange="processDirectStream(this, true)">
  <div class="photo-box" id="front-preview"></div>
  </div>
  <div class="column">
- <div class="camera-btn-shell">
- SCAN BACK
- <input type="file" id="back-input" class="ios-camera-input-overlay" accept="image/*" onchange="processSecureFile(this, false)">
- </div>
+ <input type="file" id="back-input" class="native-ios-input" accept="image/*" onchange="processDirectStream(this, false)">
  <div class="photo-box" id="back-preview"></div>
  </div>
  </div>
  
- <div id="app-debug-log" class="debug-log-panel">System Status: Waiting for card scan gesture...</div>
+ <div id="app-debug-log" class="debug-log-panel">System Status: Waiting for native card file tap...</div>
  
  <!-- Interactive Dynamic Search Drawer -->
  <div id="selector-box" class="loading-panel hidden">
@@ -131,7 +123,7 @@
  <div id="evaluation-screen" class="app-screen hidden">
  <div class="top-bar">
  <button class="header-back-btn" onclick="goToScanner()">← BACK</button>
- <h1>Evaluation <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v3.8</span></h1>
+ <h1>Evaluation <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v3.9</span></h1>
  </div>
  <div class="column-container">
  <div class="column"><div class="photo-box" id="eval-front-preview"></div></div>
@@ -178,20 +170,20 @@
  }
  }
 
- // FIXED FOR ENGINE: Targets the single index layout file array directly to extract the correct file path data map
- window.processSecureFile = function(inputElement, isFront) {
+ // REFACTORED V3.9: Directly targets the native file upload data payload array mapping to bypass interface blockades
+ window.processDirectStream = function(inputEl, isFront) {
  try {
- if (inputElement.files && inputElement.files[0]) {
- const activeFile = inputElement.files[0];
- updateDebugText(`File received: ${activeFile.name}. Encoding pixels...`, "#ffcb05");
+ if (inputEl.files && inputEl.files[0]) {
+ const activeTargetFile = inputEl.files[0];
+ updateDebugText(`Loading: ${activeTargetFile.name}. Rendering image...`, "#ffcb05");
  
  const reader = new FileReader();
  reader.onload = function(event) {
  try {
- const base64Data = event.target.result;
- if (isFront) { frontImageSrc = base64Data; } else { backImageSrc = base64Data; }
+ const directBase64 = event.target.result;
+ if (isFront) { frontImageSrc = directBase64; } else { backImageSrc = directBase64; }
  
- const previewId = isFront ? 'front-preview' : 'back-preview';
- const evalPreviewId = isFront ? 'eval-front-preview' : 'eval-back-preview';
+ const targetBoxId = isFront ? 'front-preview' : 'back-preview';
+ const targetEvalId = isFront ? 'eval-front-preview' : 'eval-back-preview';
  
- document.getElementById(previewId).innerHTML = `<img src="${base64Data}" style="width:100%; height:100%; object-fit:cover;">`;
+ document.getElementById(targetBoxId).innerHTML = `<img src="${directBase64}" style="width:100%; height:100%; object-fit:cover;">`;
