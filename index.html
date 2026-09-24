@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>3D SHOWCASE v5.8</title>
+  <title>3D SHOWCASE v5.9</title>
   <style>
     /* Reset & Theme Setup */
     * {
@@ -36,7 +36,7 @@
       position: relative;
     }
 
-    /* Screen Context Engine Views */
+    /* Screen Views */
     .view-screen {
       width: 100%;
       display: flex;
@@ -70,7 +70,7 @@
       text-transform: lowercase;
     }
 
-    /* Scanner Grid Layout Optimization */
+    /* Scanner Grid Layout Control */
     .scan-controls-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -87,7 +87,7 @@
       position: relative;
     }
 
-    /* Premium Fancy Buttons (No Icons) */
+    /* Premium Metallic Scanning Buttons */
     .scan-btn {
       width: 100%;
       background: linear-gradient(180deg, #18335c 0%, #0a1b35 100%);
@@ -102,10 +102,10 @@
       box-shadow: 0 0 12px rgba(230, 184, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1);
       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
       text-align: center;
-      pointer-events: none; /* Passes click directly to the input link below */
+      pointer-events: none;
     }
 
-    /* Native Layer Inputs */
+    /* Invisible Interceptor Input Overlays */
     .camera-trigger-overlay {
       position: absolute;
       top: 0;
@@ -124,7 +124,7 @@
       box-shadow: 0 0 4px rgba(230, 184, 0, 0.15);
     }
 
-    /* Double-Checked Upcycled Large Preview Anchors */
+    /* Preview Anchors */
     .preview-box {
       width: 100px;
       height: 140px;
@@ -152,60 +152,38 @@
       text-transform: uppercase;
     }
 
-    /* Double-Checked Upcycled Large 3D Mesh Stage Canvas */
-    .mesh-view-stage {
-      flex-grow: 1;
+    /* v5.9 High-Fidelity Vertically Stacked Card Stage Area */
+    .stacked-cards-stage {
       width: 100%;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      perspective: 1200px;
-      margin-bottom: 25px;
-      min-height: 360px;
+      gap: 25px;
+      margin-bottom: 110px; /* Leave generous scrolling clearance for bottom button */
     }
 
-    .card-3d-wrapper {
-      width: 250px;  
-      height: 350px; 
-      position: relative;
-      transform-style: preserve-3d;
-      transition: transform 0.1s ease-out;
-      cursor: grab;
-      touch-action: none;
-      z-index: 5;
-    }
-
-    .card-side {
-      position: absolute;
-      width: 100%;
-      height: 100%;
+    .flat-card-container {
+      width: 250px;
+      height: 350px;
       border-radius: 16px;
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       background: linear-gradient(135deg, rgba(25, 48, 84, 0.7), rgba(15, 32, 60, 0.8));
       border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       overflow: hidden;
+      position: relative;
     }
 
-    .card-side img {
+    .flat-card-container img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       border-radius: 16px;
     }
 
-    .card-front {
-      transform: rotateY(0deg);
-    }
-
-    .card-back {
-      transform: rotateY(180deg);
-    }
-
+    /* Glowing Neon Placeholder Vectors */
     .wireframe-blueprint {
       width: 85%;
       height: 85%;
@@ -240,25 +218,7 @@
       line-height: 1.4;
     }
 
-    .instruction-overlay {
-      width: 100%;
-      border: 2px dashed #e6b800;
-      border-radius: 8px;
-      padding: 14px;
-      text-align: center;
-      margin-bottom: 85px;
-      background-color: rgba(230, 184, 0, 0.02);
-    }
-
-    .instruction-text {
-      color: #e6b800;
-      font-size: 12px;
-      font-weight: bold;
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
-    }
-
-    /* Fixed Teal Bottom Pivot Interface Layout Elements */
+    /* Fixed Teal Bottom Panel Action Anchor Layout */
     .bottom-action-anchor {
       position: fixed;
       bottom: 0;
@@ -287,7 +247,7 @@
       box-shadow: 0 -4px 20px rgba(46, 196, 182, 0.25);
     }
 
-    /* Dedicated Dashboard Screen Context */
+    /* Evaluation Dashboard Window Panel Content Styling */
     .dashboard-panel-content {
       width: 100%;
       background-color: #0b1f3f;
@@ -360,10 +320,10 @@
 
   <div class="app-container">
     
-    <!-- MAIN INTERACTIVE CANVAS VIEW -->
+    <!-- DISPLAY CONTEXT LAYER 1: CARD SCANNER VIEW -->
     <div id="screen-showcase" class="view-screen">
       <header class="app-header">
-        <h1 class="app-title">3D SHOWCASE <span class="app-version">v5.8</span></h1>
+        <h1 class="app-title">TCG AUTO-EVALUATOR <span class="app-version">v5.9</span></h1>
       </header>
 
       <section class="scan-controls-grid">
@@ -384,24 +344,41 @@
         </div>
       </section>
 
-      <main class="mesh-view-stage" id="mesh-stage">
-        <div class="card-3d-wrapper" id="card-mesh">
-          <div class="card-side card-front" id="mesh-front-side">
-            <div class="wireframe-blueprint">
-              <div class="wireframe-text">FRONT SIDE<br>PENDING</div>
-            </div>
+      <!-- Stable Light Weight Stack Layout Containers -->
+      <main class="stacked-cards-stage">
+        <!-- Front Surface Layout Element -->
+        <div class="flat-card-container" id="mesh-front-side">
+          <div class="wireframe-blueprint">
+            <div class="wireframe-text">FRONT CARD FACE<br>PENDING SCAN</div>
           </div>
-          <div class="card-side card-back" id="mesh-back-side">
-            <div class="wireframe-blueprint">
-              <div class="wireframe-text">BACK SIDE<br>PENDING</div>
-            </div>
+        </div>
+        
+        <!-- Back Surface Layout Element -->
+        <div class="flat-card-container" id="mesh-back-side">
+          <div class="wireframe-blueprint">
+            <div class="wireframe-text">BACK CARD FACE<br>PENDING SCAN</div>
           </div>
         </div>
       </main>
-
-      <div class="instruction-overlay">
-        <p class="instruction-text">Swipe card mesh area to spin in 3D</p>
-      </div>
     </div>
 
-    <!-- DEDICATED EVALUATION ENGINE FULL VIEW -->
+    <!-- DISPLAY CONTEXT LAYER 2: EVALUATION DASHBOARD VIEW -->
+    <div id="screen-dashboard" class="view-screen hidden-view">
+      <header class="app-header">
+        <h1 class="app-title">EVALUATION METRICS</h1>
+      </header>
+      
+      <div class="dashboard-panel-content">
+        <div class="metric-group">
+          <div class="metric-group-title">📊 Deep-Dive Pre-Grading Blueprint</div>
+          <div class="metric-row">
+            <span class="metric-label">Estimated Grade:</span>
+            <span class="metric-value yellow">PSA 9 (Mint)</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">Flaws Seen:</span>
+            <span class="metric-value">Micro-whitening top-left reverse edge</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">Worth Grading?</span>
+            <span class="metric-value green">🟢 YES</span>
