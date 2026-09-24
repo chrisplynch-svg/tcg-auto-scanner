@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>3D SHOWCASE v5.5</title>
+  <title>3D SHOWCASE v5.6</title>
   <style>
+    /* Reset & Theme Foundations */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -22,7 +23,7 @@
       flex-direction: column;
       align-items: center;
       padding: 20px 16px;
-      overflow: hidden;
+      overflow-x: hidden;
     }
 
     .app-container {
@@ -36,7 +37,7 @@
 
     .app-header {
       margin-top: 10px;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
       text-align: center;
     }
 
@@ -55,12 +56,13 @@
       text-transform: lowercase;
     }
 
+    /* Top Row Layout for Controls */
     .scan-controls-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 20px;
       width: 100%;
-      margin-bottom: 40px;
+      margin-bottom: 30px;
     }
 
     .scan-column {
@@ -71,33 +73,42 @@
       position: relative;
     }
 
-    /* Upgraded v5.5 Premium Fancy Scan Buttons */
+    /* Fixed v5.6 Premium Metallic Styling (No Icons) */
     .scan-btn {
       width: 100%;
-      background: linear-gradient(180deg, #162f56 0%, #0d2242 100%);
+      background: linear-gradient(180deg, #18335c 0%, #0a1b35 100%);
       border: 2px solid #e6b800;
       color: #e6b800;
-      padding: 12px 6px;
+      padding: 14px 6px;
       font-weight: 800;
-      font-size: 12px;
+      font-size: 13px;
       border-radius: 8px;
-      cursor: pointer;
       text-transform: uppercase;
       letter-spacing: 1px;
-      box-shadow: 0 0 10px rgba(230, 184, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
-      transition: all 0.1s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
+      box-shadow: 0 0 12px rgba(230, 184, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+      text-align: center;
+      pointer-events: none; /* Let clicks pass directly down to the camera overlay trigger */
     }
 
-    /* Tactile Pressed State for Buttons */
-    .scan-btn:active {
+    /* Fixed Stacking: Transparent camera link rests cleanly on top */
+    .camera-trigger-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 47px;
+      opacity: 0;
+      cursor: pointer;
+      -webkit-appearance: none;
+      z-index: 10;
+    }
+
+    /* Trigger active pressed mechanics beautifully on the sibling button container */
+    .camera-trigger-overlay:active + .scan-btn {
       transform: scale(0.96);
-      background: linear-gradient(180deg, #0d2242 0%, #05142b 100%);
-      box-shadow: 0 0 4px rgba(230, 184, 0, 0.1);
+      background: linear-gradient(180deg, #0a1b35 0%, #040e1d 100%);
+      box-shadow: 0 0 4px rgba(230, 184, 0, 0.15);
     }
 
     .preview-box {
@@ -125,18 +136,7 @@
       line-height: 1.4;
     }
 
-    .camera-trigger-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 45px;
-      opacity: 0;
-      cursor: pointer;
-      -webkit-appearance: none;
-      z-index: 5;
-    }
-
+    /* Center 3D Interactive Stage Canvas Layout */
     .mesh-view-stage {
       flex-grow: 1;
       width: 100%;
@@ -144,7 +144,8 @@
       align-items: center;
       justify-content: center;
       perspective: 1200px;
-      margin-bottom: 40px;
+      margin-bottom: 30px;
+      min-height: 310px;
     }
 
     .card-3d-wrapper {
@@ -228,7 +229,7 @@
       border-radius: 8px;
       padding: 14px;
       text-align: center;
-      margin-bottom: 25px;
+      margin-bottom: 95px; /* Give breathing space above footer anchor layout */
       background-color: rgba(230, 184, 0, 0.02);
     }
 
@@ -240,28 +241,113 @@
       text-transform: uppercase;
     }
 
+    /* Fixed Teal Bottom Pivot Interface */
     .bottom-action-anchor {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
       width: 100%;
-      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 100;
     }
 
     .evaluate-btn {
       width: 100%;
+      max-width: 400px;
       background-color: #2ec4b6;
       border: none;
       color: #0b1f3f;
-      padding: 16px;
+      padding: 18px;
       font-size: 13px;
       font-weight: bold;
-      border-radius: 10px;
-      cursor: pointer;
       text-transform: uppercase;
       letter-spacing: 0.8px;
-      transition: background-color 0.1s ease;
+      cursor: pointer;
+      border-radius: 14px 14px 0 0;
+      box-shadow: 0 -4px 20px rgba(46, 196, 182, 0.25);
     }
 
-    .evaluate-btn:active {
-      background-color: #24a397;
+    /* v5.6 Slidable Evaluation Metrics Panel Engine Overlay */
+    .sliding-evaluation-panel {
+      width: 100%;
+      max-width: 400px;
+      background-color: #08162e;
+      border-top: 2px solid #2ec4b6;
+      height: 0; /* Animated dynamically open to 520px via script methods */
+      overflow-y: auto;
+      transition: height 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+      display: flex;
+      flex-direction: column;
+      padding: 0 16px;
+    }
+
+    .panel-open {
+      height: 520px;
+      padding: 20px 16px 40px 16px;
+    }
+
+    /* Evaluation Blocks Dashboard Structure styling */
+    .metric-group {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+
+    .metric-group-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: #2ec4b6;
+      font-weight: 800;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid rgba(46, 196, 182, 0.15);
+      padding-bottom: 4px;
+    }
+
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      font-size: 13px;
+    }
+
+    .metric-label {
+      color: #a4b8da;
+    }
+
+    .metric-value {
+      font-weight: bold;
+    }
+
+    .metric-value.green { color: #2ecc71; }
+    .metric-value.yellow { color: #f1c40f; }
+    .metric-value.red { color: #e74c3c; }
+
+    /* Net Profit Calculation Table Blocks Specific Formatting */
+    .math-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 0;
+      font-size: 12px;
+    }
+
+    .math-row.deduction {
+      color: #e74c3c;
+    }
+    
+    .math-row.payout-total {
+      margin-top: 10px;
+      border-top: 1px dashed rgba(255,255,255,0.2);
+      padding-top: 10px;
+      font-size: 14px;
+      font-weight: 800;
+      color: #2ecc71;
     }
   </style>
 </head>
@@ -270,25 +356,23 @@
   <div class="app-container">
     
     <header class="app-header">
-      <h1 class="app-title">3D SHOWCASE <span class="app-version">v5.5</span></h1>
+      <h1 class="app-title">3D SHOWCASE <span class="app-version">v5.6</span></h1>
     </header>
 
     <section class="scan-controls-grid">
-      <!-- Front Scan Column -->
+      <!-- Front Scan Configuration Anchor -->
       <div class="scan-column">
-        <!-- Upgraded Button Presentation -->
-        <button class="scan-btn"><span>[ 📷 ]</span> Scan Front</button>
-        <input type="file" class="camera-trigger-overlay" accept="image/*" onchange="handleImageUpload(this, 'front')" onclick="triggerHaptic(15)">
+        <input type="file" class="camera-trigger-overlay" accept="image/*" onchange="handleImageUpload(this, 'front')">
+        <button class="scan-btn">Scan Front</button>
         <div class="preview-box" id="preview-front">
           <div class="preview-placeholder">Front<br>Preview</div>
         </div>
       </div>
       
-      <!-- Back Scan Column -->
+      <!-- Back Scan Configuration Anchor -->
       <div class="scan-column">
-        <!-- Upgraded Button Presentation -->
-        <button class="scan-btn"><span>[ 📷 ]</span> Scan Back</button>
-        <input type="file" class="camera-trigger-overlay" accept="image/*" onchange="handleImageUpload(this, 'back')" onclick="triggerHaptic(15)">
+        <input type="file" class="camera-trigger-overlay" accept="image/*" onchange="handleImageUpload(this, 'back')">
+        <button class="scan-btn">Scan Back</button>
         <div class="preview-box" id="preview-back">
           <div class="preview-placeholder">Back<br>Preview</div>
         </div>
@@ -312,77 +396,4 @@
         
       </div>
     </main>
-
-    <div class="instruction-overlay">
-      <p class="instruction-text">Swipe card mesh area to spin in 3D</p>
-    </div>
-
-    <footer class="bottom-action-anchor">
-      <button class="evaluate-btn" onclick="triggerHaptic(20)">Evaluate 3D Showcase Blueprint</button>
-    </footer>
-
-  </div>
-
-  <script>
-    let currentRotationY = 0;
-    let isDragging = false;
-    let startX = 0;
-    
-    // Haptic gate tracking markers
-    let lastHapticAngle = 0;
-
-    const cardMesh = document.getElementById('card-mesh');
-    const meshStage = document.getElementById('mesh-stage');
-
-    function handleImageUpload(input, side) {
-      if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        
-        reader.onload = function(e) {
-          const imageSrc = e.target.result;
-          
-          const previewBox = document.getElementById(`preview-${side}`);
-          if (previewBox) {
-            previewBox.innerHTML = `<img src="${imageSrc}" alt="${side} preview">`;
-          }
-          
-          const meshSide = document.getElementById(`mesh-${side}-side`);
-          if (meshSide) {
-            meshSide.innerHTML = `<img src="${imageSrc}" alt="${side} card surface">`;
-          }
-        };
-        
-        reader.readAsDataURL(input.files[0]);
-      }
-    }
-
-    function startDrag(e) {
-      isDragging = true;
-      startX = e.pageX || (e.touches && e.touches[0].pageX);
-    }
-
-    function moveDrag(e) {
-      if (!isDragging) return;
-      
-      const currentX = e.pageX || (e.touches && e.touches[0].pageX);
-      const deltaX = currentX - startX;
-      
-      currentRotationY += deltaX * 0.7;
-      cardMesh.style.transform = `rotateY(${currentRotationY}deg)`;
-      
-      // Calculate rotation passing increments for fluid haptic feedback ticks
-      let normalizedAngle = Math.abs(Math.round(currentRotationY));
-      let currentSection = Math.floor((normalizedAngle + 90) / 180);
-      
-      if (currentSection !== lastHapticAngle) {
-        triggerHaptic(10); // Generates a light 10ms click as card flips sides
-        lastHapticAngle = currentSection;
-      }
-      
-      startX = currentX;
-    }
-
-    function endDrag() {
-      isDragging = false;
-    }
 
