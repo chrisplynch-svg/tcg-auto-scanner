@@ -1,290 +1,366 @@
-<!DOCTYPEDOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TCG 3D Showcase v5.1</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: #0b1f3f;
-            color: #ffffff;
-            margin: 0;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            box-sizing: border-box;
-            overflow-x: hidden;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TCG Auto-Evaluator v5.1</title>
+  <style>
+    /* Reset & Theme Setup */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #0b1f3f; /* Dark Navy Background */
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px;
+      overflow-x: hidden;
+    }
 
-        .app-screen {
-            width: 100%;
-            max-width: 500px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            flex-grow: 1;
-            position: relative;
-        }
+    .app-container {
+      width: 100%;
+      max-width: 450px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-grow: 1;
+      position: relative;
+      padding-bottom: 80px; /* Space for the bottom fixed button */
+    }
 
-        .hidden { display: none !important; }
+    /* Header Title */
+    .app-header {
+      margin-top: 10px;
+      margin-bottom: 25px;
+      text-align: center;
+    }
 
-        .top-bar {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            position: relative;
-            margin-bottom: 16px;
-        }
+    .app-title {
+      color: #e6b800; /* Gold text */
+      font-size: 24px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
 
-        h1 {
-            font-size: 1.4rem;
-            color: #ffcb05;
-            margin: 0;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+    .app-version {
+      color: #8fa3c7;
+      font-size: 14px;
+      font-weight: normal;
+      text-transform: none;
+      vertical-align: middle;
+    }
 
-        .column-container {
-            display: flex;
-            gap: 16px;
-            width: 100%;
-            margin-bottom: 16px;
-        }
+    /* Top Row Layout for Scanning Controls */
+    .scan-controls-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      width: 100%;
+      margin-bottom: 30px;
+    }
 
-        .column {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    .scan-column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
 
-        /* PREMIUM THEMED CAMERA LABELS: Formatted */
-        .camera-input-label {
-            display: block;
-            width: 100%;
-            background-color: #2ec4b6;
-            color: #0b1f3f;
-            font-weight: 800;
-            padding: 12px 4px;
-            font-size: 0.8rem;
-            font-top-align: center; /* Preserved text-align fallback logic from screenshot */
-            text-align: center;
-            margin-bottom: 12px;
-            border-radius: 14px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            text-shadow: none;
-            line-height: 18px;
-            cursor: pointer;
-        }
+    /* Buttons styled identically to your UI blueprint */
+    .scan-btn {
+      width: 100%;
+      background: transparent;
+      border: 2px solid #e6b800;
+      color: #e6b800;
+      padding: 12px 8px;
+      font-weight: bold;
+      font-size: 13px;
+      border-radius: 8px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: background 0.2s;
+    }
 
-        .camera-input-label:active {
-            background-color: #24a195;
-        }
+    .scan-btn:active {
+      background: rgba(230, 184, 0, 0.1);
+    }
 
-        .hidden-system-input {
-            display: none;
-        }
+    /* Small Preview Anchors below buttons */
+    .preview-box {
+      width: 75px;
+      height: 105px;
+      border: 2px dashed #e6b800;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: rgba(255, 255, 255, 0.05);
+      overflow: hidden;
+      position: relative;
+    }
 
-        .mini-preview-box {
-            width: 64px;
-            height: 90px;
-            background-color: rgba(255, 255, 255, 0.05);
-            border: 2px dashed rgba(255, 255, 5, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            border-radius: 4px;
-            background-size: cover;
-            background-position: center;
-        }
+    .preview-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
 
-        /* 3D CANVAS MATRIX ASSEMBLY */
-        .stage-3d-container {
-            width: 100%;
-            height: 320px;
-            perspective: 1000px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 12px 0;
-            position: relative;
-            touch-action: none;
-        }
+    .preview-placeholder {
+      font-size: 10px;
+      color: #5c7499;
+      text-align: center;
+      padding: 4px;
+    }
 
-        .card-3d-wrapper {
-            width: 200px;
-            height: 280px;
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 0.1s ease-out;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
-            border-radius: 12px;
-        }
+    /* Interactive 3D Mesh Container Area */
+    .mesh-view-stage {
+      flex-grow: 1;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      perspective: 1000px; /* Crucial for 3D depth perception */
+      margin: 20px 0;
+      min-height: 320px;
+    }
 
-        .card-side-face {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 253, 240, 0.15);
-            background-color: #1a2a44;
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    /* The 3D Card Parent structure */
+    .card-3d-wrapper {
+      width: 200px;
+      height: 280px;
+      position: relative;
+      transform-style: preserve-3d;
+      cursor: grab;
+      touch-action: none; /* Prevents mobile scrolling when turning the card */
+    }
 
-        .card-face-front {
-            /* Blends empty slate canvas background pattern colors */
-            background-color: #1a2a44;
-        }
+    .card-3d-wrapper:active {
+      cursor: grabbing;
+    }
 
-        .card-face-back {
-            transform: rotateY(180deg);
-            background-color: #5c1d1d; /* Fallback iconic card back coloring */
-        }
+    /* Card Sides Styling */
+    .card-side {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 10px;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
 
-        .placeholder-text {
-            position: absolute;
-            width: 100%;
-            text-align: center;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.4);
-            padding: 0 12px;
-            box-sizing: border-box;
-        }
+    .card-side img {
+      width: 100%;
+      height: 100%;
+      object-fit: fill;
+      border-radius: 10px;
+    }
 
-        .loading-panel {
-            width: 100%;
-            background-color: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            padding: 16px;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 12px;
-        }
+    .card-front {
+      transform: rotateY(0deg);
+    }
 
-        .submit-btn {
-            background-color: #2ec4b6;
-            color: #0b1f3f;
-            font-weight: 800;
-            border-radius: 14px;
-            border: none;
-            padding: 12px;
-            font-size: 1rem;
-            cursor: pointer;
-            box-shadow: 0 6px 15px rgba(46, 196, 182, 0.3);
-            text-align: center;
-            width: 100%;
-        }
+    .card-back {
+      transform: rotateY(180deg);
+    }
 
-        .submit-btn:hover {
-            background-color: #24a195;
-        }
-    </style>
+    /* Default Placeholder Content if images aren't scanned yet */
+    .card-side-placeholder {
+      color: #5c7499;
+      font-size: 14px;
+      text-align: center;
+      padding: 20px;
+    }
+
+    /* Instructional Guidance Banner */
+    .instruction-overlay {
+      width: 100%;
+      border: 2px dashed #e6b800;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .instruction-text {
+      color: #e6b800;
+      font-size: 12px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    /* Bottom Fixed Evaluation Action Bar */
+    .bottom-action-anchor {
+      position: fixed;
+      bottom: 16px;
+      left: 16px;
+      right: 16px;
+      max-width: 418px;
+      margin: 0 auto;
+      z-index: 100;
+    }
+
+    .evaluate-btn {
+      width: 100%;
+      background-color: #2ec4b6; /* Teal / Turquoise color from your design */
+      border: none;
+      color: #0b1f3f;
+      padding: 16px;
+      font-size: 14px;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 15px rgba(46, 196, 182, 0.3);
+    }
+
+    /* Hidden Hidden Inputs to trigger native device camera hardware */
+    .hidden-camera-input {
+      display: none;
+    }
+  </style>
 </head>
 <body>
 
-    <div id="scanner-screen" class="app-screen">
-        <div class="top-bar">
-            <h1>3D Showcase <span style="font-size:0.8rem; color: #fff; font-weight:normal;">v5.1</span></h1>
-        </div>
+  <div class="app-container">
+    
+    <!-- Title Area -->
+    <header class="app-header">
+      <h1 class="app-title">3D Showcase <span class="app-version">v5.1</span></h1>
+    </header>
 
-        <div class="column-container">
-            <div class="column">
-                <label class="camera-input-label" for="front-camera-file">SCAN FRONT</label>
-                <input type="file" accept="image/*" id="front-camera-file" class="hidden-system-input" onchange="projectCameraToMesh(this, true)">
-                <div class="mini-preview-box" id="front-mini-view"></div>
-            </div>
-            
-            <div class="column">
-                <label class="camera-input-label" for="back-camera-file">SCAN BACK</label>
-                <input type="file" accept="image/*" id="back-camera-file" class="hidden-system-input" onchange="projectCameraToMesh(this, false)">
-                <div class="mini-preview-box" id="back-mini-view"></div>
-            </div>
+    <!-- Scan Management Row -->
+    <section class="scan-controls-grid">
+      <div class="scan-column">
+        <button class="scan-btn" onclick="triggerCamera('front')">Scan Front</button>
+        <div class="preview-box" id="preview-front">
+          <div class="preview-placeholder">Front Preview</div>
         </div>
-
-        <!-- THE INTERACTIVE 3D STAGE MODULE -->
-        <div class="stage-3d-container" id="interactive-stage">
-            <div class="card-3d-wrapper" id="live-3d-card">
-                
-                <div class="card-side-face card-face-front" id="front-3d-canvas">
-                    <div class="placeholder-text" id="front-text-prompt">Front Camera View Empty</div>
-                </div>
-                
-                <div class="card-side-face card-face-back" id="back-3d-canvas">
-                    <div class="placeholder-text" id="back-text-prompt">Back Camera View Empty</div>
-                </div>
-
-            </div>
+      </div>
+      
+      <div class="scan-column">
+        <button class="scan-btn" onclick="triggerCamera('back')">Scan Back</button>
+        <div class="preview-box" id="preview-back">
+          <div class="preview-placeholder">Back Preview</div>
         </div>
+      </div>
+    </section>
 
-        <div class="loading-panel">
-            <div style="font-size: 0.85rem; font-weight: bold; text-align: center; color: #ffcb05;">
-                READY TO VERIFY
-            </div>
-            <button class="submit-btn" onclick="alert('Submission system mapping successfully initialized!')">
-                COMMIT ASSET PIPELINE
-            </button>
+    <!-- Native Camera Hooks -->
+    <input type="file" id="input-front" class="hidden-camera-input" accept="image/*" capture="environment" onchange="handleImageUpload(this, 'front')">
+    <input type="file" id="input-back" class="hidden-camera-input" accept="image/*" capture="environment" onchange="handleImageUpload(this, 'back')">
+
+    <!-- Interactive 3D Spinning Mesh Stage -->
+    <main class="mesh-view-stage" id="mesh-stage">
+      <div class="card-3d-wrapper" id="card-mesh">
+        
+        <!-- Front Surface of Card -->
+        <div class="card-side card-front" id="mesh-front-side">
+          <div class="card-side-placeholder">Scan Front to View Image</div>
         </div>
+        
+        <!-- Back Surface of Card -->
+        <div class="card-side card-back" id="mesh-back-side">
+          <div class="card-side-placeholder">Scan Back to View Image</div>
+        </div>
+        
+      </div>
+    </main>
+
+    <!-- UI Overlay Guides -->
+    <div class="instruction-overlay">
+      <p class="instruction-text">Swipe card mesh area to spin in 3D</p>
     </div>
 
-    <script>
-        let currentRotationY = 0;
-        let isDraggingCard = false;
-        let startTouchX = 0;
+    <!-- Pricing/Expansion Pivot -->
+    <footer class="bottom-action-anchor">
+      <button class="evaluate-btn" onclick="handleEvaluationClick()">Evaluate 3D Showcase Blueprint</button>
+    </footer>
 
-        // SECURE PIPELINE METHOD: FileReader texture processing engine
-        function projectCameraToMesh(inputNode, isFrontMaterial) {
-            try {
-                if (inputNode.files && inputNode.files[0]) {
-                    const rawImageFile = inputNode.files[0];
+  </div>
 
-                    const encoder = new FileReader();
-                    encoder.onload = function(event) {
-                        try {
-                            const secureBase64String = event.target.result;
+  <script>
+    // State management variables
+    let currentRotationY = 0;
+    let isDragging = false;
+    let startX = 0;
 
-                            if (isFrontMaterial) {
-                                // Projects image directly onto the large canvas mesh and mini preview component
-                                document.getElementById('front-3d-canvas').style.backgroundImage = `url(${secureBase64String})`;
-                                document.getElementById('front-mini-view').style.backgroundImage = `url(${secureBase64String})`;
-                                const textNode = document.getElementById('front-text-prompt');
-                                if(textNode) textNode.classList.add('hidden');
-                            } else {
-                                // Projects image directly onto the large canvas back mesh and mini preview component
-                                document.getElementById('back-3d-canvas').style.backgroundImage = `url(${secureBase64String})`;
-                                document.getElementById('back-mini-view').style.backgroundImage = `url(${secureBase64String})`;
-                                const textNode = document.getElementById('back-text-prompt');
-                                if(textNode) textNode.classList.add('hidden');
-                            }
-                        } catch (renderErr) {
-                            console.error("Render error: " + renderErr);
-                        }
-                    };
-                    encoder.readAsDataURL(rawImageFile);
-                }
-            } catch (err) {
-                console.error("Input processing error: " + err);
-            }
-        }
+    const cardMesh = document.getElementById('card-mesh');
+    const meshStage = document.getElementById('mesh-stage');
 
-        // INTERACTIVE 3D TOUCH HANDLING ENGINE
-        const touchStage = document.getElementById('interactive-stage');
-        const cardMesh = document.getElementById('live-3d-card');
+    // Open native camera app depending on button clicked
+    function triggerCamera(side) {
+      document.getElementById(`input-${side}`).click();
+    }
 
-        touchStage.addEventListener('touchstart', (e) => {
-            isDraggingCard = true;
+    // Capture photo data, update preview windows, and populate 3D structure card faces
+    function handleImageUpload(input, side) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+          const imageSrc = e.target.result;
+          
+          // 1. Update the small preview node box
+          const previewBox = document.getElementById(`preview-${side}`);
+          previewBox.innerHTML = `<img src="${imageSrc}" alt="${side} preview">`;
+          
+          // 2. Map image to corresponding face layout inside 3D environment wrapper
+          const meshSide = document.getElementById(`mesh-${side}-side`);
+          meshSide.innerHTML = `<img src="${imageSrc}" alt="${side} card face">`;
+        };
+        
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    // Handle touch interactions to drag/spin the mesh card
+    function startDrag(e) {
+      isDragging = true;
+      startX = e.pageX || e.touches[0].pageX;
+    }
+
+    function moveDrag(e) {
+      if (!isDragging) return;
+      
+      const currentX = e.pageX || e.touches[0].pageX;
+      const deltaX = currentX - startX;
+      
+      // Calculate rotation adjustments dynamically based on user movement distance
+      currentRotationY += deltaX * 0.6;
+      cardMesh.style.transform = `rotateY(${currentRotationY}deg)`;
+      
+      startX = currentX; // Reset base tracking position
+    }
+
+    function endDrag() {
+      isDragging = false;
+    }
+
+    // Set up touch and mouse drag rotation event bindings
+    meshStage.addEventListener('mousedown', startDrag);
+    window.addEventListener('mousemove', moveDrag);
+    window.addEventListener('mouseup', endDrag);
+
+    meshStage.addEventListener('touchstart', startDrag, { passive: true });
+    window.addEventListener('touchmove', moveDrag, { passive: false });
+    window.addEventListener('touchend', endDrag);
+
