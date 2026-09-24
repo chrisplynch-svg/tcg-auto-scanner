@@ -3,7 +3,7 @@
 <head>
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
- <title>TCG 3D Showcase v5.3</title>
+ <title>TCG 3D Showcase v5.4</title>
  <style>
  body {
  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -63,6 +63,7 @@
  width: 200px; height: 280px; position: relative;
  transform-style: preserve-3d; transition: transform 0.05s ease-out;
  box-shadow: 0 15px 40px rgba(0,0,0,0.6); border-radius: 14px;
+ transform: rotateY(0deg);
  }
  .card-side-face {
  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -70,6 +71,7 @@
  border: 1px solid rgba(255, 253, 240, 0.15);
  background-color: #1a2a44; background-size: cover; background-position: center;
  }
+ .card-face-front { z-index: 2; }
  .card-face-back { transform: rotateY(180deg); }
  
  .placeholder-text {
@@ -120,12 +122,11 @@
  <!-- SCREEN 1: THE 3D INTERACTIVE SCANNER -->
  <div id="scanner-screen" class="app-screen">
  <div class="top-bar">
- <h1>3D Showcase <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v5.3</span></h1>
+ <h1>3D Showcase <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v5.4</span></h1>
  </div>
  
  <div class="column-container">
  <div class="column">
- <!-- MODIFIED TRIGGER: Tapping front camera instantly fires the workspace memory purge loop -->
  <label class="camera-input-label" for="front-camera-file" onclick="handleFrontInputClick()">Scan Front</label>
  <input type="file" id="front-camera-file" class="hidden-system-input" accept="image/*" onchange="projectCameraToMesh(this, true)">
  <div class="mini-preview-box" id="front-mini-view"></div>
@@ -154,7 +155,7 @@
  <div id="evaluation-screen" class="app-screen hidden">
  <div class="top-bar">
  <button class="header-back-btn" onclick="navigateToScannerPage()">← BACK</button>
- <h1>Evaluation <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v5.3</span></h1>
+ <h1>Evaluation <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v5.4</span></h1>
  </div>
  
  <div class="column-container">
