@@ -3,7 +3,7 @@
 <head>
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
- <title>TCG Auto-Evaluator v4.0</title>
+ <title>TCG Auto-Evaluator v4.1</title>
  <style>
  body {
  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -21,7 +21,7 @@
  .hidden { display: none !important; }
  .top-bar {
  width: 100%; display: flex; align-items: center; justify-content: center;
- position: relative; margin-bottom: 16px; min-height: 40px;
+ position: relative; margin-bottom: 24px; min-height: 40px;
  }
  .header-back-btn {
  position: absolute; left: 0; top: 50%; transform: translateY(-50%);
@@ -36,25 +36,35 @@
  .column-container { display: flex; gap: 16px; width: 100%; margin-bottom: 24px; }
  .column { flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; }
  
- .native-ios-input {
- width: 100%; background-color: #1e3d59; color: #ffcb05; border: 2px solid #ffcb05;
- padding: 10px 4px; font-size: 0.75rem; font-weight: 700; border-radius: 10px;
- text-align: center; margin-bottom: 12px; min-height: 48px; box-sizing: border-box;
- box-shadow: 0 4px 6px rgba(0,0,0,0.3); text-transform: uppercase;
- cursor: pointer;
+ /* NEW INTEGRATED DESIGN: The entire card box is an interactive touch button trigger frame */
+ .photo-slot-btn {
+ width: 100%; aspect-ratio: 2.5 / 3.5; background-color: rgba(255, 255, 255, 0.04);
+ border: 2px dashed rgba(255, 203, 5, 0.5); border-radius: 16px; overflow: hidden;
+ display: flex; flex-direction: column; align-items: center; justify-content: center; 
+ position: relative; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); cursor: pointer;
+ transition: background 0.2s, border-color 0.2s;
+ }
+ .photo-slot-btn:active { background-color: rgba(255, 203, 5, 0.08); border-color: #ffcb05; }
+ 
+ .slot-label {
+ font-size: 0.85rem; font-weight: 800; color: #ffcb05; text-transform: uppercase;
+ text-align: center; pointer-events: none; margin-bottom: 6px; letter-spacing: 0.5px;
+ }
+ .slot-subtext {
+ font-size: 0.65rem; color: #b0b0b8; pointer-events: none; text-align: center;
+ text-transform: uppercase; padding: 0 8px;
  }
  
- .photo-box {
- width: 100%; aspect-ratio: 2.5 / 3.5; background-color: rgba(255, 255, 255, 0.05);
- border: 2px dashed rgba(255, 203, 5, 0.4); border-radius: 14px; overflow: hidden;
- display: flex; align-items: center; justify-content: center; box-shadow: inset 0 0 20px rgba(0,0,0,0.4);
+ .native-hidden-input {
+ position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+ opacity: 0; cursor: pointer; z-index: 10; font-size: 100px;
  }
- .photo-box img { width: 100%; height: 100%; object-fit: cover; }
+ .rendered-img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 5; }
  
  .debug-log-panel {
  width: 100%; background-color: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.15);
  border-radius: 8px; padding: 10px; font-size: 0.75rem; font-family: monospace; color: #a0a0a8;
- margin-bottom: 16px; text-align: center; box-sizing: border-box;
+ margin-bottom: 20px; text-align: center; box-sizing: border-box;
  }
  
  .loading-panel {
@@ -93,20 +103,27 @@
  <!-- SCREEN 1: THE SCANNER -->
  <div id="scanner-screen" class="app-screen">
  <div class="top-bar">
- <h1>Auto Scanner <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v4.0</span></h1>
+ <h1>Auto Scanner <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v4.1</span></h1>
  </div>
  <div class="column-container">
  <div class="column">
- <input type="file" id="front-input" class="native-ios-input" accept="image/*" onchange="processDirectStream(this, true)">
- <div class="photo-box" id="front-preview"></div>
+ <!-- Combined Touch Card Button Layout -->
+ <div class="photo-slot-btn" id="front-slot-shell">
+ <span class="slot-label">Scan Front</span>
+ <span class="slot-subtext">Tap to snap card</span>
+ <input type="file" class="native-hidden-input" accept="image/*" onchange="processIntegratedStream(this, true)">
+ </div>
  </div>
  <div class="column">
- <input type="file" id="back-input" class="native-ios-input" accept="image/*" onchange="processDirectStream(this, false)">
- <div class="photo-box" id="back-preview"></div>
+ <div class="photo-slot-btn" id="back-slot-shell">
+ <span class="slot-label">Scan Back</span>
+ <span class="slot-subtext">Tap to snap card</span>
+ <input type="file" class="native-hidden-input" accept="image/*" onchange="processIntegratedStream(this, false)">
+ </div>
  </div>
  </div>
  
- <div id="app-debug-log" class="debug-log-panel">System Status: Waiting for native card file tap...</div>
+ <div id="app-debug-log" class="debug-log-panel">System Status: Waiting for integrated card frame touch...</div>
  
  <!-- Interactive Dynamic Search Drawer -->
  <div id="selector-box" class="loading-panel hidden">
@@ -121,11 +138,11 @@
  <div id="evaluation-screen" class="app-screen hidden">
  <div class="top-bar">
  <button class="header-back-btn" onclick="goToScanner()">← BACK</button>
- <h1>Evaluation <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v4.0</span></h1>
+ <h1>Evaluation <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v4.1</span></h1>
  </div>
  <div class="column-container">
- <div class="column"><div class="photo-box" id="eval-front-preview"></div></div>
- <div class="column"><div class="photo-box" id="eval-back-preview"></div></div>
+ <div class="column"><div class="photo-slot-btn" id="eval-front-preview" style="border-style:solid; pointer-events:none;"></div></div>
+ <div class="column"><div class="photo-slot-btn" id="eval-back-preview" style="border-style:solid; pointer-events:none;"></div></div>
  </div>
  <div class="evaluation-content">
  <div class="card-title" id="card-title-display">Analyzing...</div>
@@ -168,24 +185,8 @@
  }
  }
 
- // FIXED FOR CORE V4.0: Added explicit [0] index accessor to pull the single target file asset payload out smoothly
- window.processDirectStream = function(inputEl, isFront) {
+ // FIXED INDEX LINK CORE v4.1: Targets index array element [0] to extract the raw camera stream cleanly
+ window.processIntegratedStream = function(inputEl, isFront) {
  try {
  if (inputEl.files && inputEl.files[0]) {
  const activeTargetFile = inputEl.files[0];
- updateDebugText(`Loading: ${activeTargetFile.name}. Rendering image views...`, "#ffcb05");
- 
- const reader = new FileReader();
- reader.onload = function(event) {
- try {
- const directBase64 = event.target.result;
- if (isFront) { frontImageSrc = directBase64; } else { backImageSrc = directBase64; }
- 
- const targetBoxId = isFront ? 'front-preview' : 'back-preview';
- const targetEvalId = isFront ? 'eval-front-preview' : 'eval-back-preview';
- 
- document.getElementById(targetBoxId).innerHTML = `<img src="${directBase64}" style="width:100%; height:100%; object-fit:cover;">`;
- document.getElementById(targetEvalId).innerHTML = `<img src="${directBase64}" style="width:100%; height:100%; object-fit:cover;">`;
- 
- updateDebugText("Success! Card photo loaded into application views.", "#34c759");
- } catch (renderErr) {
