@@ -3,7 +3,7 @@
 <head>
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
- <title>TCG Auto-Evaluator v3.1</title>
+ <title>TCG Auto-Evaluator v3.2</title>
  <style>
  body {
  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -36,7 +36,6 @@
  .column-container { display: flex; gap: 16px; width: 100%; margin-bottom: 24px; }
  .column { flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; }
  
- /* FIXED FOR IOS PERMISSIONS: Custom stacked camera label container accepts physical gestures directly */
  .camera-label-wrapper {
  display: block; width: 100%; background-color: #1e3d59; color: #ffcb05; border: 2px solid #ffcb05;
  padding: 12px 8px; font-size: 0.85rem; font-weight: 700; border-radius: 10px;
@@ -89,18 +88,17 @@
  <!-- SCREEN 1: THE SCANNER -->
  <div id="scanner-screen" class="app-screen">
  <div class="top-bar">
- <h1>Auto Scanner <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v3.1</span></h1>
+ <h1>Auto Scanner <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v3.2</span></h1>
  </div>
  <div class="column-container">
  <div class="column">
- <!-- FIXED: The label container natively bridges the direct click into the system camera pipeline -->
  <label class="camera-label-wrapper" for="front-input">SCAN FRONT</label>
- <input type="file" id="front-input" class="ios-camera-input" accept="image/*" capture="environment">
+ <input type="file" id="front-input" class="ios-camera-input" accept="image/*">
  <div class="photo-box" id="front-preview"></div>
  </div>
  <div class="column">
  <label class="camera-label-wrapper" for="back-input">SCAN BACK</label>
- <input type="file" id="back-input" class="ios-camera-input" accept="image/*" capture="environment">
+ <input type="file" id="back-input" class="ios-camera-input" accept="image/*">
  <div class="photo-box" id="back-preview"></div>
  </div>
  </div>
@@ -117,8 +115,8 @@
  <!-- SCREEN 2: THE EVALUATION RESULTS -->
  <div id="evaluation-screen" class="app-screen hidden">
  <div class="top-bar">
- <button class="header-back-btn" onclick="goToScanner()">← BACK</button>
- <h1>Evaluation <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v3.1</span></h1>
+  <button class="header-back-btn" onclick="goToScanner()">← BACK</button>
+ <h1>Evaluation <span style="font-size:0.8rem; color:rgba(255,203,5,0.6);">v3.2</span></h1>
  </div>
  <div class="column-container">
  <div class="column"><div class="photo-box" id="eval-front-preview"></div></div>
@@ -157,14 +155,20 @@
  let backImageSrc = '';
  let searchTimeout;
 
- document.addEventListener('DOMContentLoaded', () => {
+ // FIXED: Direct listener engine catches mobile camera streams instantly and drops them straight into your preview frames
+ function setupCameraListeners() {
  const frontIn = document.getElementById('front-input');
  const backIn = document.getElementById('back-input');
- if(frontIn) frontIn.addEventListener('change', (e) => handleImage(e.target, 'front-preview', 'eval-front-preview'));
- if(backIn) backIn.addEventListener('change', (e) => handleImage(e.target, 'back-preview', 'eval-back-preview'));
- });
+ 
+ if(frontIn) {
+ frontIn.addEventListener('change', function(e) { handleImageFile(this, 'front-preview', 'eval-front-preview'); });
+ }
+ if(backIn) {
+ backIn.addEventListener('change', function(e) { handleImageFile(this, 'back-preview', 'eval-back-preview'); });
+ }
+ }
 
- function handleImage(input, previewId, evalPreviewId) {
+ function handleImageFile(input, previewId, evalPreviewId) {
  const previewBox = document.getElementById(previewId);
  const evalPreviewBox = document.getElementById(evalPreviewId);
  if (input.files && input.files[0]) {
@@ -172,8 +176,10 @@
  reader.onload = function(e) {
  if (previewId === 'front-preview') frontImageSrc = e.target.result;
  if (previewId === 'back-preview') backImageSrc = e.target.result;
+ 
  const img1 = document.createElement('img'); img1.src = e.target.result;
  previewBox.innerHTML = ''; previewBox.appendChild(img1);
+ 
  const img2 = document.createElement('img'); img2.src = e.target.result;
  evalPreviewBox.innerHTML = ''; evalPreviewBox.appendChild(img2);
  }
@@ -181,6 +187,7 @@
  }
  }
 
- window.revealVariants = function() {
- if (!frontImageSrc) {
- alert("Please scan the front of a card first!");
+ document.addEventListener('DOMContentLoaded', setupCameraListeners);
+ // Backup safety trigger to guarantee initialization inside webapp views
+ setTimeout(setupCameraListeners, 500);
+
