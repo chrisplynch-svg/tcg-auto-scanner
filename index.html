@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>3D SHOWCASE v5.2</title>
+  <title>3D SHOWCASE v5.3</title>
   <style>
     * {
       box-sizing: border-box;
@@ -68,7 +68,7 @@
       flex-direction: column;
       align-items: center;
       gap: 16px;
-      position: relative; /* Anchor for camera triggers */
+      position: relative;
     }
 
     .scan-btn {
@@ -97,10 +97,12 @@
       overflow: hidden;
     }
 
+    /* Optimization #1: Image layout handling for raw images */
     .preview-box img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain; /* Keeps full uncropped photo safe for future grading */
+      background-color: #051329;
     }
 
     .preview-placeholder {
@@ -110,14 +112,13 @@
       line-height: 1.4;
     }
 
-    /* v5.2 Transparent Camera Layer Trick */
     .camera-trigger-overlay {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
-      height: 45px; /* Matches button height precisely */
-      opacity: 0;   /* Completely invisible but completely clickable */
+      height: 45px;
+      opacity: 0;
       cursor: pointer;
       -webkit-appearance: none;
     }
@@ -137,7 +138,7 @@
       height: 295px;
       position: relative;
       transform-style: preserve-3d;
-      transition: transform 0.1s ease-out;
+      transition: transform 0.05s ease-out;
       cursor: grab;
       touch-action: none;
     }
@@ -155,12 +156,14 @@
       background: linear-gradient(135deg, rgba(25, 48, 84, 0.7), rgba(15, 32, 60, 0.8));
       border: 1px solid rgba(255, 255, 255, 0.08);
       box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      overflow: hidden;
     }
 
+    /* Optimization #1: Automatic Aspect-Ratio Clipping for 3D Mesh Card Face */
     .card-side img {
       width: 100%;
       height: 100%;
-      object-fit: fill;
+      object-fit: cover; /* Centers and slices extra table space seamlessly */
       border-radius: 14px;
     }
 
@@ -172,12 +175,39 @@
       transform: rotateY(180deg);
     }
 
-    .card-side-placeholder {
-      color: #4a628a;
-      font-size: 13px;
+    /* Optimization #4: Neon Wireframe Placeholder Blueprints */
+    .wireframe-blueprint {
+      width: 85%;
+      height: 85%;
+      border: 1px dashed rgba(230, 184, 0, 0.25);
+      border-radius: 8px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .wireframe-blueprint::before {
+      content: '';
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      height: 50%;
+      border: 1px dashed rgba(230, 184, 0, 0.15);
+      border-radius: 4px;
+    }
+
+    .wireframe-text {
+      color: rgba(230, 184, 0, 0.4);
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: bold;
+      letter-spacing: 1px;
+      margin-top: 60px;
       text-align: center;
-      padding: 24px;
-      line-height: 1.5;
+      line-height: 1.4;
     }
 
     .instruction-overlay {
@@ -223,14 +253,13 @@
   <div class="app-container">
     
     <header class="app-header">
-      <h1 class="app-title">3D SHOWCASE <span class="app-version">v5.2</span></h1>
+      <h1 class="app-title">3D SHOWCASE <span class="app-version">v5.3</span></h1>
     </header>
 
     <section class="scan-controls-grid">
       <!-- Front Scan Stack -->
       <div class="scan-column">
         <button class="scan-btn">Scan Front</button>
-        <!-- The invisible file selector sits directly on top of the button -->
         <input type="file" class="camera-trigger-overlay" accept="image/*" onchange="handleImageUpload(this, 'front')">
         <div class="preview-box" id="preview-front">
           <div class="preview-placeholder">Front<br>Preview</div>
@@ -240,7 +269,6 @@
       <!-- Back Scan Stack -->
       <div class="scan-column">
         <button class="scan-btn">Scan Back</button>
-        <!-- The invisible file selector sits directly on top of the button -->
         <input type="file" class="camera-trigger-overlay" accept="image/*" onchange="handleImageUpload(this, 'back')">
         <div class="preview-box" id="preview-back">
           <div class="preview-placeholder">Back<br>Preview</div>
@@ -250,12 +278,21 @@
 
     <main class="mesh-view-stage" id="mesh-stage">
       <div class="card-3d-wrapper" id="card-mesh">
+        
+        <!-- Upgraded Placeholder Front -->
         <div class="card-side card-front" id="mesh-front-side">
-          <div class="card-side-placeholder">Scan Front to View Image</div>
+          <div class="wireframe-blueprint">
+            <div class="wireframe-text">FRONT SIDE<br>PENDING</div>
+          </div>
         </div>
+        
+        <!-- Upgraded Placeholder Back -->
         <div class="card-side card-back" id="mesh-back-side">
-          <div class="card-side-placeholder">Scan Back to View Image</div>
+          <div class="wireframe-blueprint">
+            <div class="wireframe-text">BACK SIDE<br>PENDING</div>
+          </div>
         </div>
+        
       </div>
     </main>
 
@@ -273,6 +310,10 @@
     let currentRotationY = 0;
     let isDragging = false;
     let startX = 0;
+    
+    // Tracking markers for fluid haptic intervals
+    let passedFrontFlip = false;
+    let passedBackFlip = false;
 
     const cardMesh = document.getElementById('card-mesh');
     const meshStage = document.getElementById('mesh-stage');
@@ -300,7 +341,6 @@
       }
     }
 
-    // Touch and Gesture Interaction Script for smooth 3D spinning
     function startDrag(e) {
       isDragging = true;
       startX = e.pageX || (e.touches && e.touches[0].pageX);
@@ -315,6 +355,29 @@
       currentRotationY += deltaX * 0.7;
       cardMesh.style.transform = `rotateY(${currentRotationY}deg)`;
       
+      // Optimization #2: Calculate accurate angles to trigger native haptic ticks
+      let normalizedAngle = Math.abs(currentRotationY % 360);
+      
+      // Check for 90-degree crossing point
+      if (normalizedAngle > 80 && normalizedAngle < 100) {
+        if (!passedFrontFlip) {
+          triggerHapticFeedback();
+          passedFrontFlip = true;
+        }
+      } else {
+        passedFrontFlip = false;
+      }
+
+      // Check for 270-degree crossing point
+      if (normalizedAngle > 260 && normalizedAngle < 280) {
+        if (!passedBackFlip) {
+          triggerHapticFeedback();
+          passedBackFlip = true;
+        }
+      } else {
+        passedBackFlip = false;
+      }
+      
       startX = currentX;
     }
 
@@ -322,13 +385,5 @@
       isDragging = false;
     }
 
-    meshStage.addEventListener('mousedown', startDrag);
-    window.addEventListener('mousemove', moveDrag);
-    window.addEventListener('mouseup', endDrag);
-
-    meshStage.addEventListener('touchstart', startDrag, { passive: true });
-    window.addEventListener('touchmove', moveDrag, { passive: true });
-    window.addEventListener('touchend', endDrag);
-  </script>
-</body>
-</html>
+    // Helper engine checking permission status before attempting vibration pulses
+    function triggerHapticFeedback() {
