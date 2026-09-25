@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>3D SHOWCASE v6.1</title>
+  <title>3D SHOWCASE v6.2</title>
   <style>
     /* Reset & Theme Setup */
     * {
@@ -36,23 +36,12 @@
       position: relative;
     }
 
-    /* Screen Views Management */
-    .view-screen {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      flex-grow: 1;
-    }
-
-    .hidden-view {
-      display: none !important;
-    }
-
+    /* Fixed Layout Header Title */
     .app-header {
       margin-top: 5px;
       margin-bottom: 20px;
       text-align: center;
+      width: 100%;
     }
 
     .app-title {
@@ -70,7 +59,25 @@
       text-transform: lowercase;
     }
 
-    /* Scanner Workspace Row Layout */
+    /* Airtight Sliding Viewport Wrapper Window Layout */
+    .viewport-slider-window {
+      width: 100%;
+      display: flex;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      flex-grow: 1;
+    }
+
+    /* Individual Screen States */
+    .view-screen {
+      min-width: 100%;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-grow: 1;
+    }
+
+    /* Scanner Workspaces Row Configuration Grid */
     .scan-controls-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -87,7 +94,7 @@
       position: relative;
     }
 
-    /* Flat Gold Accent Scanning Buttons */
+    /* Golden Action Framing Buttons */
     .scan-btn {
       width: 100%;
       background: transparent;
@@ -104,7 +111,7 @@
       pointer-events: none;
     }
 
-    /* Invisible Input Layers sitting completely over buttons */
+    /* Un-interrupted Camera Overlay Inputs */
     .camera-trigger-overlay {
       position: absolute;
       top: 0;
@@ -121,7 +128,7 @@
       background: rgba(230, 184, 0, 0.1);
     }
 
-    /* Small Preview Box Targets */
+    /* Preview Track Windows */
     .preview-box {
       width: 85px;
       height: 120px;
@@ -147,7 +154,7 @@
       line-height: 1.4;
     }
 
-    /* Shared Interactive 3D Card Showcase Viewport Stage */
+    /* High Precision 3D Visual Mesh Canvas Container Stage */
     .mesh-view-stage {
       width: 100%;
       display: flex;
@@ -252,7 +259,7 @@
       text-transform: uppercase;
     }
 
-    /* Clean Card Title Header Structure from Lost Layout */
+    /* Screen 2 Presentation Elements Architecture */
     .card-identity-header {
       width: 100%;
       text-align: center;
@@ -267,13 +274,32 @@
       letter-spacing: 0.5px;
     }
 
-    /* Screen 2 Scroll Container Dashboard Boxes Layout */
+    /* Restored Back Button styling on Screen 2 */
+    .back-nav-btn {
+      align-self: flex-start;
+      background: transparent;
+      border: 1px solid rgba(230, 184, 0, 0.5);
+      color: #e6b800;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      margin-bottom: 15px;
+    }
+
+    .back-nav-btn:active {
+      background: rgba(230, 184, 0, 0.1);
+    }
+
     .dashboard-scroll-body {
       width: 100%;
       display: flex;
       flex-direction: column;
       gap: 16px;
-      padding-bottom: 110px; /* Clearance for fixed button menu */
+      padding-bottom: 110px; 
     }
 
     .dashboard-panel-box {
@@ -282,6 +308,7 @@
       border-radius: 12px;
       padding: 16px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      width: 100%;
     }
 
     .panel-box-title {
@@ -291,9 +318,6 @@
       font-weight: 800;
       letter-spacing: 1px;
       margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
     }
 
     .panel-row {
@@ -318,11 +342,6 @@
       color: #ffffff;
     }
 
-    /* Special Value Font Highlights matching original screenshots */
-    .panel-value.highlight-green { color: #2ecc71; }
-    .panel-value.highlight-gold { color: #f1c40f; }
-    .panel-value.highlight-red { color: #e74c3c; }
-
     .math-total-row {
       margin-top: 12px;
       border-top: 1px dashed rgba(255, 255, 255, 0.15);
@@ -334,7 +353,7 @@
       font-weight: 800;
     }
 
-    /* Fixed Teal Bottom Navigation Button */
+    /* Fixed Action Button bar */
     .bottom-action-anchor {
       position: fixed;
       bottom: 0;
@@ -368,43 +387,33 @@
 
   <div class="app-container">
     
-    <!-- SHARED TOP SCAN CONTAINER (Sits uniformly above screens) -->
-    <section class="scan-controls-grid" id="global-scanner-deck">
-      <div class="scan-column">
-        <button class="scan-btn">Scan Front</button>
-        <input type="file" class="camera-trigger-overlay" accept="image/*" onchange="handleImageUpload(this, 'front')">
-        <div class="preview-box" id="preview-front">
-          <div class="preview-placeholder">Front<br>Preview</div>
-        </div>
-      </div>
+    <!-- Permanent Header Anchored to Top -->
+    <header class="app-header">
+      <h1 class="app-title">3D SHOWCASE <span class="app-version">v6.2</span></h1>
+    </header>
+
+    <!-- Slide Window Wrapper Block -->
+    <div class="viewport-slider-window" id="app-viewport-slider">
       
-      <div class="scan-column">
-        <button class="scan-btn">Scan Back</button>
-        <input type="file" class="camera-trigger-overlay" accept="image/*" onchange="handleImageUpload(this, 'back')">
-        <div class="preview-box" id="preview-back">
-          <div class="preview-placeholder">Back<br>Preview</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SHARED DYNAMIC 3D CANVAS VIEWPORT CONTAINER -->
-    <main class="mesh-view-stage" id="global-canvas-stage">
-      <div class="card-3d-wrapper" id="card-mesh">
-        <div class="card-side card-front" id="mesh-front-side">
-          <div class="wireframe-blueprint">
-            <div class="wireframe-text">FRONT SIDE<br>PENDING</div>
+      <!-- SCREEN 1: SCANNER WORKSPACE VIEW -->
+      <div id="screen-showcase" class="view-screen">
+        <section class="scan-controls-grid">
+          <div class="scan-column">
+            <button class="scan-btn">Scan Front</button>
+            <input type="file" class="camera-trigger-overlay" accept="image/*" onchange="handleImageUpload(this, 'front')">
+            <div class="preview-box" id="preview-front">
+              <div class="preview-placeholder">Front<br>Preview</div>
+            </div>
           </div>
-        </div>
-        <div class="card-side card-back" id="mesh-back-side">
-          <div class="wireframe-blueprint">
-            <div class="wireframe-text">BACK SIDE<br>PENDING</div>
+          
+          <div class="scan-column">
+            <button class="scan-btn">Scan Back</button>
+            <input type="file" class="camera-trigger-overlay" accept="image/*" onchange="handleImageUpload(this, 'back')">
+            <div class="preview-box" id="preview-back">
+              <div class="preview-placeholder">Back<br>Preview</div>
+            </div>
           </div>
-        </div>
-      </div>
-    </main>
+        </section>
 
-    <!-- VIEW CONTEXT 1: HOME WORKBENCH SCREEN -->
-    <div id="screen-showcase" class="view-screen">
-      <div class="instruction-overlay">
-        <p class="instruction-text">Swipe card mesh area to spin in 3D</p>
-      </div>
+        <main class="mesh-view-stage" id="global-canvas-stage">
+          <div class="card-3d-wrapper" id="card-mesh">
