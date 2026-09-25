@@ -3,19 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>3D SHOWCASE v6.4</title>
+  <title>3D SHOWCASE v5.4</title>
   <style>
-    /* Reset & Theme Setup */
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
       user-select: none;
       -webkit-user-select: none;
-    }
-    
-    html {
-      scroll-behavior: smooth;
     }
     
     body {
@@ -26,8 +21,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 16px;
-      overflow-x: hidden;
+      padding: 20px 16px;
+      overflow: hidden;
     }
 
     .app-container {
@@ -36,14 +31,13 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      flex-grow: 1;
     }
 
-    /* Fixed Layout Header Title */
     .app-header {
-      margin-top: 5px;
+      margin-top: 10px;
       margin-bottom: 20px;
       text-align: center;
-      width: 100%;
     }
 
     .app-title {
@@ -61,22 +55,12 @@
       text-transform: lowercase;
     }
 
-    /* SCREEN 1: THE INTERACTIVE SCANNER WORKSPACE */
-    .screen-container {
-      width: 100%;
-      min-height: calc(100vh - 80px);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding-bottom: 20px;
-    }
-
     .scan-controls-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 20px;
       width: 100%;
-      margin-bottom: 30px;
+      margin-bottom: 40px;
     }
 
     .scan-column {
@@ -135,17 +119,16 @@
       opacity: 0;
       cursor: pointer;
       -webkit-appearance: none;
-      z-index: 50;
     }
 
     .mesh-view-stage {
+      flex-grow: 1;
       width: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
       perspective: 1200px;
-      margin-bottom: 35px;
-      min-height: 295px;
+      margin-bottom: 40px;
     }
 
     .card-3d-wrapper {
@@ -229,7 +212,7 @@
       border-radius: 8px;
       padding: 14px;
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 25px;
       background-color: rgba(230, 184, 0, 0.02);
     }
 
@@ -241,117 +224,23 @@
       text-transform: uppercase;
     }
 
+    .bottom-action-anchor {
+      width: 100%;
+      margin-top: auto;
+    }
+
     .evaluate-btn {
       width: 100%;
       background-color: #2ec4b6;
       border: none;
       color: #0b1f3f;
-      padding: 18px;
+      padding: 16px;
       font-size: 13px;
       font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
       text-transform: uppercase;
       letter-spacing: 0.8px;
-      cursor: pointer;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(46, 196, 182, 0.25);
-      margin-top: auto;
-    }
-
-    /* SCREEN 2: THE ANCHORED ANALYTICS DASHBOARD */
-    .screen-dashboard-container {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding-top: 20px;
-    }
-
-    .back-nav-btn {
-      align-self: flex-start;
-      background: transparent;
-      border: 1px solid rgba(230, 184, 0, 0.5);
-      color: #e6b800;
-      padding: 8px 14px;
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: bold;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      cursor: pointer;
-      margin-top: 10px;
-      margin-bottom: 20px;
-    }
-
-    .card-identity-header {
-      width: 100%;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .card-identity-title {
-      font-size: 20px;
-      font-weight: 800;
-      color: #ffffff;
-      letter-spacing: 0.5px;
-    }
-
-    .dashboard-scroll-body {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      padding-bottom: 60px;
-    }
-
-    .dashboard-panel-box {
-      background: linear-gradient(180deg, #112647 0%, #0a1832 100%);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 12px;
-      padding: 16px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-      width: 100%;
-    }
-
-    .panel-box-title {
-      font-size: 12px;
-      text-transform: uppercase;
-      color: #e6b800;
-      font-weight: 800;
-      letter-spacing: 1px;
-      margin-bottom: 12px;
-    }
-
-    .panel-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 8px 0;
-      font-size: 14px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-    }
-
-    .panel-row:last-child {
-      border-bottom: none;
-    }
-
-    .panel-label {
-      color: #9cb3d9;
-    }
-
-    .panel-value {
-      font-weight: bold;
-      color: #ffffff;
-    }
-
-    .math-total-row {
-      margin-top: 12px;
-      border-top: 1px dashed rgba(255, 255, 255, 0.15);
-      padding-top: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 15px;
-      font-weight: 800;
     }
   </style>
 </head>
@@ -360,56 +249,113 @@
   <div class="app-container">
     
     <header class="app-header">
-      <h1 class="app-title">3D SHOWCASE <span class="app-version">v6.4</span></h1>
+      <h1 class="app-title">3D SHOWCASE <span class="app-version">v5.4</span></h1>
     </header>
 
-    <!-- SCREEN 1 WORKSPACE -->
-    <div id="screen-showcase-view" class="screen-container">
-      <section class="scan-controls-grid">
-        <div class="scan-column">
-          <button class="scan-btn">Scan Front</button>
-          <input type="file" id="camera-front-input" class="camera-trigger-overlay" accept="image/*">
-          <div class="preview-box" id="preview-front">
-            <div class="preview-placeholder">Front<br>Preview</div>
+    <section class="scan-controls-grid">
+      <div class="scan-column">
+        <button class="scan-btn">Scan Front</button>
+        <input type="file" class="camera-trigger-overlay" accept="image/*" onchange="handleImageUpload(this, 'front')">
+        <div class="preview-box" id="preview-front">
+          <div class="preview-placeholder">Front<br>Preview</div>
+        </div>
+      </div>
+      
+      <div class="scan-column">
+        <button class="scan-btn">Scan Back</button>
+        <input type="file" class="camera-trigger-overlay" accept="image/*" onchange="handleImageUpload(this, 'back')">
+        <div class="preview-box" id="preview-back">
+          <div class="preview-placeholder">Back<br>Preview</div>
+        </div>
+      </div>
+    </section>
+
+    <main class="mesh-view-stage" id="mesh-stage">
+      <div class="card-3d-wrapper" id="card-mesh">
+        
+        <div class="card-side card-front" id="mesh-front-side">
+          <div class="wireframe-blueprint">
+            <div class="wireframe-text">FRONT SIDE<br>PENDING</div>
           </div>
         </div>
         
-        <div class="scan-column">
-          <button class="scan-btn">Scan Back</button>
-          <input type="file" id="camera-back-input" class="camera-trigger-overlay" accept="image/*">
-          <div class="preview-box" id="preview-back">
-            <div class="preview-placeholder">Back<br>Preview</div>
+        <div class="card-side card-back" id="mesh-back-side">
+          <div class="wireframe-blueprint">
+            <div class="wireframe-text">BACK SIDE<br>PENDING</div>
           </div>
         </div>
-      </section>
-
-      <main class="mesh-view-stage" id="global-canvas-stage">
-        <div class="card-3d-wrapper" id="card-mesh">
-          <div class="card-side card-front" id="mesh-front-side">
-            <div class="wireframe-blueprint">
-              <div class="wireframe-text">FRONT SIDE<br>PENDING</div>
-            </div>
-          </div>
-          <div class="card-side card-back" id="mesh-back-side">
-            <div class="wireframe-blueprint">
-              <div class="wireframe-text">BACK SIDE<br>PENDING</div>
-            </div>
-          </div>
-        </div>
-      </main>
-
-      <div class="instruction-overlay">
-        <p class="instruction-text">Swipe card mesh area to spin in 3D</p>
+        
       </div>
+    </main>
 
-      <button class="evaluate-btn" onclick="scrollToDashboard()">Evaluate 3D Showcase Blueprint</button>
+    <div class="instruction-overlay">
+      <p class="instruction-text">Swipe card mesh area to spin in 3D</p>
     </div>
 
-    <!-- SCREEN 2: METRICS DASHBOARD -->
-    <div id="screen-dashboard-view" class="screen-dashboard-container">
-      <button class="back-nav-btn" onclick="scrollToTopScanner()">⬅ Back to Scanner</button>
-      
-      
-        --- Pending AI Analysis ---</h2>
-      </div>
+    <footer class="bottom-action-anchor">
+      <button class="evaluate-btn">Evaluate 3D Showcase Blueprint</button>
+    </footer>
 
+  </div>
+
+  <script>
+    let currentRotationY = 0;
+    let isDragging = false;
+    let startX = 0;
+
+    const cardMesh = document.getElementById('card-mesh');
+    const meshStage = document.getElementById('mesh-stage');
+
+    function handleImageUpload(input, side) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+          const imageSrc = e.target.result;
+          
+          const previewBox = document.getElementById(`preview-${side}`);
+          if (previewBox) {
+            previewBox.innerHTML = `<img src="${imageSrc}" alt="${side} preview">`;
+          }
+          
+          const meshSide = document.getElementById(`mesh-${side}-side`);
+          if (meshSide) {
+            meshSide.innerHTML = `<img src="${imageSrc}" alt="${side} card face">`;
+          }
+        };
+        
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    function startDrag(e) {
+      isDragging = true;
+      startX = e.pageX || (e.touches && e.touches[0].pageX);
+    }
+
+    function moveDrag(e) {
+      if (!isDragging) return;
+      
+      const currentX = e.pageX || (e.touches && e.touches[0].pageX);
+      const deltaX = currentX - startX;
+      
+      currentRotationY += deltaX * 0.7;
+      cardMesh.style.transform = `rotateY(${currentRotationY}deg)`;
+      
+      startX = currentX;
+    }
+
+    function endDrag() {
+      isDragging = false;
+    }
+
+    meshStage.addEventListener('mousedown', startDrag);
+    window.addEventListener('mousemove', moveDrag);
+    window.addEventListener('mouseup', endDrag);
+
+    meshStage.addEventListener('touchstart', startDrag, { passive: true });
+    window.addEventListener('touchmove', moveDrag, { passive: true });
+    window.addEventListener('touchend', endDrag);
+  </script>
+</body>
+</html>
