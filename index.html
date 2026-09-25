@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>3D SHOWCASE v6.5</title>
+  <title>3D SHOWCASE v6.6</title>
   <style>
     /* Reset & Theme Setup */
     * {
@@ -23,7 +23,7 @@
       flex-direction: column;
       align-items: center;
       padding: 20px 16px;
-      overflow: hidden;
+      overflow-y: auto; /* Allows natural smooth scrolling down to the math cards */
     }
 
     .app-container {
@@ -32,14 +32,14 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      flex-grow: 1;
-      position: relative;
     }
 
+    /* Fixed Layout Header Title */
     .app-header {
       margin-top: 10px;
       margin-bottom: 20px;
       text-align: center;
+      width: 100%;
     }
 
     .app-title {
@@ -57,7 +57,7 @@
       text-transform: lowercase;
     }
 
-    /* SCREEN 1: MAIN SCANNER WORKSPACE VIEWPORT LAYOUT */
+    /* Top Camera Grid Controls */
     .scan-controls-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -124,14 +124,15 @@
       -webkit-appearance: none;
     }
 
+    /* Core Functional 3D Card Engine Stage */
     .mesh-view-stage {
-      flex-grow: 1;
       width: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
       perspective: 1200px;
       margin-bottom: 40px;
+      min-height: 295px;
     }
 
     .card-3d-wrapper {
@@ -215,7 +216,7 @@
       border-radius: 8px;
       padding: 14px;
       text-align: center;
-      margin-bottom: 25px;
+      margin-bottom: 40px;
       background-color: rgba(230, 184, 0, 0.02);
     }
 
@@ -227,66 +228,15 @@
       text-transform: uppercase;
     }
 
-    .bottom-action-anchor {
-      width: 100%;
-      margin-top: auto;
-    }
-
-    .evaluate-btn {
-      width: 100%;
-      background-color: #2ec4b6;
-      border: none;
-      color: #0b1f3f;
-      padding: 16px;
-      font-size: 13px;
-      font-weight: bold;
-      border-radius: 10px;
-      cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-    }
-
     /* ==========================================
-       SCREEN 2: FULL CONTEXT DATA DASHBOARD PANEL
+       RESTORED METRIC DASHBOARD PANELS (BLANK)
        ========================================== */
-    .dashboard-panel-view {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: #0b1f3f;
-      z-index: 100;
-      display: flex;
-      flex-direction: column;
-      padding: 10px 0;
-      transform: translateY(100%); /* Hides off-screen seamlessly under page base */
-      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .dashboard-panel-view.panel-active {
-      transform: translateY(0%); /* Slides smoothly up into absolute view target */
-    }
-
-    .back-nav-btn {
-      align-self: flex-start;
-      background: transparent;
-      border: 1px solid rgba(230, 184, 0, 0.5);
-      color: #e6b800;
-      padding: 8px 14px;
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: bold;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      cursor: pointer;
-      margin-bottom: 20px;
-    }
-
     .card-identity-header {
       width: 100%;
       text-align: center;
       margin-bottom: 20px;
+      padding-top: 10px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.1);
     }
 
     .card-identity-title {
@@ -301,9 +251,7 @@
       display: flex;
       flex-direction: column;
       gap: 16px;
-      overflow-y: auto;
-      flex-grow: 1;
-      padding-bottom: 20px;
+      padding-bottom: 40px; /* Leaves breathing space at the very bottom of the page */
     }
 
     .dashboard-panel-box {
@@ -312,6 +260,7 @@
       border-radius: 12px;
       padding: 16px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      width: 100%;
     }
 
     .panel-box-title {
@@ -361,12 +310,12 @@
 
   <div class="app-container">
     
-    <!-- Permanent Top Branding Area -->
+    <!-- Permanent Top Header Title Area -->
     <header class="app-header">
-      <h1 class="app-title">3D SHOWCASE <span class="app-version">v6.5</span></h1>
+      <h1 class="app-title">3D SHOWCASE <span class="app-version">v6.6</span></h1>
     </header>
 
-    <!-- SCREEN 1 LAYOUT VIEW WORKSPACE -->
+    <!-- Camera Trigger Workspace Row Layout -->
     <section class="scan-controls-grid">
       <div class="scan-column">
         <button class="scan-btn">Scan Front</button>
@@ -385,6 +334,7 @@
       </div>
     </section>
 
+    <!-- Main 3D Showcase Canvas Stage -->
     <main class="mesh-view-stage" id="mesh-stage">
       <div class="card-3d-wrapper" id="card-mesh">
         <div class="card-side card-front" id="mesh-front-side">
@@ -404,10 +354,36 @@
       <p class="instruction-text">Swipe card mesh area to spin in 3D</p>
     </div>
 
-    <footer class="bottom-action-anchor">
-      <button class="evaluate-btn" onclick="openDashboardPanel()">Evaluate 3D Showcase Blueprint</button>
-    </footer>
+    <!-- =======================================================
+         ANALYTICS CONTENT HOUSES DIRECTLY BELOW INTERACTIVE AREA
+         ======================================================= -->
+    
+      --- Pending AI Analysis ---</h2>
+    </div>
 
-    <!-- SCREEN 2 OVERLAY CONTAINER MODULE -->
-    <div class="dashboard-panel-view" id="dashboard-panel">
-      
+    <div class="dashboard-scroll-body">
+      <!-- Blueprint Data Box Container -->
+      <div class="dashboard-panel-box">
+        <div class="panel-box-title">📋 Grading Blueprint</div>
+        <div class="panel-row">
+          <span class="panel-label">Estimated Grade:</span>
+          <span class="panel-value">---</span>
+        </div>
+        <div class="panel-row">
+          <span class="panel-label">Flaws Seen:</span>
+          <span class="panel-value">---</span>
+        </div>
+        <div class="panel-row">
+          <span class="panel-label">Worth Grading?</span>
+          <span class="panel-value">---</span>
+        </div>
+      </div>
+
+      <!-- Math Table Data Box Container -->
+      <div class="dashboard-panel-box">
+        <div class="panel-box-title">💰 Net Profit Math</div>
+        <div class="panel-row">
+          <span class="panel-label">Raw Market Value:</span>
+          <span class="panel-value">---</span>
+        </div>
+        <div class="panel-row">
