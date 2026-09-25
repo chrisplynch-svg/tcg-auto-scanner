@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>3D SHOWCASE v5.9</title>
+  <title>TCG EVALUATOR v6.0</title>
   <style>
     /* Reset & Theme Setup */
     * {
@@ -36,7 +36,7 @@
       position: relative;
     }
 
-    /* Screen Views */
+    /* Screen Views Management */
     .view-screen {
       width: 100%;
       display: flex;
@@ -70,7 +70,7 @@
       text-transform: lowercase;
     }
 
-    /* Scanner Grid Layout Control */
+    /* Scanner Grid Layout Optimization */
     .scan-controls-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -84,11 +84,23 @@
       flex-direction: column;
       align-items: center;
       gap: 14px;
-      position: relative;
     }
 
-    /* Premium Metallic Scanning Buttons */
-    .scan-btn {
+    /* v6.0 Airtight Strategy: The Input is completely hidden, but the Label IS the button */
+    .native-file-input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+
+    /* Styled Label that behaves natively to trigger camera roll directly */
+    .scan-trigger-label {
+      display: block;
       width: 100%;
       background: linear-gradient(180deg, #18335c 0%, #0a1b35 100%);
       border: 2px solid #e6b800;
@@ -102,29 +114,17 @@
       box-shadow: 0 0 12px rgba(230, 184, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1);
       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
       text-align: center;
-      pointer-events: none;
-    }
-
-    /* Invisible Interceptor Input Overlays */
-    .camera-trigger-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 47px;
-      opacity: 0;
       cursor: pointer;
-      -webkit-appearance: none;
-      z-index: 50;
+      transition: transform 0.05s ease;
     }
 
-    .camera-trigger-overlay:active + .scan-btn {
+    .scan-trigger-label:active {
       transform: scale(0.96);
       background: linear-gradient(180deg, #0a1b35 0%, #040e1d 100%);
       box-shadow: 0 0 4px rgba(230, 184, 0, 0.15);
     }
 
-    /* Preview Anchors */
+    /* Scaled Sizing Preview Anchors */
     .preview-box {
       width: 100px;
       height: 140px;
@@ -152,14 +152,14 @@
       text-transform: uppercase;
     }
 
-    /* v5.9 High-Fidelity Vertically Stacked Card Stage Area */
+    /* Large Dual Vertically Stacked Presentation Engine */
     .stacked-cards-stage {
       width: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 25px;
-      margin-bottom: 110px; /* Leave generous scrolling clearance for bottom button */
+      margin-bottom: 110px; 
     }
 
     .flat-card-container {
@@ -183,7 +183,7 @@
       border-radius: 16px;
     }
 
-    /* Glowing Neon Placeholder Vectors */
+    /* Glowing Placeholder Outlines */
     .wireframe-blueprint {
       width: 85%;
       height: 85%;
@@ -218,7 +218,7 @@
       line-height: 1.4;
     }
 
-    /* Fixed Teal Bottom Panel Action Anchor Layout */
+    /* Fixed Teal Bottom Panel Anchor Layout */
     .bottom-action-anchor {
       position: fixed;
       bottom: 0;
@@ -247,7 +247,7 @@
       box-shadow: 0 -4px 20px rgba(46, 196, 182, 0.25);
     }
 
-    /* Evaluation Dashboard Window Panel Content Styling */
+    /* Evaluation Metric Content Dashboard */
     .dashboard-panel-content {
       width: 100%;
       background-color: #0b1f3f;
@@ -320,40 +320,43 @@
 
   <div class="app-container">
     
-    <!-- DISPLAY CONTEXT LAYER 1: CARD SCANNER VIEW -->
+    <!-- DISPLAY CONTEXT LAYER 1: MAIN SCANNER SCREEN -->
     <div id="screen-showcase" class="view-screen">
       <header class="app-header">
-        <h1 class="app-title">TCG AUTO-EVALUATOR <span class="app-version">v5.9</span></h1>
+        <h1 class="app-title">TCG EVALUATOR <span class="app-version">v6.0</span></h1>
       </header>
 
       <section class="scan-controls-grid">
+        <!-- Front Scan Setup -->
         <div class="scan-column">
-          <input type="file" class="camera-trigger-overlay" accept="image/*" onchange="handleImageUpload(this, 'front')">
-          <button class="scan-btn">Scan Front</button>
+          <!-- Hidden Native Input element with linked ID anchor mapping -->
+          <input type="file" id="input-front" class="native-file-input" accept="image/*">
+          <!-- Label linked via 'for' attribute behaves perfectly to launch camera roll securely -->
+          <label for="input-front" class="scan-trigger-label">Scan Front</label>
           <div class="preview-box" id="preview-front">
             <div class="preview-placeholder">Front<br>Preview</div>
           </div>
         </div>
         
+        <!-- Back Scan Setup -->
         <div class="scan-column">
-          <input type="file" class="camera-trigger-overlay" accept="image/*" onchange="handleImageUpload(this, 'back')">
-          <button class="scan-btn">Scan Back</button>
+          <!-- Hidden Native Input element with linked ID anchor mapping -->
+          <input type="file" id="input-back" class="native-file-input" accept="image/*">
+          <!-- Label linked via 'for' attribute behaves perfectly to launch camera roll securely -->
+          <label for="input-back" class="scan-trigger-label">Scan Back</label>
           <div class="preview-box" id="preview-back">
             <div class="preview-placeholder">Back<br>Preview</div>
           </div>
         </div>
       </section>
 
-      <!-- Stable Light Weight Stack Layout Containers -->
       <main class="stacked-cards-stage">
-        <!-- Front Surface Layout Element -->
         <div class="flat-card-container" id="mesh-front-side">
           <div class="wireframe-blueprint">
             <div class="wireframe-text">FRONT CARD FACE<br>PENDING SCAN</div>
           </div>
         </div>
         
-        <!-- Back Surface Layout Element -->
         <div class="flat-card-container" id="mesh-back-side">
           <div class="wireframe-blueprint">
             <div class="wireframe-text">BACK CARD FACE<br>PENDING SCAN</div>
@@ -362,7 +365,7 @@
       </main>
     </div>
 
-    <!-- DISPLAY CONTEXT LAYER 2: EVALUATION DASHBOARD VIEW -->
+    <!-- DISPLAY CONTEXT LAYER 2: METRICS DASHBOARD VIEW -->
     <div id="screen-dashboard" class="view-screen hidden-view">
       <header class="app-header">
         <h1 class="app-title">EVALUATION METRICS</h1>
@@ -376,9 +379,3 @@
             <span class="metric-value yellow">PSA 9 (Mint)</span>
           </div>
           <div class="metric-row">
-            <span class="metric-label">Flaws Seen:</span>
-            <span class="metric-value">Micro-whitening top-left reverse edge</span>
-          </div>
-          <div class="metric-row">
-            <span class="metric-label">Worth Grading?</span>
-            <span class="metric-value green">🟢 YES</span>
