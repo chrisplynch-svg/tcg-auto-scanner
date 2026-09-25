@@ -1,167 +1,365 @@
-/* ==========================================================================
-   POKEGRADE ZERO ENGINE
-   ========================================================================== */
-
-document.addEventListener('DOMContentLoaded', () => {
-  
-  // Element Selectors
-  const homeView = document.getElementById('home-view');
-  const stageView = document.getElementById('stage-view');
-  const inputCloseup = document.getElementById('input-closeup');
-  const inputBinder = document.getElementById('input-binder');
-  const interactiveCard = document.getElementById('interactive-card');
-  const dashboardSheet = document.getElementById('dashboard-sheet');
-  const sheetContent = document.querySelector('.sheet-content');
-  const sheetHandle = document.getElementById('sheet-handle');
-  const resetBtn = document.getElementById('master-reset-btn');
-
-  // Haptic Feedback Helper
-  function triggerHaptic(pattern = 15) {
-    if (navigator.vibrate) {
-      navigator.vibrate(pattern);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>PokeGradeZero Prototype</title>
+  <style>
+    /* ==========================================================================
+       RESET & BASE VARIABLES
+       ========================================================================== */
+    :root {
+      --bg-main: #0B132B;
+      --bg-surface: #1C2541;
+      --primary-teal: #4CC9F0;
+      --primary-blue: #3A0CA3;
+      --accent-cyan: #72EFDD;
+      --text-main: #FFFFFF;
+      --text-muted: #A5A5A5;
+      --tier-pull: #4BB543;
+      --tier-cash: #FFCC00;
+      --tier-binder: #FF3333;
     }
-  }
 
-  // File Processing and Image Extraction
-  function processCapture(inputElement, workflowType) {
-    const file = inputElement.files[0];
-    if (!file) return;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-    triggerHaptic([30, 15, 30]); // Success pattern
-    const reader = new FileReader();
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #000000;
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
 
-    reader.onload = function(e) {
-      const imgUrl = e.target.result;
+    /* ==========================================================================
+       MOBILE FRAME WORKSPACE
+       ========================================================================== */
+    #app-container {
+      width: 100%;
+      max-width: 430px;
+      height: 100vh;
+      background-color: var(--bg-main);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 0 30px rgba(0,0,0,0.5);
+    }
+
+    .app-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px;
+      background-color: var(--bg-surface);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .brand-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-title span {
+      color: var(--primary-teal);
+    }
+
+    .reset-icon-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      font-size: 1.1rem;
+      padding: 8px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .reset-icon-btn:active {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .view-panel {
+      display: none;
+      flex-direction: column;
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .view-panel.active {
+      display: flex;
+    }
+
+    /* ==========================================================================
+       STEP 1: SPLIT SCANNERS
+       ========================================================================== */
+    .welcome-hero {
+      margin: 15px 0 25px 0;
+      text-align: center;
+    }
+
+    .welcome-hero h2 {
+      font-size: 1.4rem;
+      margin-bottom: 6px;
+    }
+
+    .welcome-hero p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .split-scanner-menu {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      width: 100%;
+    }
+
+    .scanner-card {
+      background-color: var(--bg-surface);
+      border: 2px dashed rgba(76, 201, 240, 0.2);
+      border-radius: 16px;
+      padding: 25px 12px;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.2s, border-color 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .scanner-card:active {
+      transform: scale(0.97);
+      border-color: var(--primary-teal);
+    }
+
+    .native-camera-input {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .card-icon {
+      font-size: 2.2rem;
+      margin-bottom: 12px;
+    }
+
+    .scanner-card h3 {
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+
+    .scanner-card p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      line-height: 1.3;
+    }
+
+    /* ==========================================================================
+       STEP 2: INTERACTIVE 3D STAGE
+       ========================================================================== */
+    #stage-view {
+      align-items: center;
+      justify-content: center;
+    }
+
+    .scene-3d {
+      width: 240px;
+      height: 335px;
+      perspective: 1000px;
+      margin-bottom: 16px;
+    }
+
+    .card-3d {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      cursor: pointer;
+    }
+
+    .card-3d.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 14px;
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    }
+
+    .card-front {
+      background: linear-gradient(135deg, #2a2e3d 0%, #151821 100%);
+    }
+
+    .card-back {
+      background: linear-gradient(135deg, #151821 0%, #2a2e3d 100%);
+      transform: rotateY(180deg);
+    }
+
+    .placeholder-art {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      text-align: center;
+      padding: 20px;
+    }
+
+    .interaction-hint {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+
+    /* ==========================================================================
+       SLIDE-UP DASHBOARD PANEL
+       ========================================================================== */
+    .slide-sheet {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 70%;
+      background: linear-gradient(to bottom, #16223F, #0E172A);
+      border-top-left-radius: 24px;
+      border-top-right-radius: 24px;
+      border-top: 1px solid rgba(76, 201, 240, 0.3);
+      box-shadow: 0 -10px 30px rgba(0,0,0,0.6);
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      transform: translateY(100%);
+      transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .slide-sheet.peek {
+      transform: translateY(calc(100% - 60px));
+    }
+
+    .slide-sheet.expanded {
+      transform: translateY(0);
+    }
+
+    .sheet-drag-handle {
+      width: 40px;
+      height: 5px;
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+      margin: 12px auto;
+      cursor: pointer;
+    }
+
+    .sheet-content {
+      flex: 1;
+      padding: 0 20px 20px 20px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="app-container">
+    <header class="app-header">
+      <h1 class="brand-title">PokeGrade<span>Zero</span></h1>
+      <button id="master-reset-btn" class="reset-icon-btn" aria-label="Reset UI">🔄</button>
+    </header>
+
+    <!-- VIEW 1: DUAL SCANNERS -->
+    <main id="home-view" class="view-panel active">
+      <div class="welcome-hero">
+        <h2>High-Volume Sorting Blueprint</h2>
+        <p>Select your zero-cost scanning workflow to begin.</p>
+      </div>
       
-      // Advance Views
-      homeView.classList.remove('active');
-      stageView.classList.add('active');
-      
-      if (workflowType === 'closeup') {
-        renderStepTwo(imgUrl);
-      } else if (workflowType === 'binder') {
-        renderStepOne(imgUrl);
+      <div class="split-scanner-menu">
+        <label class="scanner-card" id="btn-closeup">
+          <input type="file" accept="image/*" capture="camera" class="native-camera-input" id="input-closeup">
+          <div class="card-icon">🔍</div>
+          <h3>Close-Up Scanner</h3>
+          <p>Deep-dive math evaluation for individual cards.</p>
+        </label>
+
+        <label class="scanner-card" id="btn-binder">
+          <input type="file" accept="image/*" capture="camera" class="native-camera-input" id="input-binder">
+          <div class="card-icon">📱</div>
+          <h3>9-Card Page</h3>
+          <p>Instant sorting tiers sequence layout mapping.</p>
+        </label>
+      </div>
+    </main>
+
+    <!-- VIEW 2: INTERACTIVE CARD INTERFACE -->
+    <section id="stage-view" class="view-panel">
+      <div class="scene-3d">
+        <div class="card-3d" id="interactive-card">
+          <div class="card-face card-front">
+            <div class="placeholder-art">📸 Tap to Flip Front</div>
+          </div>
+          <div class="card-face card-back">
+            <div class="placeholder-art">🔮 Tap to Flip Back</div>
+          </div>
+        </div>
+      </div>
+      <p class="interaction-hint">Swipe or tap the card to flip</p>
+    </section>
+
+    <!-- BOTTOM SHEET OVERLAY PANEL -->
+    <div id="dashboard-sheet" class="slide-sheet collapsed">
+      <div class="sheet-drag-handle" id="sheet-handle"></div>
+      <div class="sheet-content"></div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const homeView = document.getElementById('home-view');
+      const stageView = document.getElementById('stage-view');
+      const inputCloseup = document.getElementById('input-closeup');
+      const inputBinder = document.getElementById('input-binder');
+      const interactiveCard = document.getElementById('interactive-card');
+      const dashboardSheet = document.getElementById('dashboard-sheet');
+      const sheetContent = document.querySelector('.sheet-content');
+      const sheetHandle = document.getElementById('sheet-handle');
+      const resetBtn = document.getElementById('master-reset-btn');
+
+      function triggerHaptic(pattern = 15) {
+        if (navigator.vibrate) navigator.vibrate(pattern);
       }
-      
-      // Reveal Bottom Drawer
-      dashboardSheet.classList.remove('collapsed');
-      dashboardSheet.classList.add('peek');
-    };
 
-    reader.readAsDataURL(file);
-  }
+      function processCapture(inputElement, workflowType) {
+        const file = inputElement.files[0];
+        if (!file) return;
 
-  // Event Listeners for Camera Triggers
-  inputCloseup.addEventListener('change', () => processCapture(inputCloseup, 'closeup'));
-  inputBinder.addEventListener('change', () => processCapture(inputBinder, 'binder'));
-
-  // 3D Card Interactive Rotation
-  interactiveCard.addEventListener('click', () => {
-    triggerHaptic(10);
-    interactiveCard.classList.toggle('flipped');
-  });
-
-  // Expandable Bottom Analytics Sheet Toggle
-  sheetHandle.addEventListener('click', () => {
-    triggerHaptic(20);
-    if (dashboardSheet.classList.contains('expanded')) {
-      dashboardSheet.classList.remove('expanded');
-      dashboardSheet.classList.add('peek');
-    } else {
-      dashboardSheet.classList.remove('peek');
-      dashboardSheet.classList.add('expanded');
-    }
-  });
-
-  // Universal Master Reset Operations
-  resetBtn.addEventListener('click', () => {
-    triggerHaptic([60, 40, 60]); // Distinct flush vibe
-    
-    // Clear Inputs
-    inputCloseup.value = '';
-    inputBinder.value = '';
-    
-    // Revert Classes & Reset Layouts
-    stageView.classList.remove('active');
-    homeView.classList.add('active');
-    dashboardSheet.className = 'slide-sheet collapsed';
-    interactiveCard.classList.remove('flipped');
-    
-    // Wipe HTML inner placeholders
-    interactiveCard.querySelector('.card-front').innerHTML = '<div class="placeholder-art">📸 Tap to Flip Front</div>';
-    interactiveCard.querySelector('.card-back').innerHTML = '<div class="placeholder-art">🔮 Tap to Flip Back</div>';
-    sheetContent.innerHTML = '';
-  });
-
-  /* ==========================================================================
-     WORKFLOW INJECTION TEMPLATES
-     ========================================================================== */
-
-  // STEP 1 UI: 9-Card High Volume Grid Evaluation Template
-  function renderStepOne(imageSrc) {
-    // Inject incoming layout directly inside the 3D frame context
-    interactiveCard.querySelector('.card-front').innerHTML = `<img src="${imageSrc}" style="width:100%; height:100%; object-fit:cover;">`;
-    interactiveCard.querySelector('.card-back').innerHTML = `<div class="placeholder-art" style="background:#151821; color:#aaa;">Grid Overview Active</div>`;
-
-    sheetContent.innerHTML = `
-      <div style="margin-top:10px;">
-        <h3 style="color:#4CC9F0; margin-bottom:12px;">9-Card Sequence Mapping</h3>
-        <ol style="list-style:none; font-family:monospace; font-size:0.9rem; line-height:1.8;">
-          <li>[1] Charizard Base Set Shadowless ...... <span style="color:#4BB543;">🟢 PULL</span></li>
-          <li>[2] Blastoise Base Set Unlimited ....... <span style="color:#FFCC00;">🟡 CASH RAW</span></li>
-          <li>[3] Machamp 1st Edition Holo ........... <span style="color:#FF3333;">🔴 BINDER</span></li>
-          <li>[4] Pikachu Jungle Edition ............. <span style="color:#FF3333;">🔴 BINDER</span></li>
-          <li>[5] Mewtwo Promo #3 .................... <span style="color:#FFCC00;">🟡 CASH RAW</span></li>
-          <li>[6] Gyarados Base Set .................. <span style="color:#FF3333;">🔴 BINDER</span></li>
-          <li>[7] Gengar Fossil Holo ................. <span style="color:#4BB543;">🟢 PULL</span></li>
-          <li>[8] Alakazam Base Set .................. <span style="color:#FFCC00;">🟡 CASH RAW</span></li>
-          <li>[9] Nidoking Base Set Holo ............. <span style="color:#FF3333;">🔴 BINDER</span></li>
-        </ol>
-        
-        <div style="margin-top:16px; padding:12px; background:rgba(255,255,255,0.05); border-radius:8px; font-size:0.75rem; line-height:1.4;">
-          <p><span style="color:#4BB543;">🟢 THE PULL TIER:</span> Move to Step 2 for a deep-dive math evaluation.</p>
-          <p style="margin:4px 0;"><span style="color:#FFCC00;">🟡 THE CASH RAW TIER:</span> Real market value; sell raw to maximize profit.</p>
-          <p><span style="color:#FF3333;">🔴 THE BINDER TIER:</span> Low value. Keep in slots to sell as bulk or loose lots.</p>
-        </div>
-      </div>
-    `;
-  }
-
-  // STEP 2 UI: Deep-Dive Micro Evaluation & Complete Math Analytics
-  function renderStepTwo(imageSrc) {
-    interactiveCard.querySelector('.card-front').innerHTML = `<img src="${imageSrc}" style="width:100%; height:100%; object-fit:cover;">`;
-    interactiveCard.querySelector('.card-back').innerHTML = `<img src="${imageSrc}" style="width:100%; height:100%; object-fit:cover; filter: hue-rotate(90deg) contrast(1.2);">`;
-
-    sheetContent.innerHTML = `
-      <div style="margin-top:10px; font-size:0.85rem; line-height:1.5;">
-        <h3 style="color:#4CC9F0; margin-bottom:12px; font-size:1.1rem;">Deep-Dive Pre-Grading Blueprint</h3>
-        
-        <p><strong>📊 Estimated Grade:</strong> Mint 9 (PSA Candidate)</p>
-        <p><strong>🔍 Flaws Seen:</strong> Minor micro-scratching on top edge, slight left-to-right off-centering.</p>
-        <p><strong>🟢 Worth Grading?</strong> Yes, net margin threshold met.</p>
-        <p><strong>💰 Raw Value:</strong> $145.00</p>
-        <p><strong>📈 Est. Graded Value:</strong> $420.00 (PSA 9 Target)</p>
-        
-        <div style="margin:12px 0; padding:10px; background:rgba(76, 201, 240, 0.1); border: 1px solid rgba(76, 201, 240, 0.3); border-radius:8px;">
-          <p><strong>🧮 Net Profit Math:</strong></p>
-          <p style="font-family:monospace; margin-top:4px;">
-            $420.00 Gross Graded<br>
-            - $19.00 Grading Fee<br>
-            - $14.00 Insured Logistics<br>
-            - $2.50 Packing Materials<br>
-            - $56.70 Platform Fee (13.5%)<br>
-            - $145.00 Investment Outlay<br>
-            --------------------------<br>
-            <span style="color:#4BB543; font-weight:bold;">= +$182.80 Net Cash Payout</span>
-          </p>
-        </div>
-
-        <p><strong>📈 Pop Report:</strong> 1,142 globally in PSA 9</p>
-        <p><strong>🏷️ Best Grader:</strong> PSA (Max Liquidity Multiplier)</p>
-        <p><strong>💧 Liquidity:</strong> 🟢 High velocity asset class</p>
-        <p><strong>🛡️ Authenticity:</strong> Verified (Foil pattern texture and font sizing match baseline)</p>
-        <p><strong>💡 What to Scan For Next:</strong> 1999 Jungle Edition Holos with potential clean centering lines.</p>
-      </div>
-    `;
-  }
-});
+        triggerHaptic();
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const imgUrl = e.target.result;
+          homeView.classList.remove('active');
+          stageView.classList.add('active');
+          
+          if (workflowType === 'closeup') {
+            renderStepTwo(imgUrl);
