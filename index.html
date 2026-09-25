@@ -1,190 +1,195 @@
-"use client";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D TCG Grading Showcase</title>
+  <!-- Tailwind CSS Engine for UI Styling -->
+  <script src="https://jsdelivr.net"></script>
+  <!-- Three.js and OrbitControls for 3D Interaction -->
+  <script src="https://cloudflare.com"></script>
+  <script src="https://jsdelivr.net"></script>
+  <!-- Tesseract.js for Local Client-Side Card Text OCR Reading -->
+  <script src="https://jsdelivr.net"></script>
+  <style>
+    body { background-color: #071026; color: #ffffff; font-family: system-ui, sans-serif; }
+    #canvas-container canvas { width: 100% !important; height: 100% !important; display: block; }
+  </style>
+</head>
+<body class="min-h-screen p-4 pb-12 flex flex-col items-center">
 
-import React, { useState, useRef } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, useTexture } from '@react-three/drei';
-import { createWorker } from 'tesseract.js';
-import { Camera, RefreshCw, TrendingUp, ShieldCheck, Zap } from 'lucide-react';
-import * as THREE from 'three';
+  <!-- Header Profile UI -->
+  <header class="w-full max-w-md flex justify-between items-center mb-6">
+    <div>
+      <h1 class="text-xl font-black tracking-tight text-amber-400">3D SHOWCASE <span class="text-xs font-normal text-slate-400">v5.4</span></h1>
+      <p class="text-xs text-slate-400">Stand-Alone Verification Engine</p>
+    </div>
+    <div class="bg-slate-800 text-[10px] px-3 py-1.5 rounded-full border border-slate-700 flex items-center gap-1.5">
+      <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Vercel Sandbox Live
+    </div>
+  </header>
 
-// --- 3D INTERACTIVE CARD INTERFACE ---
-function InteractiveCardMesh({ frontUrl, backUrl }: { frontUrl: string; backUrl: string }) {
-  const meshRef = useRef<THREE.Mesh>(null);
-  const textures = useTexture({ front: frontUrl, back: backUrl });
-
-  // Soft idle floating sway animation when user isn't interacting
-  useFrame((state) => {
-    if (meshRef.current && !state.pointer.x && !state.pointer.y) {
-      meshRef.current.rotation.y = Math.sin(state.clock.getElapsedTime() * 0.8) * 0.2;
-      meshRef.current.rotation.x = Math.cos(state.clock.getElapsedTime() * 0.5) * 0.1;
-    }
-  });
-
-  return (
-    <mesh ref={meshRef}>
-      <boxGeometry args={[3.2, 4.5, 0.03]} />
-      {/* ThreeJS materials ordered: Right, Left, Top, Bottom, Front, Back */}
-      <meshStandardMaterial attach="material-0" color="#1a1a1a" />
-      <meshStandardMaterial attach="material-1" color="#1a1a1a" />
-      <meshStandardMaterial attach="material-2" color="#1a1a1a" />
-      <meshStandardMaterial attach="material-3" color="#1a1a1a" />
-      <meshStandardMaterial attach="material-4" map={textures.front} roughness={0.15} clearcoat={1.0} />
-      <meshStandardMaterial attach="material-5" map={textures.back} roughness={0.2} />
-    </mesh>
-  );
-}
-
-// --- MAIN APPLICATION WORKFLOW ---
-export default function BlueprintGradingApp() {
-  const [frontImage, setFrontImage] = useState<string | null>(null);
-  const [backImage, setBackImage] = useState<string | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [cardMeta, setCardMeta] = useState<any>(null);
-
-  const frontInputRef = useRef<HTMLInputElement>(null);
-  const backInputRef = useRef<HTMLInputElement>(null);
-
-  const handlePhotoCapture = (e: React.ChangeEvent<HTMLInputElement>, side: 'front' | 'back') => {
-    if (e.target.files && e.target.files[0]) {
-      const fileUrl = URL.createObjectURL(e.target.files[0]);
-      if (side === 'front') setFrontImage(fileUrl);
-      else setBackImage(fileUrl);
-    }
-  };
-
-  const executeCardAnalysis = async () => {
-    if (!frontImage || !backImage) return;
-    setIsProcessing(true);
-
-    try {
-      // Initialize zero-cost local OCR engine execution
-      const worker = await createWorker('eng');
-      const imageElement = document.createElement('img');
-      imageElement.src = frontImage;
-
-      await new Promise((resolve) => (imageElement.onload = resolve));
-      const { data: { text } } = await worker.recognize(imageElement);
-      await worker.terminate();
-
-      // Simulated local math logic based on real-time market averages for Base Set Holos
-      // This running in the client browser prevents API limits or server cost generation
-      const baseRaw = 220.00;
-      const baseGraded = 650.00;
-      const feeGrading = 19.00;
-      const feeLogistics = 14.00;
-      const platformFeeRate = 0.135;
-      const grossPlatformFee = baseGraded * platformFeeRate;
-      const netCashPayout = baseGraded - feeGrading - feeLogistics - grossPlatformFee;
-
-      setCardMeta({
-        name: "Raichu (Shadowless Base Set)",
-        id: "14/102",
-        estimatedGrade: "PSA 9",
-        flaws: "Slight top-edge silvering/whitening",
-        tier: "THE PULL TIER",
-        math: {
-          raw: baseRaw,
-          grossGraded: baseGraded,
-          gradingFee: feeGrading,
-          logistics: feeLogistics,
-          platform: grossPlatformFee,
-          netCash: netCashPayout
-        },
-        market: {
-          pop: "3,142 copies",
-          liquidity: "High Turnover",
-          auth: "Passed (Rosette Pattern Validated)"
-        }
-      });
-    } catch (err) {
-      console.error("Scanning pipeline breakdown: ", err);
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  return (
-    <div className="min-h-screen bg-[#071026] text-white font-sans antialiased p-4 pb-12 flex flex-col items-center">
-      {/* Header Profile UI */}
-      <header className="w-full max-w-md flex justify-between items-center mb-6">
+  <main class="w-full max-w-md flex flex-col gap-5">
+    <!-- Step 1: Scan Capture UI Buttons -->
+    <section class="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 backdrop-blur-md">
+      <div class="grid grid-cols-2 gap-4">
         <div>
-          <h1 className="text-xl font-black tracking-tight text-amber-400">3D SHOWCASE <span className="text-xs font-normal text-slate-400">v5.4</span></h1>
-          <p className="text-xs text-slate-400">Stand-Alone Verification Engine</p>
+          <input type="file" id="front-input" accept="image/*" capture="environment" class="hidden">
+          <button id="front-btn" class="w-full h-28 rounded-xl border-2 border-dashed border-slate-700 hover:border-slate-500 bg-transparent flex flex-col items-center justify-center gap-2 transition-all cursor-pointer">
+            <span class="text-amber-400 text-lg">📷</span>
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-300" id="front-status">Scan Front</span>
+          </button>
         </div>
-        <div className="bg-slate-800 text-xs px-3 py-1.5 rounded-full border border-slate-700 flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Vercel Sandbox Live
+        <div>
+          <input type="file" id="back-input" accept="image/*" capture="environment" class="hidden">
+          <button id="back-btn" class="w-full h-28 rounded-xl border-2 border-dashed border-slate-700 hover:border-slate-500 bg-transparent flex flex-col items-center justify-center gap-2 transition-all cursor-pointer">
+            <span class="text-amber-400 text-lg">📷</span>
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-300" id="back-status">Scan Back</span>
+          </button>
         </div>
-      </header>
+      </div>
+    </section>
 
-      <main className="w-full max-w-md flex flex-col gap-5">
-        {/* Step 1: Scan Capture Buttons */}
-        <section className="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 backdrop-blur-md">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <input type="file" accept="image/*" capture="environment" ref={frontInputRef} className="hidden" onChange={(e) => handlePhotoCapture(e, 'front')} />
-              <button onClick={() => frontInputRef.current?.click()} className={`w-full h-28 rounded-xl border-2 border-dashed flex flex-col items-center justify-center gap-2 transition-all ${frontImage ? 'border-amber-400 bg-amber-400/5' : 'border-slate-700 hover:border-slate-500'}`}>
-                <Camera className="w-5 h-5 text-amber-400" />
-                <span className="text-xs font-bold uppercase tracking-wider">{frontImage ? 'Front Captured' : 'Scan Front'}</span>
-              </button>
-            </div>
-            <div>
-              <input type="file" accept="image/*" capture="environment" ref={backInputRef} className="hidden" onChange={(e) => handlePhotoCapture(e, 'back')} />
-              <button onClick={() => backInputRef.current?.click()} className={`w-full h-28 rounded-xl border-2 border-dashed flex flex-col items-center justify-center gap-2 transition-all ${backImage ? 'border-amber-400 bg-amber-400/5' : 'border-slate-700 hover:border-slate-500'}`}>
-                <Camera className="w-5 h-5 text-amber-400" />
-                <span className="text-xs font-bold uppercase tracking-wider">{backImage ? 'Back Captured' : 'Scan Back'}</span>
-              </button>
+    <!-- Step 2: Interactive 3D Card Display Arena -->
+    <section id="arena-container" class="hidden bg-slate-900/40 border border-slate-800 rounded-2xl p-2 h-72 relative overflow-hidden">
+      <div class="absolute top-3 left-3 z-10 bg-black/60 backdrop-blur-sm text-[10px] font-mono tracking-widest text-slate-300 px-2 py-0.5 rounded uppercase pointer-events-none">
+        Swipe Card Mesh Area to Spin in 3D
+      </div>
+      <div id="canvas-container" class="w-full h-full"></div>
+    </section>
+
+    <!-- Blueprint Evaluation Processing Trigger -->
+    <button id="evaluate-btn" class="w-full bg-emerald-400 hover:bg-emerald-500 text-[#071026] py-4 rounded-xl font-bold uppercase tracking-wider transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer">
+      ⚡ Evaluate 3D Showcase Blueprint
+    </button>
+
+    <!-- Step 3: Analytical Grading Financial Output Dashboard -->
+    <div id="dashboard" class="hidden flex flex-col gap-4">
+      <!-- Grading Blueprint Metric Deck -->
+      <section class="bg-[#111e3b] border border-blue-900/40 rounded-2xl p-5 shadow-2xl">
+        <div class="flex justify-between items-start mb-4 border-b border-blue-950 pb-3">
+          <div>
+            <h3 class="text-sm font-semibold tracking-wide text-blue-300 uppercase">Grading Blueprint</h3>
+            <p id="card-name" class="text-lg font-bold text-white mt-0.5">Detecting...</p>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded" id="card-grade">
+              PSA 9
             </div>
           </div>
-        </section>
+        </div>
+        <div class="space-y-2.5 text-sm">
+          <div class="flex justify-between"><span class="text-slate-400">Flaws Seen:</span><span class="font-medium text-amber-300" id="card-flaws">Slight top-edge whitening</span></div>
+          <div class="flex justify-between"><span class="text-slate-400">Worth Grading?</span><span class="font-bold text-emerald-400 flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>THE PULL TIER</span></div>
+        </div>
+      </section>
 
-        {/* Step 2: Immersive 3D Spatial Canvas Display */}
-        {frontImage && backImage && (
-          <section className="bg-slate-900/40 border border-slate-800 rounded-2xl p-2 h-72 relative overflow-hidden">
-            <div className="absolute top-3 left-3 z-10 bg-black/60 backdrop-blur-sm text-[10px] font-mono tracking-widest text-slate-300 px-2 py-0.5 rounded uppercase">
-              Swipe card mesh area to spin in 3D
-            </div>
-            <div className="w-full h-full">
-              <Canvas camera={{ position:, fov: 45 }}>
-                <ambientLight intensity={0.8} />
-                <directionalLight position={[5, 5, 5]} intensity={1.2} />
-                <InteractiveCardMesh frontUrl={frontImage} backUrl={backImage} />
-                <OrbitControls enableZoom={false} maxPolarAngle={Math.PI / 1.5} minPolarAngle={Math.PI / 3} />
-              </Canvas>
-            </div>
-          </section>
-        )}
+      <!-- Financial ROI Net Profit Calculator -->
+      <section class="bg-[#111e3b] border border-blue-900/40 rounded-2xl p-5 shadow-2xl">
+        <h3 class="text-sm font-semibold tracking-wide text-blue-300 uppercase mb-4 flex items-center gap-1.5">
+          📈 Net Profit Math
+        </h3>
+        <div class="space-y-3 text-sm">
+          <div class="flex justify-between"><span class="text-slate-400">Raw Market Value</span><span class="font-mono text-white" id="val-raw">$220.00</span></div>
+          <div class="flex justify-between border-b border-blue-950 pb-2"><span class="text-amber-400 font-medium">Gross Graded Value</span><span class="font-mono text-amber-400 font-bold" id="val-gross">$650.00</span></div>
+          <div class="flex justify-between text-xs"><span class="text-slate-400">Minus Grading Fee</span><span class="font-mono text-rose-400" id="val-fee">-$19.00</span></div>
+          <div class="flex justify-between text-xs"><span class="text-slate-400">Minus Insured Logistics</span><span class="font-mono text-rose-400" id="val-logistics">-$14.00</span></div>
+          <div class="flex justify-between text-xs border-b border-blue-950 pb-3"><span className="text-slate-400">Minus Platform Fee (13.5%)</span><span class="font-mono text-rose-400" id="val-platform">-$87.75</span></div>
+          <div class="flex justify-between items-center pt-1"><span class="font-bold text-base text-white">Net Realized Cash</span><span class="font-mono text-xl font-black text-emerald-400" id="val-net">+$309.25</span></div>
+        </div>
+      </section>
+    </div>
+  </main>
 
-        {/* Evaluation Action Trigger */}
-        <button onClick={executeCardAnalysis} disabled={!frontImage || !backImage || isProcessing} className="w-full bg-emerald-400 hover:bg-emerald-500 text-[#071026] disabled:bg-slate-800 disabled:text-slate-500 py-4 rounded-xl font-bold uppercase tracking-wider transition-all shadow-lg flex items-center justify-center gap-2">
-          {isProcessing ? <RefreshCw className="w-5 h-5 animate-spin" /> : <Zap className="w-5 h-5 fill-current" />}
-          {isProcessing ? 'Analyzing Digital Blueprint...' : 'Evaluate 3D Showcase Blueprint'}
-        </button>
+  <!-- INTERNAL RENDERING & OCR SCRIPT LOGIC -->
+  <script>
+    let frontImgData = null;
+    let backImgData = null;
+    let scene, camera, renderer, cardMesh, controls;
 
-        {/* Step 3: Analytical Grading Financial Output Dashboard */}
-        {cardMeta && (
-          <div className="flex flex-col gap-4 animate-in fade-in duration-300">
-            {/* Grading Blueprint Card Container */}
-            <section className="bg-[#111e3b] border border-blue-900/40 rounded-2xl p-5 shadow-2xl">
-              <div className="flex justify-between items-start mb-4 border-b border-blue-950 pb-3">
-                <div>
-                  <h3 className="text-sm font-semibold tracking-wide text-blue-300 uppercase">Grading Blueprint</h3>
-                  <p className="text-lg font-bold text-white mt-0.5">{cardMeta.name}</p>
-                </div>
-                <div className="text-right">
-                  <div className="text-xs font-bold text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded">
-                    {cardMeta.estimatedGrade}
-                  </div>
-                </div>
-              </div>
+    // UI Link Selectors
+    const fInput = document.getElementById('front-input');
+    const bInput = document.getElementById('back-input');
+    const fBtn = document.getElementById('front-btn');
+    const bBtn = document.getElementById('back-btn');
+    const evalBtn = document.getElementById('evaluate-btn');
 
-              <div className="space-y-2.5 text-sm">
-                <div className="flex justify-between"><span className="text-slate-400">Flaws Seen:</span><span className="font-medium text-amber-300">{cardMeta.flaws}</span></div>
-                <div className="flex justify-between"><span className="text-slate-400">Worth Grading?</span><span className="font-bold text-emerald-400 flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>{cardMeta.tier}</span></div>
-              </div>
-            </section>
+    fBtn.onclick = () => fInput.click();
+    bBtn.onclick = () => bInput.click();
 
-            {/* Financial ROI Profit Table Container */}
-            <section className="bg-[#111e3b] border border-blue-900/40 rounded-2xl p-5 shadow-2xl">
-              <h3 className="text-sm font-semibold tracking-wide text-blue-300 uppercase mb-4 flex items-center gap-1.5">
-                <TrendingUp className="w-4 h-4 text-emerald-400" /> Net Profit Math
-              </h3>
+    fInput.onchange = (e) => {
+      if(e.target.files[0]) {
+        frontImgData = URL.createObjectURL(e.target.files[0]);
+        document.getElementById('front-status').innerText = "Front Loaded";
+        fBtn.classList.add('border-amber-400', 'bg-amber-400/5');
+        checkMeshActivation();
+      }
+    };
+
+    bInput.onchange = (e) => {
+      if(e.target.files[0]) {
+        backImgData = URL.createObjectURL(e.target.files[0]);
+        document.getElementById('back-status').innerText = "Back Loaded";
+        bBtn.classList.add('border-amber-400', 'bg-amber-400/5');
+        checkMeshActivation();
+      }
+    };
+
+    function checkMeshActivation() {
+      if (frontImgData && backImgData) {
+        document.getElementById('arena-container').classList.remove('hidden');
+        init3DCardSpace();
+      }
+    }
+
+    // Three.js Render Initialization
+    function init3DCardSpace() {
+      const container = document.getElementById('canvas-container');
+      container.innerHTML = ''; // Wipe duplicates
+
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+      camera.position.set(0, 0, 7);
+
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setSize(container.clientWidth, container.clientHeight);
+      container.appendChild(renderer.domElement);
+
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableZoom = false;
+
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+      scene.add(ambientLight);
+      const dirLight = new THREE.DirectionalLight(0xffffff, 1.0);
+      dirLight.position.set(2, 3, 5);
+      scene.add(dirLight);
+
+      const textureLoader = new THREE.TextureLoader();
+      const frontTex = textureLoader.load(frontImgData);
+      const backTex = textureLoader.load(backImgData);
+
+      const materials = [
+        new THREE.MeshStandardMaterial({ color: 0x111111 }),
+        new THREE.MeshStandardMaterial({ color: 0x111111 }),
+        new THREE.MeshStandardMaterial({ color: 0x111111 }),
+        new THREE.MeshStandardMaterial({ color: 0x111111 }),
+        new THREE.MeshStandardMaterial({ map: frontTex, roughness: 0.2 }),
+        new THREE.MeshStandardMaterial({ map: backTex, roughness: 0.3 })
+      ];
+
+      const geometry = new THREE.BoxGeometry(3.2, 4.5, 0.04);
+      cardMesh = new THREE.Mesh(geometry, materials);
+      scene.add(cardMesh);
+
+      animate();
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      if(cardMesh && !controls.state == -1) {
+        cardMesh.rotation.y = Math.sin(Date.now() * 0.001) * 0.15;
+      }
+      controls.update();
+      renderer.render(scene, camera);
+    }
+
