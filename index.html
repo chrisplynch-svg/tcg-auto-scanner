@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>3D SHOWCASE v6.6</title>
+  <title>3D SHOWCASE v6.7</title>
   <style>
     /* Reset & Theme Setup */
     * {
@@ -23,7 +23,7 @@
       flex-direction: column;
       align-items: center;
       padding: 20px 16px;
-      overflow-y: auto; /* Allows natural smooth scrolling down to the math cards */
+      overflow-y: auto;
     }
 
     .app-container {
@@ -34,7 +34,6 @@
       align-items: center;
     }
 
-    /* Fixed Layout Header Title */
     .app-header {
       margin-top: 10px;
       margin-bottom: 20px;
@@ -57,7 +56,6 @@
       text-transform: lowercase;
     }
 
-    /* Top Camera Grid Controls */
     .scan-controls-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -122,9 +120,9 @@
       opacity: 0;
       cursor: pointer;
       -webkit-appearance: none;
+      z-index: 50;
     }
 
-    /* Core Functional 3D Card Engine Stage */
     .mesh-view-stage {
       width: 100%;
       display: flex;
@@ -228,9 +226,6 @@
       text-transform: uppercase;
     }
 
-    /* ==========================================
-       RESTORED METRIC DASHBOARD PANELS (BLANK)
-       ========================================== */
     .card-identity-header {
       width: 100%;
       text-align: center;
@@ -251,7 +246,7 @@
       display: flex;
       flex-direction: column;
       gap: 16px;
-      padding-bottom: 40px; /* Leaves breathing space at the very bottom of the page */
+      padding-bottom: 40px;
     }
 
     .dashboard-panel-box {
@@ -310,12 +305,10 @@
 
   <div class="app-container">
     
-    <!-- Permanent Top Header Title Area -->
     <header class="app-header">
-      <h1 class="app-title">3D SHOWCASE <span class="app-version">v6.6</span></h1>
+      <h1 class="app-title">3D SHOWCASE <span class="app-version">v6.7</span></h1>
     </header>
 
-    <!-- Camera Trigger Workspace Row Layout -->
     <section class="scan-controls-grid">
       <div class="scan-column">
         <button class="scan-btn">Scan Front</button>
@@ -334,7 +327,6 @@
       </div>
     </section>
 
-    <!-- Main 3D Showcase Canvas Stage -->
     <main class="mesh-view-stage" id="mesh-stage">
       <div class="card-3d-wrapper" id="card-mesh">
         <div class="card-side card-front" id="mesh-front-side">
@@ -354,15 +346,11 @@
       <p class="instruction-text">Swipe card mesh area to spin in 3D</p>
     </div>
 
-    <!-- =======================================================
-         ANALYTICS CONTENT HOUSES DIRECTLY BELOW INTERACTIVE AREA
-         ======================================================= -->
     
       --- Pending AI Analysis ---</h2>
     </div>
 
     <div class="dashboard-scroll-body">
-      <!-- Blueprint Data Box Container -->
       <div class="dashboard-panel-box">
         <div class="panel-box-title">📋 Grading Blueprint</div>
         <div class="panel-row">
@@ -379,7 +367,6 @@
         </div>
       </div>
 
-      <!-- Math Table Data Box Container -->
       <div class="dashboard-panel-box">
         <div class="panel-box-title">💰 Net Profit Math</div>
         <div class="panel-row">
@@ -387,3 +374,24 @@
           <span class="panel-value">---</span>
         </div>
         <div class="panel-row">
+          <span class="panel-label">Gross Graded Value:</span>
+          <span class="panel-value">---</span>
+        </div>
+        <div class="panel-row">
+          <span class="panel-label">Minus Grading Fee:</span>
+          <span class="panel-value">---</span>
+        </div>
+        <div class="panel-row">
+          <span class="panel-label">Minus Insured Logistics:</span>
+          <span class="panel-value">---</span>
+        </div>
+        <div class="panel-row">
+          <span class="panel-label">Minus Platform Fee (13.5%):</span>
+          <span class="panel-value">---</span>
+        </div>
+        <div class="math-total-row">
+          <span class="panel-label" style="color: #ffffff;">➡️ Net Realized Cash:</span>
+          <span class="panel-value">---</span>
+        </div>
+      </div>
+
