@@ -3,416 +3,72 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>3D SHOWCASE v6.8</title>
-  <style>
-    /* Reset & Theme Setup */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      user-select: none;
-      -webkit-user-select: none;
-    }
-    
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: #0b1f3f;
-      color: #ffffff;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px 16px;
-      overflow: hidden; /* Strict lock stops layout engine shifting on mobile */
-    }
-
-    .app-container {
-      width: 100%;
-      max-width: 400px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      flex-grow: 1;
-    }
-
-    .app-header {
-      margin-top: 10px;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-
-    .app-title {
-      color: #e6b800;
-      font-size: 24px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .app-version {
-      color: #8fa3c7;
-      font-size: 14px;
-      font-weight: normal;
-      text-transform: lowercase;
-    }
-
-    .scan-controls-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      width: 100%;
-      margin-bottom: 40px;
-    }
-
-    .scan-column {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-      position: relative;
-    }
-
-    .scan-btn {
-      width: 100%;
-      background: transparent;
-      border: 2px solid #e6b800;
-      color: #e6b800;
-      padding: 12px 6px;
-      font-weight: bold;
-      font-size: 13px;
-      border-radius: 8px;
-      cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .preview-box {
-      width: 85px;
-      height: 120px;
-      border: 2px dashed #e6b800;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: rgba(255, 255, 255, 0.02);
-      overflow: hidden;
-    }
-
-    .preview-box img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .preview-placeholder {
-      font-size: 11px;
-      color: #4a628a;
-      text-align: center;
-      line-height: 1.4;
-    }
-
-    .camera-trigger-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 45px;
-      opacity: 0;
-      cursor: pointer;
-      -webkit-appearance: none;
-    }
-
-    .mesh-view-stage {
-      flex-grow: 1;
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      perspective: 1200px;
-      margin-bottom: 40px;
-    }
-
-    .card-3d-wrapper {
-      width: 210px;
-      height: 295px;
-      position: relative;
-      transform-style: preserve-3d;
-      transition: transform 0.1s ease-out;
-      cursor: grab;
-      touch-action: none;
-    }
-
-    .card-side {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      border-radius: 14px;
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, rgba(25, 48, 84, 0.7), rgba(15, 32, 60, 0.8));
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-      overflow: hidden;
-    }
-
-    .card-side img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 14px;
-    }
-
-    .card-front {
-      transform: rotateY(0deg);
-    }
-
-    .card-back {
-      transform: rotateY(180deg);
-    }
-
-    .wireframe-blueprint {
-      width: 85%;
-      height: 85%;
-      border: 1px dashed rgba(230, 184, 0, 0.25);
-      border-radius: 8px;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .wireframe-blueprint::before {
-      content: '';
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      right: 10px;
-      height: 50%;
-      border: 1px dashed rgba(230, 184, 0, 0.15);
-      border-radius: 4px;
-    }
-
-    .wireframe-text {
-      color: rgba(230, 184, 0, 0.4);
-      font-size: 11px;
-      text-transform: uppercase;
-      font-weight: bold;
-      letter-spacing: 1px;
-      margin-top: 60px;
-      text-align: center;
-      line-height: 1.4;
-    }
-
-    .instruction-overlay {
-      width: 100%;
-      border: 2px dashed #e6b800;
-      border-radius: 8px;
-      padding: 14px;
-      text-align: center;
-      margin-bottom: 25px;
-      background-color: rgba(230, 184, 0, 0.02);
-    }
-
-    .instruction-text {
-      color: #e6b800;
-      font-size: 12px;
-      font-weight: bold;
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
-    }
-
-    .bottom-action-anchor {
-      width: 100%;
-      margin-top: auto;
-    }
-
-    .evaluate-btn {
-      width: 100%;
-      background-color: #2ec4b6;
-      border: none;
-      color: #0b1f3f;
-      padding: 16px;
-      font-size: 13px;
-      font-weight: bold;
-      border-radius: 10px;
-      cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-    }
-
-    /* ==========================================
-       UPGRADED v6.8 ISOLATED FLOATING MODAL STYLING
-       ========================================== */
-    .modal-overlay-backdrop {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: rgba(5, 15, 30, 0.95); /* High contrast dim blocker */
-      z-index: 500;
-      display: none; /* Controlled cleanly via JS toggle handlers */
-      align-items: center;
-      justify-content: center;
-      padding: 20px 16px;
-    }
-
-    .modal-overlay-backdrop.active-modal {
-      display: flex;
-    }
-
-    .modal-dashboard-card {
-      background-color: #0b1f3f;
-      border: 2px solid #e6b800;
-      border-radius: 16px;
-      width: 100%;
-      max-width: 380px;
-      max-height: 90vh;
-      display: flex;
-      flex-direction: column;
-      padding: 20px 16px;
-      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
-    }
-
-    .close-modal-btn {
-      align-self: flex-start;
-      background: transparent;
-      border: 1px solid rgba(230, 184, 0, 0.5);
-      color: #e6b800;
-      padding: 8px 14px;
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: bold;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      cursor: pointer;
-      margin-bottom: 20px;
-    }
-
-    .close-modal-btn:active {
-      background: rgba(230, 184, 0, 0.1);
-    }
-
-    .card-identity-header {
-      width: 100%;
-      text-align: center;
-      margin-bottom: 15px;
-    }
-
-    .card-identity-title {
-      font-size: 18px;
-      font-weight: 800;
-      color: #ffffff;
-      letter-spacing: 0.5px;
-    }
-
-    .dashboard-scroll-body {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      overflow-y: auto; /* Internal scrolling within popup only */
-      padding-right: 4px;
-    }
-
-    .dashboard-panel-box {
-      background: linear-gradient(180deg, #112647 0%, #0a1832 100%);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 12px;
-      padding: 14px;
-    }
-
-    .panel-box-title {
-      font-size: 11px;
-      text-transform: uppercase;
-      color: #e6b800;
-      font-weight: 800;
-      letter-spacing: 1px;
-      margin-bottom: 10px;
-    }
-
-    .panel-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 6px 0;
-      font-size: 13px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.02);
-    }
-
-    .panel-row:last-child {
-      border-bottom: none;
-    }
-
-    .panel-label {
-      color: #9cb3d9;
-    }
-
-    .panel-value {
-      font-weight: bold;
-      color: #ffffff;
-    }
-
-    .math-total-row {
-      margin-top: 10px;
-      border-top: 1px dashed rgba(255, 255, 255, 0.15);
-      padding-top: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 14px;
-      font-weight: 800;
-    }
-  </style>
+  <title>PokeGrade Zero</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <div class="app-container">
+  <!-- App Container (Mobile First) -->
+  <div id="app-container">
     
+    <!-- HEADER / TOP NAV -->
     <header class="app-header">
-      <h1 class="app-title">3D SHOWCASE <span class="app-version">v6.8</span></h1>
+      <h1 class="brand-title">PokeGrade<span>Zero</span></h1>
+      <button id="master-reset-btn" class="reset-icon-btn" aria-label="Reset Application">🔄</button>
     </header>
 
-    <!-- UNTOUCHED v5.4 BACKBONE TARGET SYSTEM -->
-    <section class="scan-controls-grid">
-      <div class="scan-column">
-        <button class="scan-btn">Scan Front</button>
-        <input type="file" class="camera-trigger-overlay" accept="image/*" onchange="handleImageUpload(this, 'front')">
-        <div class="preview-box" id="preview-front">
-          <div class="preview-placeholder">Front<br>Preview</div>
-        </div>
+    <!-- VIEW 1: DUAL-OPTION HOME SCREEN -->
+    <main id="home-view" class="view-panel active">
+      <div class="welcome-hero">
+        <h2>High-Volume Sorting Blueprint</h2>
+        <p>Select your zero-cost scanning workflow to begin.</p>
       </div>
       
-      <div class="scan-column">
-        <button class="scan-btn">Scan Back</button>
-        <input type="file" class="camera-trigger-overlay" accept="image/*" onchange="handleImageUpload(this, 'back')">
-        <div class="preview-box" id="preview-back">
-          <div class="preview-placeholder">Back<br>Preview</div>
-        </div>
-      </div>
-    </section>
+      <div class="split-scanner-menu">
+        <!-- Option 1: Individual Deep-Dive -->
+        <label class="scanner-card" id="btn-closeup">
+          <input type="file" accept="image/*" capture="camera" class="native-camera-input" id="input-closeup">
+          <div class="card-icon">🔍</div>
+          <h3>Close-Up Scanner</h3>
+          <p>Deep-dive math evaluation for a single card front & back.</p>
+        </label>
 
-    <main class="mesh-view-stage" id="mesh-stage">
-      <div class="card-3d-wrapper" id="card-mesh">
-        <div class="card-side card-front" id="mesh-front-side">
-          <div class="wireframe-blueprint">
-            <div class="wireframe-text">FRONT SIDE<br>PENDING</div>
-          </div>
-        </div>
-        <div class="card-side card-back" id="mesh-back-side">
-          <div class="wireframe-blueprint">
-            <div class="wireframe-text">BACK SIDE<br>PENDING</div>
-          </div>
-        </div>
+        <!-- Option 2: 9-Card High-Volume Page -->
+        <label class="scanner-card" id="btn-binder">
+          <input type="file" accept="image/*" capture="camera" class="native-camera-input" id="input-binder">
+          <div class="card-icon">📱</div>
+          <h3>9-Card Binder Page</h3>
+          <p>Instant tier sequencing for a full binder sheet layout.</p>
+        </label>
       </div>
     </main>
 
-    <div class="instruction-overlay">
-      <p class="instruction-text">Swipe card mesh area to spin in 3D</p>
+    <!-- VIEW 2: INTERACTIVE STAGE (Hidden by default until upload) -->
+    <section id="stage-view" class="view-panel">
+      <!-- 3D Card Flip Wrapper -->
+      <div class="scene-3d">
+        <div class="card-3d" id="interactive-card">
+          <div class="card-face card-front">
+            <div class="placeholder-art">📸 Tap to Flip Front</div>
+          </div>
+          <div class="card-face card-back">
+            <div class="placeholder-art">🔮 Tap to Flip Back</div>
+          </div>
+        </div>
+      </div>
+      <p class="interaction-hint">Swipe or tap the card to flip</p>
+    </section>
+
+    <!-- BOTTOM SLIDE-UP SHEET -->
+    <div id="dashboard-sheet" class="slide-sheet collapsed">
+      <div class="sheet-drag-handle" id="sheet-handle"></div>
+      <div class="sheet-content">
+        <!-- Dynamic Step 1 or Step 2 templates injection point -->
+      </div>
     </div>
 
-    <footer class="bottom-action-anchor">
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
