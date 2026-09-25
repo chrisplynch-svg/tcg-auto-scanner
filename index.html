@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>3D SHOWCASE v6.3</title>
+  <title>3D SHOWCASE v6.4</title>
   <style>
     /* Reset & Theme Setup */
     * {
@@ -15,7 +15,7 @@
     }
     
     html {
-      scroll-behavior: smooth; /* Forces ultra-smooth screen transitions on mobile viewports */
+      scroll-behavior: smooth;
     }
     
     body {
@@ -38,7 +38,7 @@
       align-items: center;
     }
 
-    /* Fixed Layout Header Title - Restored */
+    /* Fixed Layout Header Title */
     .app-header {
       margin-top: 5px;
       margin-bottom: 20px;
@@ -61,12 +61,10 @@
       text-transform: lowercase;
     }
 
-    /* ==========================================
-       SCREEN 1: THE SCANNER INTERACTIVE WORKSPACE
-       ========================================== */
+    /* SCREEN 1: THE INTERACTIVE SCANNER WORKSPACE */
     .screen-container {
       width: 100%;
-      min-height: calc(100vh - 80px); /* Stretches screen layout to fill phone viewport perfectly */
+      min-height: calc(100vh - 80px);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -150,7 +148,6 @@
       min-height: 295px;
     }
 
-    /* v5.4 Core Functional 3D Card Engine Blocks */
     .card-3d-wrapper {
       width: 210px;
       height: 295px;
@@ -244,7 +241,6 @@
       text-transform: uppercase;
     }
 
-    /* Screen 1 Primary Bottom Action Toggle Button */
     .evaluate-btn {
       width: 100%;
       background-color: #2ec4b6;
@@ -258,12 +254,18 @@
       cursor: pointer;
       border-radius: 12px;
       box-shadow: 0 4px 15px rgba(46, 196, 182, 0.25);
-      margin-top: auto; /* Pushes button nicely to base of workspace view */
+      margin-top: auto;
     }
 
-    /* ==========================================
-       SCREEN 2: THE ANCHORED ANALYTICS DASHBOARD
-       ========================================== */
+    /* SCREEN 2: THE ANCHORED ANALYTICS DASHBOARD */
+    .screen-dashboard-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 20px;
+    }
+
     .back-nav-btn {
       align-self: flex-start;
       background: transparent;
@@ -357,18 +359,16 @@
 
   <div class="app-container">
     
-    <!-- Permanent Header Title -->
     <header class="app-header">
-      <h1 class="app-title">3D SHOWCASE <span class="app-version">v6.3</span></h1>
+      <h1 class="app-title">3D SHOWCASE <span class="app-version">v6.4</span></h1>
     </header>
 
-    <!-- SCREEN 1 WORKSPACE SECTION VIEW -->
+    <!-- SCREEN 1 WORKSPACE -->
     <div id="screen-showcase-view" class="screen-container">
-      
       <section class="scan-controls-grid">
         <div class="scan-column">
           <button class="scan-btn">Scan Front</button>
-          <input type="file" class="camera-trigger-overlay" accept="image/*" onchange="handleImageUpload(this, 'front')">
+          <input type="file" id="camera-front-input" class="camera-trigger-overlay" accept="image/*">
           <div class="preview-box" id="preview-front">
             <div class="preview-placeholder">Front<br>Preview</div>
           </div>
@@ -376,7 +376,7 @@
         
         <div class="scan-column">
           <button class="scan-btn">Scan Back</button>
-          <input type="file" class="camera-trigger-overlay" accept="image/*" onchange="handleImageUpload(this, 'back')">
+          <input type="file" id="camera-back-input" class="camera-trigger-overlay" accept="image/*">
           <div class="preview-box" id="preview-back">
             <div class="preview-placeholder">Back<br>Preview</div>
           </div>
@@ -400,5 +400,16 @@
 
       <div class="instruction-overlay">
         <p class="instruction-text">Swipe card mesh area to spin in 3D</p>
+      </div>
+
+      <button class="evaluate-btn" onclick="scrollToDashboard()">Evaluate 3D Showcase Blueprint</button>
+    </div>
+
+    <!-- SCREEN 2: METRICS DASHBOARD -->
+    <div id="screen-dashboard-view" class="screen-dashboard-container">
+      <button class="back-nav-btn" onclick="scrollToTopScanner()">⬅ Back to Scanner</button>
+      
+      
+        --- Pending AI Analysis ---</h2>
       </div>
 
