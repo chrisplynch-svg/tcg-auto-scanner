@@ -298,14 +298,14 @@
       
       <div class="split-scanner-menu">
         <label class="scanner-card" id="btn-closeup">
-          <input type="file" accept="image/*" capture="camera" class="native-camera-input" id="input-closeup">
+          <input type="file" accept="image/*" class="native-camera-input" id="input-closeup">
           <div class="card-icon">🔍</div>
           <h3>Close-Up Scanner</h3>
           <p>Deep-dive math evaluation for individual cards.</p>
         </label>
 
         <label class="scanner-card" id="btn-binder">
-          <input type="file" accept="image/*" capture="camera" class="native-camera-input" id="input-binder">
+          <input type="file" accept="image/*" class="native-camera-input" id="input-binder">
           <div class="card-icon">📱</div>
           <h3>9-Card Page</h3>
           <p>Instant sorting tiers sequence layout mapping.</p>
@@ -351,14 +351,15 @@
         if (navigator.vibrate) navigator.vibrate(pattern);
       }
 
-      // Robust image processor optimized for mobile browsers & standalone viewports
-      function processCapture(inputElement, workflowType) {
-        if (!inputElement.files || inputElement.files.length === 0) return;
+      // iOS PWA Bulletproof Execution Wrapper
+      function processCapture(event, workflowType) {
+        const targetInput = event.target;
+        if (!targetInput.files || targetInput.files.length === 0) return;
         
-        const file = inputElement.files[0];
+        const selectedFile = targetInput.files[0];
         triggerHaptic();
 
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          const imgUrl = e.target.result;
-          
+        // Direct layout state switch immediately 
+        homeView.classList.remove('active');
+        stageView.classList.add('active');
+
