@@ -151,6 +151,7 @@
       height: 100%;
       opacity: 0;
       cursor: pointer;
+      z-index: 5;
     }
 
     .card-icon {
@@ -350,16 +351,14 @@
         if (navigator.vibrate) navigator.vibrate(pattern);
       }
 
+      // Robust image processor optimized for mobile browsers & standalone viewports
       function processCapture(inputElement, workflowType) {
+        if (!inputElement.files || inputElement.files.length === 0) return;
+        
         const file = inputElement.files[0];
-        if (!file) return;
-
         triggerHaptic();
+
         const reader = new FileReader();
         reader.onload = function(e) {
           const imgUrl = e.target.result;
-          homeView.classList.remove('active');
-          stageView.classList.add('active');
           
-          if (workflowType === 'closeup') {
-            renderStepTwo(imgUrl);
