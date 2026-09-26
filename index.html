@@ -1,10 +1,10 @@
-<!-- PokeGradeZero Deployment Script: Version 5.4 -->
+<!-- PokeGradeZero Deployment Script: Version 5.5 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>PokeGradeZero v5.4</title>
+  <title>PokeGradeZero v5.5</title>
   <style>
     :root {
       --bg-main: #0B1528;
@@ -28,31 +28,34 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
-      background-color: #0B1528 !important;
-      color: #FFFFFF !important;
+      background-color: var(--bg-main);
+      color: var(--text-main);
       width: 100vw;
       min-height: 100vh;
-      padding: 20px;
       overflow-x: hidden;
+      padding: 20px;
     }
 
     .app-header {
       width: 100%;
-      padding-bottom: 15px;
+      height: 60px;
       border-bottom: 1px solid var(--border-color);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 25px;
+      background-color: var(--bg-main);
+      margin-bottom: 20px;
     }
 
     .header-title {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: bold;
+      letter-spacing: 0.5px;
     }
 
     .version-text {
@@ -72,29 +75,32 @@
       padding: 8px 12px;
       border-radius: 8px;
       cursor: pointer;
-      font-size: 16px;
+      font-size: 14px;
     }
 
+    /* Screen View Display Controls */
     .screen-view {
       display: none;
+      flex-direction: column;
+      align-items: center;
       width: 100%;
     }
 
     .screen-view.active {
-      display: block !important;
+      display: flex !important;
     }
 
-    .home-center {
+    /* Home Layout Styles */
+    .home-content {
+      margin-top: 30px;
       text-align: center;
       width: 100%;
-      margin-top: 20px;
     }
 
     .main-title {
       font-size: 24px;
       font-weight: bold;
       margin-bottom: 10px;
-      color: #FFFFFF !important;
     }
 
     .sub-title {
@@ -111,35 +117,36 @@
     }
 
     .router-card {
-      background-color: var(--bg-card) !important;
-      width: 50% !important;
+      background-color: var(--bg-card);
+      width: 50%;
       border-radius: 12px;
       padding: 20px 12px;
-      border: 1px solid var(--border-accent) !important;
-      text-align: center;
+      border: 1px solid var(--border-accent);
+      align-items: center;
+      display: flex;
+      flex-direction: column;
       cursor: pointer;
-      display: block !important;
     }
 
     .router-card-title {
+      color: var(--text-main);
       font-size: 16px;
       font-weight: bold;
       margin-bottom: 8px;
-      color: #FFFFFF !important;
     }
 
     .router-card-desc {
-      color: var(--text-dark) !important;
+      color: var(--text-dark);
       font-size: 12px;
       line-height: 15px;
     }
 
+    /* Scanner Elements */
     .section-title {
       color: var(--color-gold);
       font-size: 22px;
       font-weight: bold;
       margin-bottom: 15px;
-      text-align: center;
     }
 
     .scan-button-row {
@@ -177,24 +184,11 @@
       justify-content: center;
       align-items: center;
       background-color: var(--bg-mesh-box);
-      overflow: hidden;
-      position: relative;
     }
 
     .preview-text {
       color: var(--text-dark);
       font-size: 13px;
-      z-index: 2;
-    }
-
-    .live-camera-feed {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: 1;
     }
 
     .mesh-container {
@@ -207,48 +201,25 @@
       align-items: center;
       border: 1px solid var(--border-color);
       perspective: 1000px;
-      position: relative;
-      touch-action: none;
     }
 
     .card-mesh-wrapper {
       width: 170px;
       height: 240px;
-      position: relative;
-      transform-style: preserve-3d;
-      transition: transform 0.1s linear;
-    }
-
-    .card-mesh-face {
-      position: absolute;
-      width: 100%;
-      height: 100%;
+      background-color: var(--bg-card-inner);
+      border: 1px solid var(--border-mesh);
       border-radius: 10px;
-      backface-visibility: hidden;
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
-      border: 1px solid var(--border-mesh);
-      padding: 15px;
-      text-align: center;
       box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-    }
-
-    .card-mesh-front {
-      background-color: var(--bg-card-inner);
-      color: var(--text-muted);
-    }
-
-    .card-mesh-back {
-      background-color: #1a365d;
-      color: var(--color-gold);
-      transform: rotateY(180deg);
     }
 
     .mesh-card-text {
       font-size: 14px;
       font-weight: 500;
+      color: var(--text-muted);
+      text-align: center;
     }
 
     .indicator-text-box {
@@ -265,7 +236,6 @@
       text-align: center;
       font-size: 12px;
       font-weight: bold;
-      letter-spacing: 0.5px;
     }
 
     .submit-blueprint-btn {
@@ -303,8 +273,6 @@
       justify-content: center;
       align-items: center;
       margin-bottom: 20px;
-      overflow: hidden;
-      position: relative;
     }
 
     .text-output-container {
@@ -326,7 +294,6 @@
       font-family: monospace;
       font-size: 13px;
       margin: 6px 0;
-      letter-spacing: -0.3px;
     }
 
     .key-container {
@@ -348,16 +315,10 @@
       margin-bottom: 8px;
     }
 
-    .bold-text {
-      color: var(--text-main);
-      font-weight: bold;
-    }
-
     .blueprint-main-header {
       font-size: 22px;
       font-weight: bold;
       margin-bottom: 15px;
-      text-align: center;
     }
 
     .blueprint-data-card {
@@ -376,14 +337,8 @@
       font-size: 13px;
     }
 
-    .field-label {
-      color: var(--text-muted);
-    }
-
-    .field-value {
-      font-weight: 500;
-    }
-
+    .field-label { color: var(--text-muted); }
+    .field-value { font-weight: 500; }
     .green-text { color: var(--color-green); font-weight: bold; }
     .gold-text { color: var(--color-gold); font-weight: bold; }
     .red-text { color: var(--color-red); }
@@ -426,6 +381,7 @@
       cursor: pointer;
     }
 
+    /* AI Quick-Reply Panel Component */
     .quick-reply-wrapper {
       margin-top: 50px;
       padding: 15px;
@@ -456,3 +412,27 @@
       font-size: 13px;
       cursor: pointer;
       text-align: left;
+    }
+    #toast-msg {
+      display: none;
+      text-align: center;
+      color: var(--color-teal);
+      font-size: 12px;
+      margin-top: 8px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+    <header class="app-header">
+      <div class="header-title">PokeGradeZero <span class="version-text">v5.5</span></div>
+      <div class="header-nav-box">
+        <button id="nav-btn-home" class="header-icon-btn" style="display:none;" onclick="navigateTo('home')">Home</button>
+      </div>
+    </header>
+
+    <!-- SCREEN 1: HOME VIEW -->
+    <div id="screen-home" class="screen-view active">
+      <div class="home-content">
+        <h1 class="main-title">High-Volume Sorting Blueprint</h1>
