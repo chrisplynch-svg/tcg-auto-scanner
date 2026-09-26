@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>PokeGradeZero Prototype</title>
   <style>
     /* ==========================================================================
@@ -36,23 +36,23 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    /* Fixed body structure to prevent rendering clipping bugs */
     body {
       background-color: var(--bg-main);
       color: var(--text-main);
-      display: flex;
-      justify-content: center;
+      width: 100vw;
       min-height: 100vh;
       overflow-x: hidden;
     }
 
-    /* Standard Sandbox View Container */
+    /* Primary Sandbox Layout Block - Explicit Display Declarations */
     .app-container {
+      display: flex !important;
+      flex-direction: column !important;
       width: 100%;
       max-width: 430px; 
+      margin: 0 auto;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      position: relative;
       background-color: var(--bg-main);
       padding-bottom: 40px;
     }
@@ -68,8 +68,6 @@
       justify-content: space-between;
       align-items: center;
       padding: 0 20px;
-      position: sticky;
-      top: 0;
       background-color: var(--bg-main);
       z-index: 100;
     }
@@ -92,6 +90,7 @@
 
     .header-icon-btn {
       background-color: var(--border-color);
+      color: var(--text-main);
       border: none;
       padding: 8px;
       border-radius: 8px;
@@ -101,7 +100,7 @@
     }
 
     /* ==========================================================================
-       SCREEN VIEW SWITCH MECHANISMS
+       SCREEN VIEWS MAPPING
        ========================================================================== */
     .screen-view {
       display: none;
@@ -112,22 +111,24 @@
     }
 
     .screen-view.active {
-      display: flex;
+      display: flex !important;
     }
 
     /* ==========================================================================
-       SCREEN 1: HOME PAGE LAYOUT
+       SCREEN 1: HOME LAYOUT FIX
        ========================================================================== */
     .home-content {
-      margin-top: 40px;
+      margin-top: 30px;
       text-align: center;
       width: 100%;
+      display: block;
     }
 
     .main-title {
       font-size: 24px;
       font-weight: bold;
       margin-bottom: 10px;
+      color: var(--text-main);
     }
 
     .sub-title {
@@ -141,12 +142,12 @@
       display: flex;
       justify-content: space-between;
       width: 100%;
-      gap: 4%;
+      gap: 15px;
     }
 
     .router-card {
       background-color: var(--bg-card);
-      width: 48%;
+      width: 50%;
       border-radius: 12px;
       padding: 16px;
       border: 1px solid var(--border-accent);
@@ -175,7 +176,7 @@
     }
 
     /* ==========================================================================
-       SCANNER & LAYOUT INTERFACES
+       SCANNER LAYOUT ELEMENTS
        ========================================================================== */
     .section-title {
       color: var(--color-gold);
@@ -228,7 +229,7 @@
     }
 
     /* ==========================================================================
-       3D CSS ROTATION PERSPECTIVE CONTAINER ENGINE
+       3D CSS WEB INTERACTIVE CARD VIEWPORT ENGINE
        ========================================================================== */
     .mesh-container {
       width: 100%;
@@ -314,7 +315,7 @@
     }
 
     /* ==========================================================================
-       SCREEN 3: MULTI-SCANNER LAYOUT
+       SCREEN 3: MULTI-SCAN LIST MODULE
        ========================================================================== */
     .full-page-scan-btn {
       width: 100%;
@@ -388,12 +389,13 @@
     }
 
     /* ==========================================================================
-       SCREEN 4: PRE-GRADING STATS BLUEPRINT
+       SCREEN 4: DEEP-DIVE PRE-GRADING BLUEPRINT
        ========================================================================== */
     .blueprint-main-header {
       font-size: 22px;
       font-weight: bold;
       margin-bottom: 15px;
+      text-align: center;
     }
 
     .blueprint-data-card {
@@ -407,14 +409,3 @@
 
     .data-row {
       display: flex;
-      justify-content: space-between;
-      margin: 6px 0;
-      font-size: 13px;
-    }
-
-    .field-label {
-      color: var(--text-muted);
-    }
-
-    .field-value {
-      font-weight: 500;
