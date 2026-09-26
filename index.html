@@ -6,7 +6,7 @@
   <title>PokeGradeZero Prototype</title>
   <style>
     /* ==========================================================================
-       RESET & THEME VARIABLES (Matching User Image Specification)
+       RESET & THEME VARIABLES
        ========================================================================== */
     :root {
       --bg-main: #0B1528;
@@ -45,7 +45,7 @@
       overflow-x: hidden;
     }
 
-    /* Mobile Sandbox Container to replicate iPhone Layout */
+    /* Standard Sandbox View Container */
     .app-container {
       width: 100%;
       max-width: 430px; 
@@ -97,11 +97,11 @@
       border-radius: 8px;
       cursor: pointer;
       font-size: 16px;
-      display: none; /* Controlled dynamically by active screen active classes */
+      display: none;
     }
 
     /* ==========================================================================
-       SCREEN MANAGEMENT VIEWS
+       SCREEN VIEW SWITCH MECHANISMS
        ========================================================================== */
     .screen-view {
       display: none;
@@ -116,10 +116,10 @@
     }
 
     /* ==========================================================================
-       SCREEN 1: HOME LAYOUT
+       SCREEN 1: HOME PAGE LAYOUT
        ========================================================================== */
     .home-content {
-      margin-top: 60px;
+      margin-top: 40px;
       text-align: center;
       width: 100%;
     }
@@ -154,7 +154,6 @@
       display: flex;
       flex-direction: column;
       cursor: pointer;
-      text-decoration: none;
     }
 
     .router-icon {
@@ -176,7 +175,7 @@
     }
 
     /* ==========================================================================
-       SCANNERS & INTERACTIVE CORE INTERFACES
+       SCANNER & LAYOUT INTERFACES
        ========================================================================== */
     .section-title {
       color: var(--color-gold);
@@ -229,7 +228,7 @@
     }
 
     /* ==========================================================================
-       3D SPINNING PERSPECTIVE MESH ENGINE (CSS Version)
+       3D CSS ROTATION PERSPECTIVE CONTAINER ENGINE
        ========================================================================== */
     .mesh-container {
       width: 100%;
@@ -240,9 +239,9 @@
       justify-content: center;
       align-items: center;
       border: 1px solid var(--border-color);
-      perspective: 1000px; /* Essential for mobile 3D space depth */
+      perspective: 1000px;
       position: relative;
-      touch-action: none; /* Prevents viewport jumping during structural drags */
+      touch-action: none;
     }
 
     .card-mesh-wrapper {
@@ -258,7 +257,7 @@
       width: 100%;
       height: 100%;
       border-radius: 10px;
-      backface-visibility: hidden; /* Hides reverse layer while flipping execution occurs */
+      backface-visibility: hidden;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -389,7 +388,7 @@
     }
 
     /* ==========================================================================
-       SCREEN 4: DEEP-DIVE BLUEPRINT DATA INTERFACE
+       SCREEN 4: PRE-GRADING STATS BLUEPRINT
        ========================================================================== */
     .blueprint-main-header {
       font-size: 22px;
@@ -400,3 +399,22 @@
     .blueprint-data-card {
       width: 100%;
       background-color: var(--bg-surface);
+      border-radius: 10px;
+      padding: 16px;
+      border: 1px solid var(--border-color);
+      margin-top: 15px;
+    }
+
+    .data-row {
+      display: flex;
+      justify-content: space-between;
+      margin: 6px 0;
+      font-size: 13px;
+    }
+
+    .field-label {
+      color: var(--text-muted);
+    }
+
+    .field-value {
+      font-weight: 500;
