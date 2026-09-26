@@ -93,6 +93,7 @@
       font-size: 24px;
       font-weight: bold;
       margin-bottom: 10px;
+      color: #FFFFFF !important;
     }
 
     .sub-title {
@@ -109,28 +110,25 @@
     }
 
     .router-card {
-      background-color: var(--bg-card);
-      width: 50%;
+      background-color: var(--bg-card) !important;
+      width: 50% !important;
       border-radius: 12px;
       padding: 20px 12px;
-      border: 1px solid var(--border-accent);
+      border: 1px solid var(--border-accent) !important;
       text-align: center;
       cursor: pointer;
-    }
-
-    .router-icon {
-      font-size: 32px;
-      margin-bottom: 12px;
+      display: block !important;
     }
 
     .router-card-title {
       font-size: 16px;
       font-weight: bold;
       margin-bottom: 8px;
+      color: #FFFFFF !important;
     }
 
     .router-card-desc {
-      color: var(--text-dark);
+      color: var(--text-dark) !important;
       font-size: 12px;
       line-height: 15px;
     }
@@ -188,7 +186,6 @@
       z-index: 2;
     }
 
-    /* Embedded Video Streams Styling */
     .live-camera-feed {
       position: absolute;
       top: 0;
@@ -427,23 +424,30 @@
       margin-top: 20px;
       cursor: pointer;
     }
-  </style>
-</head>
-<body>
 
-    <header class="app-header">
-      <div class="header-title">PokeGradeZero <span class="version-text">v5.1</span></div>
-      <div class="header-nav-box">
-        <button id="nav-btn-closeup" class="header-icon-btn" style="display:none;" onclick="navigateTo('closeup')">🔍</button>
-        <button id="nav-btn-home" class="header-icon-btn" style="display:none;" onclick="navigateTo('home')">🏠</button>
-      </div>
-    </header>
-
-    <!-- SCREEN 1 -->
-    <div id="screen-home" class="screen-view active">
-      <div class="home-center">
-        <h1 class="main-title">High-Volume Sorting Blueprint</h1>
-        <p class="sub-title">Select your zero-cost scanning workflow to begin.</p>
-        
-        <div class="router-row">
-          <div class="router-card" onclick="navigateTo('closeup')">
+    /* ==========================================================================
+       AI QUICK-REPLY BUBBLES COMPONENT (Zero-Typing Feedback Board)
+       ========================================================================== */
+    .quick-reply-wrapper {
+      margin-top: 50px;
+      padding: 15px;
+      background-color: #0A111E;
+      border: 1px dashed #23395B;
+      border-radius: 10px;
+    }
+    .quick-reply-title {
+      font-size: 12px;
+      color: var(--color-gold);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .bubble-deck {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .status-bubble {
+      background-color: #172641;
