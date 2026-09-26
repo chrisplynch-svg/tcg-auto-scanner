@@ -36,19 +36,16 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* Fixed body structure to prevent rendering clipping bugs */
     body {
       background-color: var(--bg-main);
       color: var(--text-main);
       width: 100vw;
       min-height: 100vh;
-      overflow-x: hidden;
     }
 
-    /* Primary Sandbox Layout Block - Explicit Display Declarations */
+    /* Core Container - Fixed Layout Visibility Engine Triggers */
     .app-container {
-      display: flex !important;
-      flex-direction: column !important;
+      display: block !important;
       width: 100%;
       max-width: 430px; 
       margin: 0 auto;
@@ -69,7 +66,6 @@
       align-items: center;
       padding: 0 20px;
       background-color: var(--bg-main);
-      z-index: 100;
     }
 
     .header-title {
@@ -100,7 +96,7 @@
     }
 
     /* ==========================================================================
-       SCREEN VIEWS MAPPING
+       SCREEN NAVIGATION MODULES
        ========================================================================== */
     .screen-view {
       display: none;
@@ -115,20 +111,18 @@
     }
 
     /* ==========================================================================
-       SCREEN 1: HOME LAYOUT FIX
+       SCREEN 1: HOME PAGE ROUTER LAYOUT
        ========================================================================== */
     .home-content {
       margin-top: 30px;
       text-align: center;
       width: 100%;
-      display: block;
     }
 
     .main-title {
       font-size: 24px;
       font-weight: bold;
       margin-bottom: 10px;
-      color: var(--text-main);
     }
 
     .sub-title {
@@ -176,7 +170,7 @@
     }
 
     /* ==========================================================================
-       SCANNER LAYOUT ELEMENTS
+       SCANNER PLATFORM HOOKS
        ========================================================================== */
     .section-title {
       color: var(--color-gold);
@@ -229,7 +223,7 @@
     }
 
     /* ==========================================================================
-       3D CSS WEB INTERACTIVE CARD VIEWPORT ENGINE
+       3D SPINNING PERSPECTIVE LAYOUT MECHANISM
        ========================================================================== */
     .mesh-container {
       width: 100%;
@@ -315,7 +309,7 @@
     }
 
     /* ==========================================================================
-       SCREEN 3: MULTI-SCAN LIST MODULE
+       SCREEN 3: MULTI-SCANNER LAYOUT
        ========================================================================== */
     .full-page-scan-btn {
       width: 100%;
@@ -389,7 +383,7 @@
     }
 
     /* ==========================================================================
-       SCREEN 4: DEEP-DIVE PRE-GRADING BLUEPRINT
+       SCREEN 4: REPORT EVALUATION LAYOUT
        ========================================================================== */
     .blueprint-main-header {
       font-size: 22px;
@@ -409,3 +403,16 @@
 
     .data-row {
       display: flex;
+      justify-content: space-between;
+      margin: 6px 0;
+      font-size: 13px;
+    }
+
+    .field-label {
+      color: var(--text-muted);
+    }
+
+    .field-value {
+      font-weight: 500;
+    }
+
