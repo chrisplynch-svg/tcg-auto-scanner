@@ -1,205 +1,402 @@
-import React, { useState } from 'react';
-import { 
-  StyleSheet, 
-  Text, 
-  View, 
-  TouchableOpacity, 
-  ScrollView, 
-  Dimensions, 
-  SafeAreaView,
-  StatusBar
-} from 'react-native';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PokeGradeZero Prototype</title>
+  <style>
+    /* ==========================================================================
+       RESET & THEME VARIABLES (Matching User Image Specification)
+       ========================================================================== */
+    :root {
+      --bg-main: #0B1528;
+      --bg-surface: #111F38;
+      --bg-card: #15243F;
+      --bg-mesh-box: #0F1C36;
+      --bg-card-inner: #1B2D4A;
+      --border-color: #1E325A;
+      --border-accent: #23395B;
+      --border-mesh: #2D4A77;
+      
+      --text-main: #FFFFFF;
+      --text-muted: #A0AEC0;
+      --text-dark: #718096;
+      
+      --color-gold: #FFCC00;
+      --color-teal: #38B2AC;
+      --color-green: #48BB78;
+      --color-red: #F56565;
+    }
 
-const { width } = Dimensions.get('window');
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-export default function App() {
-  // Navigation states: 'home' | 'closeup' | 'multiscan' | 'blueprint'
-  const [currentScreen, setCurrentScreen] = useState('home');
-  // Interactive 3D Mock Rotation angle state (0 to 360)
-  const [cardRotation, setCardRotation] = useState(0);
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
 
-  // Simulated layout movement handling swipe gesture inputs to spin card
-  const handleCardSwipe = (event) => {
-    const { locationX } = event.nativeEvent;
-    const calculatedAngle = Math.floor((locationX / (width * 0.7)) * 360);
-    setCardRotation(calculatedAngle % 360);
-  };
+    /* Mobile Sandbox Container to replicate iPhone Layout */
+    .app-container {
+      width: 100%;
+      max-width: 430px; 
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      background-color: var(--bg-main);
+      padding-bottom: 40px;
+    }
 
-  // Shared Global Header Component
-  const RenderHeader = ({ showBackToHome, showBackToCloseUp }) => (
-    <View style={styles.headerContainer}>
-      <Text style={styles.headerTitle}>PokeGradeZero <Text style={styles.versionText}>v5.1</Text></Text>
-      <View style={styles.headerNavBox}>
-        {showBackToCloseUp && (
-          <TouchableOpacity style={styles.headerIconButton} onPress={() => setCurrentScreen('closeup')}>
-            <Text style={styles.headerIconText}>🔍</Text>
-          </TouchableOpacity>
-        )}
-        {showBackToHome && (
-          <TouchableOpacity style={styles.headerIconButton} onPress={() => setCurrentScreen('home')}>
-            <Text style={styles.headerIconText}>🏠</Text>
-          </TouchableOpacity>
-        )}
-      </View>
-    </View>
-  );
+    /* ==========================================================================
+       HEADER COMPONENT
+       ========================================================================== */
+    .app-header {
+      width: 100%;
+      height: 60px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      position: sticky;
+      top: 0;
+      background-color: var(--bg-main);
+      z-index: 100;
+    }
 
-  // --- SCREEN 1: HOME ---
-  if (currentScreen === 'home') {
-    return (
-      <SafeAreaView style={styles.container}>
-        <StatusBar barStyle="light-content" />
-        <RenderHeader showBackToHome={false} />
-        <View style={styles.homeContent}>
-          <Text style={styles.mainTitle}>High-Volume Sorting Blueprint</Text>
-          <Text style={styles.subTitle}>Select your zero-cost scanning workflow to begin.</Text>
-          
-          <View style={styles.routerRow}>
-            <TouchableOpacity style={styles.routerCard} onPress={() => setCurrentScreen('closeup')}>
-              <Text style={styles.routerIcon}>🔍</Text>
-              <Text style={styles.routerCardTitle}>Close-Up Scanner</Text>
-              <Text style={styles.routerCardDesc}>Deep-dive math evaluation for individual cards.</Text>
-            </TouchableOpacity>
+    .header-title {
+      font-size: 20px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
 
-            <TouchableOpacity style={styles.routerCard} onPress={() => setCurrentScreen('multiscan')}>
-              <Text style={styles.routerIcon}>📱</Text>
-              <Text style={styles.routerCardTitle}>9-Card Page</Text>
-              <Text style={styles.routerCardDesc}>Instant sorting tiers sequence layout mapping.</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </SafeAreaView>
-    );
-  }
+    .version-text {
+      font-size: 14px;
+      color: var(--color-gold);
+    }
 
-  // --- SCREEN 2: CLOSE-UP SCANNER ---
-  if (currentScreen === 'closeup') {
-    return (
-      <SafeAreaView style={styles.container}>
-        <RenderHeader showBackToHome={true} />
-        <ScrollView contentContainerStyle={styles.scrollContent}>
-          <Text style={styles.sectionTitle}>3D SHOWCASE</Text>
-          
-          <View style={styles.scanButtonRow}>
-            <TouchableOpacity style={styles.scanActionButton}>
-              <Text style={styles.scanActionText}>SCAN FRONT</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.scanActionButton}>
-              <Text style={styles.scanActionText}>SCAN BACK</Text>
-            </TouchableOpacity>
-          </View>
+    .header-nav-box {
+      display: flex;
+      gap: 12px;
+    }
 
-          <View style={styles.previewRow}>
-            <View style={styles.previewBox}>
-              <Text style={styles.previewText}>Front Preview</Text>
-            </View>
-            <View style={styles.previewBox}>
-              <Text style={styles.previewText}>Back Preview</Text>
-            </View>
-          </View>
+    .header-icon-btn {
+      background-color: var(--border-color);
+      border: none;
+      padding: 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      display: none; /* Controlled dynamically by active screen active classes */
+    }
 
-          {/* 3D Spin Interactive Display Box */}
-          <View 
-            style={styles.meshContainer}
-            onTouchMove={handleCardSwipe}
-          >
-            <View style={[styles.cardMesh, { transform: [{ rotateY: `${cardRotation}deg` }] }]}>
-              <Text style={styles.meshCardText}>
-                {cardRotation > 90 && cardRotation < 270 ? 'BACK PREVIEW' : 'Scan Front to View Image'}
-              </Text>
-              <Text style={styles.meshAngleDebug}>{cardRotation}°</Text>
-            </View>
-          </View>
+    /* ==========================================================================
+       SCREEN MANAGEMENT VIEWS
+       ========================================================================== */
+    .screen-view {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      padding: 20px;
+    }
 
-          <View style={styles.indicatorTextBox}>
-            <Text style={styles.indicatorText}>SWIPE CARD MESH AREA TO SPIN IN 3D</Text>
-          </View>
+    .screen-view.active {
+      display: flex;
+    }
 
-          <TouchableOpacity style={styles.submitBlueprintButton} onPress={() => setCurrentScreen('blueprint')}>
-            <Text style={styles.submitButtonText}>EVALUATE 3D SHOWCASE BLUEPRINT</Text>
-          </TouchableOpacity>
-        </ScrollView>
-      </SafeAreaView>
-    );
-  }
+    /* ==========================================================================
+       SCREEN 1: HOME LAYOUT
+       ========================================================================== */
+    .home-content {
+      margin-top: 60px;
+      text-align: center;
+      width: 100%;
+    }
 
-  // --- SCREEN 3: 9-CARD SCANNER ---
-  if (currentScreen === 'multiscan') {
-    return (
-      <SafeAreaView style={styles.container}>
-        <RenderHeader showBackToHome={true} />
-        <ScrollView contentContainerStyle={styles.scrollContent}>
-          <TouchableOpacity style={styles.fullPageScanButton}>
-            <Text style={styles.fullPageScanText}>TAKE A PAGE SCAN</Text>
-          </TouchableOpacity>
+    .main-title {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
 
-          <View style={styles.largeCameraPlaceholder}>
-            <Text style={styles.placeholderCameraText}>Camera Live View Layout Frame</Text>
-          </View>
+    .sub-title {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-bottom: 40px;
+      padding: 0 10px;
+    }
 
-          <View style={styles.textOutputContainer}>
-            <Text style={styles.outputHeading}>THE 9-CARD PAGE REVIEW FORMAT</Text>
-            
-            <Text style={styles.listText}>1️⃣ Shining Noctowl 🟢 ($35.00)</Text>
-            <Text style={styles.listText}>2️⃣ Raichu Base Set 🟡 ($18.50)</Text>
-            <Text style={styles.listText}>3️⃣ Magneton Base Set 🔴 ($4.00)</Text>
-            <Text style={styles.listText}>4️⃣ Hitmonchan Base Set 🔴 ($3.50)</Text>
-            <Text style={styles.listText}>5️⃣ Clefable Base Set 🟡 ($12.00)</Text>
-            <Text style={styles.listText}>6️⃣ Fossil Gengar French 1st Ed 🟢 ($75.00)</Text>
-            <Text style={styles.listText}>7️⃣ Light Azumarill 🟡 ($32.00)</Text>
-            <Text style={styles.listText}>8️⃣ Dark Celebi EX 🟢 ($38.00)</Text>
-            <Text style={styles.listText}>9️⃣ Dark Hypno Neo Destiny 🔴 ($5.00)</Text>
+    .router-row {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      gap: 4%;
+    }
 
-            <View style={styles.keyContainer}>
-              <Text style={styles.keyHeading}>🔑 ACTION KEY</Text>
-              <Text style={styles.keyRow}>🟢 <Text style={styles.boldText}>THE PULL TIER:</Text> Take front and back close-ups on the pool table for a deep-dive math evaluation.</Text>
-              <Text style={styles.keyRow}>🟡 <Text style={styles.boldText}>THE CASH RAW TIER:</Text> Real market value, but sell raw to maximize profit. Skip extra photos.</Text>
-              <Text style={styles.keyRow}>🔴 <Text style={styles.boldText}>THE BINDER TIER:</Text> Low value. Keep in the binder slots to sell as bulk or loose lots.</Text>
-            </View>
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    );
-  }
+    .router-card {
+      background-color: var(--bg-card);
+      width: 48%;
+      border-radius: 12px;
+      padding: 16px;
+      border: 1px solid var(--border-accent);
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      text-decoration: none;
+    }
 
-  // --- SCREEN 4: DEEP-DIVE PRE-GRADING BLUEPRINT ---
-  if (currentScreen === 'blueprint') {
-    return (
-      <SafeAreaView style={styles.container}>
-        <RenderHeader showBackToHome={true} showBackToCloseUp={true} />
-        <ScrollView contentContainerStyle={styles.scrollContent}>
-          <Text style={styles.blueprintMainHeader}>Charizard Base Set #4</Text>
+    .router-icon {
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
 
-          {/* Corrected Layout: 3D Spinning Display Card view integrated here instead of flat photos */}
-          <View 
-            style={styles.meshContainer}
-            onTouchMove={handleCardSwipe}
-          >
-            <View style={[styles.cardMesh, { transform: [{ rotateY: `${cardRotation}deg` }] }]}>
-              <Text style={styles.meshCardText}>
-                {cardRotation > 90 && cardRotation < 270 ? '🔥 BACK GRAPHICS MESH' : '🔥 CHARIZARD BASE SET #4'}
-              </Text>
-              <Text style={styles.meshAngleDebug}>{cardRotation}°</Text>
-            </View>
-          </View>
+    .router-card-title {
+      color: var(--text-main);
+      font-size: 15px;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
 
-          <View style={styles.indicatorTextBox}>
-            <Text style={styles.indicatorText}>SWIPE CARD MESH AREA TO SPIN IN 3D</Text>
-          </View>
+    .router-card-desc {
+      color: var(--text-dark);
+      font-size: 11px;
+      line-height: 14px;
+    }
 
-          {/* Blueprint Evaluation Box */}
-          <View style={styles.blueprintDataCard}>
-            <Text style={styles.dataCardTitle}>📊 THE DEEP-DIVE PRE-GRADING BLUEPRINT</Text>
-            
-            <View style={styles.dataRow}><Text style={styles.fieldLabel}>Estimated Grade:</Text><Text style={[styles.fieldValue, styles.greenText]}>PSA 9</Text></View>
-            <View style={styles.dataRow}><Text style={styles.fieldLabel}>Flaws Seen:</Text><Text style={styles.fieldValue}>Slight top-edge whitening</Text></View>
-            <View style={styles.dataRow}><Text style={styles.fieldLabel}>Worth Grading?</Text><Text style={[styles.fieldValue, styles.greenText]}>🟢 THE PULL TIER</Text></View>
-            
-            <View style={styles.divider} />
-            <Text style={styles.subBoxTitle}>🧮 NET PROFIT MATH</Text>
-            
-            <View style={styles.dataRow}><Text style={styles.fieldLabel}>Raw Market Value:</Text><Text style={styles.fieldValue}>$220.00</Text></View>
-            <View style={styles.dataRow}><Text style={styles.fieldLabel}>Gross Graded Value:</Text><Text style={styles.goldText}>$650.00</Text></View>
-            <View style={styles.dataRow}><Text style={styles.fieldLabel}>Minus Grading Fee:</Text><Text style={styles.redText}>-$19.00</Text></View>
-            <View style={styles.dataRow}><Text style={styles.fieldLabel}>Minus Insured Logistics:</Text><Text style={styles.redText}>-$14.00</Text></View>
-            <View style={styles.dataRow}><Text style={styles.fieldLabel}>Minus Materials:</Text><Text style={styles.redText}>-$2.50</Text></View>
+    /* ==========================================================================
+       SCANNERS & INTERACTIVE CORE INTERFACES
+       ========================================================================== */
+    .section-title {
+      color: var(--color-gold);
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .scan-button-row {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+
+    .scan-action-btn {
+      width: 48%;
+      border: 1.5px solid var(--color-gold);
+      background: transparent;
+      border-radius: 6px;
+      padding: 12px 0;
+      color: var(--color-gold);
+      font-weight: bold;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .preview-row {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .preview-box {
+      width: 48%;
+      height: 120px;
+      border: 2px dashed var(--color-gold);
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: var(--bg-mesh-box);
+    }
+
+    .preview-text {
+      color: var(--text-dark);
+      font-size: 13px;
+    }
+
+    /* ==========================================================================
+       3D SPINNING PERSPECTIVE MESH ENGINE (CSS Version)
+       ========================================================================== */
+    .mesh-container {
+      width: 100%;
+      height: 280px;
+      background-color: var(--bg-surface);
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid var(--border-color);
+      perspective: 1000px; /* Essential for mobile 3D space depth */
+      position: relative;
+      touch-action: none; /* Prevents viewport jumping during structural drags */
+    }
+
+    .card-mesh-wrapper {
+      width: 170px;
+      height: 240px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.1s linear;
+    }
+
+    .card-mesh-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 10px;
+      backface-visibility: hidden; /* Hides reverse layer while flipping execution occurs */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid var(--border-mesh);
+      padding: 15px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
+
+    .card-mesh-front {
+      background-color: var(--bg-card-inner);
+      color: var(--text-muted);
+    }
+
+    .card-mesh-back {
+      background-color: #1a365d;
+      color: var(--color-gold);
+      transform: rotateY(180deg);
+    }
+
+    .mesh-card-text {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .indicator-text-box {
+      width: 100%;
+      border: 1.5px dashed var(--color-gold);
+      border-radius: 6px;
+      padding: 10px 0;
+      margin: 15px 0;
+      background-color: var(--bg-mesh-box);
+    }
+
+    .indicator-text {
+      color: var(--color-gold);
+      text-align: center;
+      font-size: 12px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+
+    .submit-blueprint-btn {
+      width: 100%;
+      background-color: var(--color-teal);
+      border: none;
+      border-radius: 8px;
+      padding: 14px 0;
+      color: var(--bg-main);
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    /* ==========================================================================
+       SCREEN 3: MULTI-SCANNER LAYOUT
+       ========================================================================== */
+    .full-page-scan-btn {
+      width: 100%;
+      background-color: var(--border-color);
+      border: 1px solid var(--border-mesh);
+      border-radius: 8px;
+      padding: 14px 0;
+      color: var(--text-main);
+      font-weight: bold;
+      font-size: 14px;
+      margin-bottom: 15px;
+      cursor: pointer;
+    }
+
+    .large-camera-placeholder {
+      width: 100%;
+      height: 200px;
+      background-color: var(--bg-mesh-box);
+      border-radius: 10px;
+      border: 1px solid var(--border-accent);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .text-output-container {
+      width: 100%;
+      background-color: var(--bg-surface);
+      border-radius: 10px;
+      padding: 16px;
+      border: 1px solid var(--border-color);
+    }
+
+    .output-heading {
+      color: var(--color-gold);
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+
+    .list-text {
+      font-family: monospace;
+      font-size: 13px;
+      margin: 6px 0;
+      letter-spacing: -0.3px;
+    }
+
+    .key-container {
+      margin-top: 20px;
+      border-top: 1px dashed var(--border-color);
+      padding-top: 15px;
+    }
+
+    .key-heading {
+      font-weight: bold;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .key-row {
+      color: var(--text-muted);
+      font-size: 12px;
+      line-height: 16px;
+      margin-bottom: 8px;
+    }
+
+    .bold-text {
+      color: var(--text-main);
+      font-weight: bold;
+    }
+
+    /* ==========================================================================
+       SCREEN 4: DEEP-DIVE BLUEPRINT DATA INTERFACE
+       ========================================================================== */
+    .blueprint-main-header {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .blueprint-data-card {
+      width: 100%;
+      background-color: var(--bg-surface);
