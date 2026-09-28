@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Trading Card Grading v1.1</title>
-    <!-- Tailwind CSS v4 Browser Playground CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Tailwind CSS v4 CDN -->
+    <script src="https://jsdelivr.net"></script>
     <style>
         body {
             background-color: #0b1329;
@@ -30,8 +30,8 @@
     <!-- ========================================== -->
     <!-- SCREEN 1: HOME SCREEN                      -->
     <!-- ========================================== -->
-    <main id="screen-home" class="flex-1 flex flex-col justify-center space-y-4 max-w-md mx-auto w-full">
-        <!-- Close-Up Scanner Card Link -->
+    <main id="screen-home" class="block flex-1 flex flex-col justify-center space-y-4 max-w-md mx-auto w-full">
+        <!-- Close-Up Scanner Router -->
         <button onclick="navigateTo('screen-closeup')" class="w-full text-left bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-blue-500 transition active:scale-95 duration-200">
             <div class="flex items-start space-x-4">
                 <div class="p-3 bg-blue-900/50 rounded-lg text-xl">🔍</div>
@@ -42,7 +42,7 @@
             </div>
         </button>
 
-        <!-- 9-Card Page Card Link -->
+        <!-- 9-Card Page Router -->
         <button onclick="navigateTo('screen-multiple')" class="w-full text-left bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-blue-500 transition active:scale-95 duration-200">
             <div class="flex items-start space-x-4">
                 <div class="p-3 bg-blue-900/50 rounded-lg text-xl">📄</div>
@@ -53,7 +53,7 @@
             </div>
         </button>
 
-        <!-- Dynamic Simulated History Sandbox -->
+        <!-- Simulated History Sandbox -->
         <div class="pt-6 border-t border-slate-800/60 mt-4">
             <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Simulated Recent Scans</h3>
             <div class="bg-slate-900/40 rounded-lg p-3 text-xs text-slate-500 text-center border border-dashed border-slate-800">
@@ -97,7 +97,7 @@
             </div>
         </div>
 
-        <!-- 3D Card Interactive Display Frame -->
+        <!-- Interactive 3D Frame -->
         <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-4 flex flex-col items-center justify-center mb-5">
             <div class="w-full aspect-[2.5/3.5] max-w-[200px] perspective-1000 my-2">
                 <div id="three-d-card" class="w-full h-full preserve-3d relative rounded-xl transition-transform duration-100 shadow-2xl" style="transform: rotateY(0deg);">
@@ -120,7 +120,7 @@
         <input type="file" id="camera-input" accept="image/*" capture="environment" class="hidden" onchange="handleCameraCapture(event)">
 
         <!-- Router Link to Information Screen Layout -->
-        <button id="btn-goto-info" onclick="navigateTo('screen-info')" class="w-full mt-auto bg-slate-900 border border-slate-800 text-blue-400 font-bold text-sm py-4 rounded-xl flex items-center justify-center space-x-2 active:scale-95 transition">
+        <button onclick="navigateTo('screen-info')" class="w-full mt-auto bg-slate-900 border border-slate-800 text-blue-400 font-bold text-sm py-4 rounded-xl flex items-center justify-center space-x-2 active:scale-95 transition">
             <span>📊 Process Deep-Dive Assessment</span>
             <span>➔</span>
         </button>
