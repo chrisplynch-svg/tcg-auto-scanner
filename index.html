@@ -4,37 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trading Card Grading v1.1</title>
-    <!-- Tailwind CSS CDN -->
+    <!-- Tailwind CSS for UI Layout -->
     <script src="https://jsdelivr.net"></script>
-    <style>
-        /* 3D Card Scene Setup */
-        .card-scene {
-            perspective: 1000px;
-        }
-        .card-3d {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 0.1s ease-out;
-        }
-        .card-face {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            border-radius: 0.75rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-        .card-back {
-            transform: rotateY(180deg);
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body class="bg-[#0B1528] text-white min-h-screen font-sans selection:bg-blue-600">
+<body class="bg-[#0B1528] text-white min-h-screen font-sans">
 
     <!-- ==================== HOME SCREEN ==================== -->
     <div id="screen-home" class="max-w-md mx-auto p-4 flex flex-col items-center">
@@ -42,15 +16,11 @@
             <h1 class="text-2xl font-bold tracking-wide">Trading Card Grading</h1>
             <p class="text-xs text-blue-400 mt-1 font-mono">v1.1</p>
         </header>
-
         <main class="w-full space-y-6">
-            <!-- Router 1: Close-Up Scanner -->
             <button onclick="switchScreen('screen-closeup')" class="w-full text-left bg-[#16223F] border border-blue-900/50 p-5 rounded-xl active:scale-[0.98] transition-transform shadow-lg block">
                 <div class="text-lg font-bold mb-1 flex items-center gap-2">🟢 Close-Up Scanner</div>
                 <div class="text-sm text-gray-400 leading-relaxed">Deep-dive math evaluation for individual cards.</div>
             </button>
-
-            <!-- Router 2: 9-Card Page -->
             <button onclick="switchScreen('screen-multiple')" class="w-full text-left bg-[#16223F] border border-blue-900/50 p-5 rounded-xl active:scale-[0.98] transition-transform shadow-lg block">
                 <div class="text-lg font-bold mb-1 flex items-center gap-2">📑 9-Card Page</div>
                 <div class="text-sm text-gray-400 leading-relaxed">Instant sorting tiers & sequence layout mapping.</div>
@@ -66,45 +36,37 @@
                 <p class="text-[10px] text-blue-400 font-mono">v1.1</p>
             </div>
             <div class="ml-auto z-10">
-                <button onclick="switchScreen('screen-home')" class="bg-blue-900/60 hover:bg-blue-900 border border-blue-700/50 text-xs px-3 py-1.5 rounded-lg active:scale-95 transition-transform">🏠 Home</button>
+                <button onclick="switchScreen('screen-home')" class="bg-blue-900/60 border border-blue-700/50 text-xs px-3 py-1.5 rounded-lg">🏠 Home</button>
             </div>
         </header>
 
-        <!-- Image Input Forms (Triggers Mobile Camera Natively) -->
         <div class="grid grid-cols-2 gap-4 mb-6">
-            <div>
-                <label class="block w-full bg-[#16223F] border border-dashed border-blue-800/80 rounded-xl p-4 text-center cursor-pointer active:bg-[#1C2C52] transition-colors">
-                    <span class="text-xs font-bold block mb-2">📸 Scan Front</span>
-                    <input type="file" accept="image/*" capture="environment" class="hidden" onchange="handleCardImage(this, 'front')">
-                    <div id="preview-box-front" class="w-full h-36 bg-[#0F1A30] rounded-lg border border-blue-950 flex items-center justify-center p-1">
-                        <span class="text-[11px] text-gray-500 font-medium">Front Preview</span>
-                    </div>
-                </label>
-            </div>
-            <div>
-                <label class="block w-full bg-[#16223F] border border-dashed border-blue-800/80 rounded-xl p-4 text-center cursor-pointer active:bg-[#1C2C52] transition-colors">
-                    <span class="text-xs font-bold block mb-2">📸 Scan Back</span>
-                    <input type="file" accept="image/*" capture="environment" class="hidden" onchange="handleCardImage(this, 'back')">
-                    <div id="preview-box-back" class="w-full h-36 bg-[#0F1A30] rounded-lg border border-blue-950 flex items-center justify-center p-1">
-                        <span class="text-[11px] text-gray-500 font-medium">Back Preview</span>
-                    </div>
-                </label>
-            </div>
+            <label class="block w-full bg-[#16223F] border border-dashed border-blue-800/80 rounded-xl p-4 text-center cursor-pointer">
+                <span class="text-xs font-bold block mb-2">📸 Scan Front</span>
+                <input type="file" accept="image/*" capture="environment" class="hidden" onchange="handleCardImage(this, 'front')">
+                <div id="preview-box-front" class="w-full h-36 bg-[#0F1A30] rounded-lg border border-blue-950 flex items-center justify-center p-1">
+                    <span class="text-[11px] text-gray-500 font-medium">Front Preview</span>
+                </div>
+            </label>
+            <label class="block w-full bg-[#16223F] border border-dashed border-blue-800/80 rounded-xl p-4 text-center cursor-pointer">
+                <span class="text-xs font-bold block mb-2">📸 Scan Back</span>
+                <input type="file" accept="image/*" capture="environment" class="hidden" onchange="handleCardImage(this, 'back')">
+                <div id="preview-box-back" class="w-full h-36 bg-[#0F1A30] rounded-lg border border-blue-950 flex items-center justify-center p-1">
+                    <span class="text-[11px] text-gray-500 font-medium">Back Preview</span>
+                </div>
+            </label>
         </div>
 
-        <!-- Interactive 3D Spinning Display Card -->
-        <div class="w-full bg-[#131F3B] border border-blue-900/40 rounded-xl p-6 flex flex-col items-center justify-center shadow-inner mb-6">
+        <div class="w-full bg-[#131F3B] border border-blue-900/40 rounded-xl p-6 flex flex-col items-center justify-center mb-6">
             <div class="card-scene w-48 h-68 mb-3">
                 <div id="interactive-card-closeup" class="card-3d" data-rotation="0">
-                    <!-- Front Face -->
-                    <div class="card-face card-front bg-[#1A2A4C] border-2 border-blue-500/30 shadow-2xl">
+                    <div class="card-face card-front bg-[#1A2A4C] border-2 border-blue-500/30">
                         <img id="3d-img-front" src="" class="hidden w-full h-full object-cover">
                         <div id="3d-placeholder-front" class="text-center px-4">
-                            <p class="text-xs text-gray-400 font-semibold tracking-wide">Scan Front To View Image</p>
+                            <p class="text-xs text-gray-400 font-semibold">Scan Front To View Image</p>
                         </div>
                     </div>
-                    <!-- Back Face -->
-                    <div class="card-face card-back bg-[#1A2A4C] border-2 border-blue-500/30 shadow-2xl">
+                    <div class="card-face card-back bg-[#1A2A4C] border-2 border-blue-500/30">
                         <img id="3d-img-back" src="" class="hidden w-full h-full object-cover">
                         <div id="3d-placeholder-back" class="text-center px-4">
                             <p class="text-xs text-gray-400 font-semibold">Back Image Missing</p>
@@ -114,11 +76,7 @@
             </div>
             <p class="text-[11px] text-blue-400 font-medium tracking-wider uppercase bg-blue-950/80 px-3 py-1 rounded-full border border-blue-900/50">Swipe To Spin Card</p>
         </div>
-
-        <!-- Router to Evaluation Information Screen -->
-        <button id="btn-goto-info" onclick="evaluateAndGoToInfo()" class="w-full bg-blue-600 hover:bg-blue-500 font-bold py-3 px-4 rounded-xl shadow-lg active:scale-[0.99] transition-transform text-center mb-8 hidden animate-pulse">
-            🔍 Generate Info Breakdown
-        </button>
+        <button id="btn-goto-info" onclick="switchScreen('screen-info')" class="w-full bg-blue-600 font-bold py-3 px-4 rounded-xl text-center mb-8 hidden">🔍 Generate Info Breakdown</button>
     </div>
 
     <!-- ==================== MULTIPLE CARD SCAN SCREEN (9-CARD PAGE) ==================== -->
@@ -129,12 +87,12 @@
                 <p class="text-[10px] text-blue-400 font-mono">v1.1</p>
             </div>
             <div class="ml-auto z-10">
-                <button onclick="switchScreen('screen-home')" class="bg-blue-900/60 hover:bg-blue-900 border border-blue-700/50 text-xs px-3 py-1.5 rounded-lg active:scale-95 transition-transform">🏠 Home</button>
+                <button onclick="switchScreen('screen-home')" class="bg-blue-900/60 border border-blue-700/50 text-xs px-3 py-1.5 rounded-lg">🏠 Home</button>
             </div>
         </header>
 
         <main class="w-full space-y-6 mb-8">
-            <label class="block w-full bg-[#16223F] border border-dashed border-blue-800 rounded-xl p-5 text-center cursor-pointer active:bg-[#1C2C52] transition-colors shadow-md">
+            <label class="block w-full bg-[#16223F] border border-dashed border-blue-800 rounded-xl p-5 text-center cursor-pointer">
                 <span class="text-sm font-bold block mb-2">📸 Take a Page Scan</span>
                 <input type="file" accept="image/*" capture="environment" class="hidden" onchange="handlePageScan(this)">
                 <div id="page-preview-container" class="w-full h-56 bg-[#0F1A30] rounded-lg border border-blue-950 flex items-center justify-center p-1 mt-3">
@@ -142,24 +100,42 @@
                 </div>
             </label>
 
-            <!-- Text Outputs Context -->
             <div id="page-review-output" class="hidden bg-[#131F3B] border border-blue-900/40 rounded-xl p-5 space-y-4">
                 <h2 class="text-sm font-bold tracking-wider text-blue-400 uppercase border-b border-blue-900/60 pb-2">The 9-Card Page Review Format</h2>
-                
-                <!-- Mock Results Generated Dynamically -->
                 <ol class="space-y-2 text-sm font-medium" id="page-results-list"></ol>
-
-                <!-- Static Required Action Key -->
                 <div class="pt-4 border-t border-blue-900/60 mt-4">
                     <h3 class="text-xs font-black tracking-widest text-gray-200 mb-2">🔑 ACTION KEY</h3>
                     <ul class="space-y-2 text-xs leading-relaxed text-gray-300">
-                        <li class="flex items-start gap-2">
-                            <span>🟢</span>
-                            <span><strong>THE PULL TIER:</strong> Take front and back close-ups on the pool table for a deep-dive math evaluation.</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span>🟡</span>
-                            <span><strong>THE CASH RAW TIER:</strong> Real market value, but sell raw to maximize profit. Skip extra photos.</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span>🔴</span>
+                        <li class="flex items-start gap-2"><span>🟢</span><span><strong>THE PULL TIER:</strong> Take front and back close-ups on the pool table for a deep-dive math evaluation.</span></li>
+                        <li class="flex items-start gap-2"><span>🟡</span><span><strong>THE CASH RAW TIER:</strong> Real market value, but sell raw to maximize profit. Skip extra photos.</span></li>
+                        <li class="flex items-start gap-2"><span>🔴</span><span><strong>THE BINDER TIER:</strong> Low value. Keep in the binder slots to sell as bulk or loose lots.</span></li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ==================== INFORMATION SCREEN ==================== -->
+    <div id="screen-info" class="hidden max-w-md mx-auto p-4 flex flex-col">
+        <header class="w-full flex items-center justify-between mt-4 mb-6 relative">
+            <div class="absolute left-1/2 -translate-x-1/2 text-center pointer-events-none">
+                <h1 class="text-xl font-bold whitespace-nowrap">Trading Card Grading</h1>
+                <p class="text-[10px] text-blue-400 font-mono">v1.1</p>
+            </div>
+            <div class="ml-auto z-10 flex gap-2">
+                <button onclick="switchScreen('screen-closeup')" class="bg-blue-900/60 border border-blue-700/50 text-[11px] px-2.5 py-1.5 rounded-lg">🔍 Scanner</button>
+                <button onclick="switchScreen('screen-home')" class="bg-blue-900/60 border border-blue-700/50 text-[11px] px-2.5 py-1.5 rounded-lg">🏠 Home</button>
+            </div>
+        </header>
+
+        <div class="w-full bg-[#131F3B] border border-blue-900/40 rounded-xl p-6 flex flex-col items-center justify-center mb-6">
+            <div class="card-scene w-48 h-68 mb-3">
+                <div id="interactive-card-info" class="card-3d" data-rotation="0">
+                    <div class="card-face card-front bg-[#1A2A4C] border-2 border-blue-500/30">
+                        <img id="info-img-front" src="" class="w-full h-full object-cover rounded-xl">
+                    </div>
+                    <div class="card-face card-back bg-[#1A2A4C] border-2 border-blue-500/30">
+                        <img id="info-img-back" src="" class="w-full h-full object-cover rounded-xl">
+                    </div>
+                </div>
+            </div>
