@@ -25,13 +25,15 @@
         h1 { margin: 0; font-size: 24px; font-weight: bold; }
         .version { font-size: 12px; color: #60a5fa; text-transform: uppercase; font-weight: 600; margin-top: 4px; letter-spacing: 1px; }
         .container { flex: 1; display: flex; flex-direction: column; max-width: 440px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+        
+        /* Bulletproof block navigation styling mapping rules */
         .screen { display: none; flex-direction: column; width: 100%; }
-        .screen.active { display: flex; }
+        .screen.active-view { display: flex !important; }
         
         button.router {
             width: 100%; text-align: left; background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; padding: 20px;
             margin-bottom: 16px; color: white; cursor: pointer; display: flex; align-items: start; transition: transform 0.1s;
-            box-sizing: border-box;
+            box-sizing: border-box; -webkit-appearance: none;
         }
         button.router:active { transform: scale(0.98); }
         .icon { font-size: 24px; margin-right: 16px; background: rgba(30,41,59,0.5); padding: 12px; border-radius: 8px; }
@@ -44,11 +46,11 @@
         
         .top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
         .screen-title { font-size: 14px; font-weight: bold; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin: 0; }
-        .btn-nav { background: #1e293b; border: 1px solid #334155; padding: 6px 12px; border-radius: 8px; color: white; font-size: 12px; font-weight: 600; cursor: pointer; }
+        .btn-nav { background: #1e293b; border: 1px solid #334155; padding: 6px 12px; border-radius: 8px; color: white; font-size: 12px; font-weight: 600; cursor: pointer; -webkit-appearance: none; }
         
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
         .scan-col { display: flex; flex-direction: column; gap: 8px; }
-        .btn-scan { background: #2563eb; color: white; border: none; border-radius: 8px; padding: 12px; font-size: 12px; font-weight: bold; cursor: pointer; text-align: center; }
+        .btn-scan { background: #2563eb; color: white; border: none; border-radius: 8px; padding: 12px; font-size: 12px; font-weight: bold; cursor: pointer; text-align: center; -webkit-appearance: none; }
         
         .preview-box { aspect-ratio: 2.5/3.5; background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; display: flex; align-items: center; justify-content: center; position: relative; padding: 4px; overflow: hidden; box-sizing: border-box; }
         .preview-box img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
@@ -64,7 +66,7 @@
         .badge-swipe { background: #020617; border: 1px solid #1e293b; padding: 6px 16px; border-radius: 9999px; margin-top: 8px; }
         .badge-swipe span { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #94a3b8; font-weight: 500; }
         
-        .btn-action { background: #0f172a; border: 1px solid #1e293b; color: #60a5fa; font-weight: bold; font-size: 14px; padding: 16px; border-radius: 12px; width: 100%; cursor: pointer; text-align: center; margin-top: auto; display: flex; align-items: center; justify-content: center; gap: 8px; box-sizing: border-box; }
+        .btn-action { background: #0f172a; border: 1px solid #1e293b; color: #60a5fa; font-weight: bold; font-size: 14px; padding: 16px; border-radius: 12px; width: 100%; cursor: pointer; text-align: center; margin-top: auto; display: flex; align-items: center; justify-content: center; gap: 8px; box-sizing: border-box; -webkit-appearance: none; }
         
         .workspace-9 { width: 100%; aspect-ratio: 3/4; background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px; margin-bottom: 24px; box-sizing: border-box; }
         .workspace-9 img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
@@ -103,7 +105,6 @@
         
         footer { text-align: center; font-size: 12px; color: #475569; letter-spacing: 0.5px; margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(15,23,42,0.6); }
         .hidden { display: none !important; }
-        input[type="file"] { display: none; }
         svg.mock-svg { width: 100%; height: 100%; border-radius: 8px; display: block; }
     </style>
 </head>
@@ -117,8 +118,8 @@
     <div class="container">
         
         <!-- SCREEN 1: HOME SCREEN -->
-        <div id="screen-home" class="screen active">
-            <button onclick="navigateTo('screen-closeup')" class="router">
+        <div id="screen-home" class="screen active-view">
+            <button onclick="changeScreen('screen-closeup')" class="router">
                 <div class="icon">🔍</div>
                 <div>
                     <h2 class="router-title">Close-Up Scanner</h2>
@@ -126,7 +127,7 @@
                 </div>
             </button>
 
-            <button onclick="navigateTo('screen-multiple')" class="router">
+            <button onclick="changeScreen('screen-multiple')" class="router">
                 <div class="icon">📄</div>
                 <div>
                     <h2 class="router-title">9-Card Page</h2>
@@ -136,8 +137,3 @@
 
             <div class="history-box">
                 <div class="history-title">Simulated Recent Scans</div>
-                <div class="history-empty">No recent scans saved. Local history updates dynamically.</div>
-            </div>
-        </div>
-
-        <!-- SCREEN 2: CLOSE-UP SCANNER SCREEN -->
