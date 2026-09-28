@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Trading Card Grading v1.1</title>
-    <!-- Tailwind CSS v4 CDN -->
+    <!-- Tailwind CSS v4 CDN Entry Point -->
     <script src="https://jsdelivr.net"></script>
     <style>
         body {
@@ -19,139 +19,135 @@
         .rotate-y-180 { transform: rotateY(180deg); }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between p-4 selection:bg-blue-600 selection:text-white">
+<body class="min-h-screen flex flex-col p-4 selection:bg-blue-600 selection:text-white">
 
-    <!-- GLOBAL APP HEADER -->
-    <header class="w-full text-center border-b border-slate-800 pb-3 mb-4">
+    <!-- GLOBAL APP HEADER WITH VERSION NUMBER DISPLAY -->
+    <header class="w-full text-center border-b border-slate-800 pb-3 mb-6">
         <h1 class="text-2xl font-bold tracking-tight">Trading Card Grading</h1>
-        <p class="text-xs font-semibold uppercase tracking-widest text-blue-400 mt-0.5">Version 1.1</p>
+        <p id="app-version-display" class="text-xs font-semibold uppercase tracking-widest text-blue-400 mt-0.5">Version 1.1</p>
     </header>
 
-    <!-- ========================================== -->
-    <!-- SCREEN 1: HOME SCREEN                      -->
-    <!-- ========================================== -->
-    <main id="screen-home" class="flex-1 flex flex-col justify-center space-y-4 max-w-md mx-auto w-full">
-        <!-- Navigation Card 1 -->
-        <button onclick="navigateTo('screen-closeup')" class="w-full text-left bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-blue-500 transition active:scale-95 duration-200">
-            <div class="flex items-start space-x-4">
-                <div class="p-3 bg-blue-900/50 rounded-lg text-xl">🔍</div>
-                <div>
-                    <h2 class="text-lg font-bold text-white">Close-Up Scanner</h2>
-                    <p class="text-sm text-slate-400 mt-1 leading-relaxed">Deep-dive math evaluation for individual cards.</p>
-                </div>
-            </div>
-        </button>
+    <!-- SINGLE SECURE WRAPPER WINDOW (Prevents iOS WebKit White Screens) -->
+    <div id="app-view-container" class="flex-1 flex flex-col max-w-md mx-auto w-full">
+        <!-- Content injects dynamically right here via JavaScript -->
+    </div>
 
-        <!-- Navigation Card 2 -->
-        <button onclick="navigateTo('screen-multiple')" class="w-full text-left bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-blue-500 transition active:scale-95 duration-200">
-            <div class="flex items-start space-x-4">
-                <div class="p-3 bg-blue-900/50 rounded-lg text-xl">📄</div>
-                <div>
-                    <h2 class="text-lg font-bold text-white">9-Card Page</h2>
-                    <p class="text-sm text-slate-400 mt-1 leading-relaxed">Instant sorting tiers sequence layout mapping.</p>
-                </div>
-            </div>
-        </button>
+    <!-- Hidden Native System Camera Capture Link -->
+    <input type="file" id="camera-input" accept="image/*" capture="environment" class="hidden" onchange="handleCameraCapture(event)">
 
-        <!-- History Dashboard View -->
-        <div class="pt-6 border-t border-slate-800/60 mt-4">
-            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Simulated Recent Scans</h3>
-            <div class="bg-slate-900/40 rounded-lg p-3 text-xs text-slate-500 text-center border border-dashed border-slate-800">
-                No recent scans saved. Local history updates dynamically.
-            </div>
-        </div>
-    </main>
+    <footer class="text-center text-xs text-slate-600 mt-6 tracking-wide pt-4 border-t border-slate-900/60">
+        Personal Environment Sandbox App Setup
+    </footer>
 
-    <!-- ========================================== -->
-    <!-- SCREEN 2: CLOSE-UP SCANNER SCREEN          -->
-    <!-- ========================================== -->
-    <main id="screen-closeup" class="hidden flex-1 flex flex-col max-w-md mx-auto w-full pb-6">
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-sm font-bold uppercase tracking-wider text-slate-400">Close-Up Scanner</h2>
-            <button onclick="navigateTo('screen-home')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-semibold rounded-lg border border-slate-700 transition">
-                🏠 Home
-            </button>
-        </div>
+    <script>
+        // Global State variables storage engine
+        let activeCameraTarget = 'front';
+        let frontImageCache = '';
+        let backImageCache = '';
+        let pageImageCache = '';
 
-        <div class="grid grid-cols-2 gap-3 mb-5">
-            <!-- Scan Front Button Box -->
-            <div class="flex flex-col space-y-2">
-                <button onclick="triggerCamera('front')" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-xs font-bold rounded-lg transition active:scale-95 text-center">
-                    📸 Scan Front
-                </button>
-                <div class="aspect-[2.5/3.5] bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex items-center justify-center relative p-1">
-                    <img id="img-preview-front" class="hidden w-full h-full object-cover rounded-lg" src="" alt="Front Preview">
-                    <span id="text-preview-front" class="text-xs font-semibold uppercase tracking-wider text-slate-500 text-center px-2">Front Preview</span>
-                </div>
-            </div>
+        // Global Version Control System
+        const APP_VERSION = "v1.1";
 
-            <!-- Scan Back Button Box -->
-            <div class="flex flex-col space-y-2">
-                <button onclick="triggerCamera('back')" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-xs font-bold rounded-lg transition active:scale-95 text-center">
-                    📸 Scan Back
-                </button>
-                <div class="aspect-[2.5/3.5] bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex items-center justify-center relative p-1">
-                    <img id="img-preview-back" class="hidden w-full h-full object-cover rounded-lg" src="" alt="Back Preview">
-                    <span id="text-preview-back" class="text-xs font-semibold uppercase tracking-wider text-slate-500 text-center px-2">Back Preview</span>
-                </div>
-            </div>
-        </div>
+        // Sync visual header array tracker string on initialization
+        document.getElementById('app-version-display').innerText = "Version " + APP_VERSION.replace('v', '');
 
-        <!-- 3D Canvas Box -->
-        <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-4 flex flex-col items-center justify-center mb-5">
-            <div class="w-full aspect-[2.5/3.5] max-w-[200px] perspective-1000 my-2">
-                <div id="three-d-card" class="w-full h-full preserve-3d relative rounded-xl transition-transform duration-100 shadow-2xl" style="transform: rotateY(0deg);">
-                    <div class="absolute inset-0 backface-hidden bg-slate-950 rounded-xl flex flex-col items-center justify-center p-3 text-center border border-slate-700/50">
-                        <img id="three-d-img-front" class="hidden w-full h-full object-cover rounded-lg" src="" alt="3D Front">
-                        <p id="three-d-placeholder-text" class="text-xs font-semibold tracking-wide text-slate-400 px-4">Scan Front To View Image</p>
-                    </div>
-                    <div class="absolute inset-0 backface-hidden bg-slate-950 rounded-xl flex flex-col items-center justify-center p-3 text-center rotate-y-180 border border-slate-700/50">
-                        <img id="three-d-img-back" class="hidden w-full h-full object-cover rounded-lg" src="" alt="3D Back">
-                        <p id="three-d-placeholder-text-back" class="text-xs font-semibold tracking-wide text-slate-400 px-4">Scan Back To View Image</p>
+        // Screen HTML Generators Matrix
+        const screens = {
+            home: () => `
+                <div class="flex-1 flex flex-col justify-center space-y-4 w-full animated fadeIn">
+                    <!-- Close-Up Scanner Router -->
+                    <button onclick="navigateTo('closeup')" class="w-full text-left bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-blue-500 transition active:scale-95 duration-200">
+                        <div class="flex items-start space-x-4">
+                            <div class="p-3 bg-blue-900/50 rounded-lg text-xl">🔍</div>
+                            <div>
+                                <h2 class="text-lg font-bold text-white">Close-Up Scanner</h2>
+                                <p class="text-sm text-slate-400 mt-1 leading-relaxed">Deep-dive math evaluation for individual cards.</p>
+                            </div>
+                        </div>
+                    </button>
+
+                    <!-- 9-Card Page Router -->
+                    <button onclick="navigateTo('multiple')" class="w-full text-left bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-blue-500 transition active:scale-95 duration-200">
+                        <div class="flex items-start space-x-4">
+                            <div class="p-3 bg-blue-900/50 rounded-lg text-xl">📄</div>
+                            <div>
+                                <h2 class="text-lg font-bold text-white">9-Card Page</h2>
+                                <p class="text-sm text-slate-400 mt-1 leading-relaxed">Instant sorting tiers sequence layout mapping.</p>
+                            </div>
+                        </div>
+                    </button>
+
+                    <!-- Simulated History Dashboard -->
+                    <div class="pt-6 border-t border-slate-800/60 mt-4">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Simulated Recent Scans</h3>
+                        <div class="bg-slate-900/40 rounded-lg p-3 text-xs text-slate-500 text-center border border-dashed border-slate-800">
+                            No recent scans saved. Local history updates dynamically.
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="bg-slate-950 px-4 py-1.5 rounded-full border border-slate-800 mt-2">
-                <span class="text-xs uppercase tracking-widest text-slate-400 font-medium">Swipe To Spin Card</span>
-            </div>
-        </div>
+            `,
+            closeup: () => `
+                <div class="flex-1 flex flex-col w-full pb-6 animated fadeIn">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-sm font-bold uppercase tracking-wider text-slate-400">Close-Up Scanner</h2>
+                        <button onclick="navigateTo('home')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-semibold rounded-lg border border-slate-700 transition">
+                            🏠 Home
+                        </button>
+                    </div>
 
-        <!-- Next Processing Router Step -->
-        <button onclick="navigateTo('screen-info')" class="w-full mt-auto bg-slate-900 border border-slate-800 text-blue-400 font-bold text-sm py-4 rounded-xl flex items-center justify-center space-x-2 active:scale-95 transition">
-            <span>📊 Process Deep-Dive Assessment</span>
-            <span>➔</span>
-        </button>
-    </main>
+                    <div class="grid grid-cols-2 gap-3 mb-5">
+                        <div class="flex flex-col space-y-2">
+                            <button onclick="triggerCamera('front')" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-xs font-bold rounded-lg transition active:scale-95 text-center">
+                                📸 Scan Front
+                            </button>
+                            <div class="aspect-[2.5/3.5] bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex items-center justify-center relative p-1">
+                                ${frontImageCache ? `<img class="w-full h-full object-cover rounded-lg" src="${frontImageCache}">` : `<span class="text-xs font-semibold uppercase tracking-wider text-slate-500 text-center px-2">Front Preview</span>`}
+                            </div>
+                        </div>
+                        <div class="flex flex-col space-y-2">
+                            <button onclick="triggerCamera('back')" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-xs font-bold rounded-lg transition active:scale-95 text-center">
+                                📸 Scan Back
+                            </button>
+                            <div class="aspect-[2.5/3.5] bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex items-center justify-center relative p-1">
+                                ${backImageCache ? `<img class="w-full h-full object-cover rounded-lg" src="${backImageCache}">` : `<span class="text-xs font-semibold uppercase tracking-wider text-slate-500 text-center px-2">Back Preview</span>`}
+                            </div>
+                        </div>
+                    </div>
 
-    <!-- ========================================== -->
-    <!-- SCREEN 3: MULTIPLE CARD SCAN SCREEN        -->
-    <!-- ========================================== -->
-    <main id="screen-multiple" class="hidden flex-1 flex flex-col max-w-md mx-auto w-full pb-6">
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-sm font-bold uppercase tracking-wider text-slate-400">9-Card Page</h2>
-            <button onclick="navigateTo('screen-home')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-semibold rounded-lg border border-slate-700 transition">
-                🏠 Home
-            </button>
-        </div>
+                    <!-- 3D Card Area Box -->
+                    <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-4 flex flex-col items-center justify-center mb-5">
+                        <div class="w-full aspect-[2.5/3.5] max-w-[180px] perspective-1000 my-2">
+                            <div id="three-d-card" class="w-full h-full preserve-3d relative rounded-xl transition-transform duration-100 shadow-2xl" style="transform: rotateY(0deg);">
+                                <div class="absolute inset-0 backface-hidden bg-slate-950 rounded-xl flex flex-col items-center justify-center p-3 text-center border border-slate-700/50">
+                                    ${frontImageCache ? `<img class="w-full h-full object-cover rounded-lg" src="${frontImageCache}">` : `<p class="text-xs font-semibold tracking-wide text-slate-400 px-4">Scan Front To View Image</p>`}
+                                </div>
+                                <div class="absolute inset-0 backface-hidden bg-slate-950 rounded-xl flex flex-col items-center justify-center p-3 text-center rotate-y-180 border border-slate-700/50">
+                                    ${backImageCache ? `<img class="w-full h-full object-cover rounded-lg" src="${backImageCache}">` : `<p class="text-xs font-semibold tracking-wide text-slate-400 px-4">Scan Back To View Image</p>`}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-slate-950 px-4 py-1.5 rounded-full border border-slate-800 mt-2">
+                            <span class="text-xs uppercase tracking-widest text-slate-400 font-medium">Swipe To Spin Card</span>
+                        </div>
+                    </div>
 
-        <button onclick="triggerPageScan()" class="w-full py-4 bg-blue-600 hover:bg-blue-500 font-bold text-sm rounded-xl transition active:scale-95 text-center mb-4">
-            📸 Take a Page Scan
-        </button>
+                    <button onclick="navigateTo('info')" class="w-full mt-auto bg-slate-900 border border-slate-800 text-blue-400 font-bold text-sm py-4 rounded-xl flex items-center justify-center space-x-2 active:scale-95 transition">
+                        <span>📊 Process Deep-Dive Assessment</span>
+                        <span>➔</span>
+                    </button>
+                </div>
+            `,
+            multiple: () => `
+                <div class="flex-1 flex flex-col w-full pb-6 animated fadeIn">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-sm font-bold uppercase tracking-wider text-slate-400">9-Card Page</h2>
+                        <button onclick="navigateTo('home')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-semibold rounded-lg border border-slate-700 transition">
+                            🏠 Home
+                        </button>
+                    </div>
 
-        <div class="w-full aspect-[3/4] bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex flex-col items-center justify-center relative p-2 mb-6">
-            <img id="img-page-preview" class="hidden w-full h-full object-cover rounded-lg" src="" alt="Binder Page Preview">
-            <div id="text-page-placeholder" class="flex flex-col items-center space-y-2 p-4 text-center">
-                <span class="text-4xl">🗂️</span>
-                <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Camera Workspace Window</span>
-            </div>
-        </div>
+                    <button onclick="triggerPageScan()" class="w-full py-4 bg-blue-600 hover:bg-blue-500 font-bold text-sm rounded-xl transition active:scale-95 text-center mb-4">
+                        📸 Take a Page Scan
+                    </button>
 
-        <div id="binder-results-box" class="hidden bg-slate-900/80 border border-slate-800 rounded-xl p-4 space-y-4 mb-4">
-            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 border-b border-slate-800 pb-2">THE 9-CARD PAGE REVIEW FORMAT</h3>
-            <div class="space-y-2 font-mono text-sm">
-                <div>1️⃣ Charizard Base Set Foil 🟢 ($350.00)</div>
-                <div>2️⃣ Blastoise Base Set Foil 🟡 ($85.00)</div>
-                <div>3️⃣ Venusaur Base Set Foil 🟢 ($120.00)</div>
-                <div>4️⃣ Pikachu Red Cheeks Shadowless 🟡 ($65.00)</div>
-                <div>5️⃣ Machamp First Edition Foil 🔴 ($12.00)</div>
-                <div>6️⃣ Mewtwo Base Set Foil 🔴 ($18.00)</div>
