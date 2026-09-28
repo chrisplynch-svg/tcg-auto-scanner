@@ -1,422 +1,164 @@
-<!-- PokeGradeZero Deployment Script: Version 5.8 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>PokeGradeZero v5.8</title>
-  <style>
-    :root {
-      --bg-main: #0B1528;
-      --bg-surface: #111F38;
-      --bg-card: #15243F;
-      --bg-mesh-box: #0F1C36;
-      --bg-card-inner: #1B2D4A;
-      --border-color: #1E325A;
-      --border-accent: #23395B;
-      --border-mesh: #2D4A77;
-      --text-main: #FFFFFF;
-      --text-muted: #A0AEC0;
-      --text-dark: #718096;
-      --color-gold: #FFCC00;
-      --color-teal: #38B2AC;
-      --color-green: #48BB78;
-      --color-red: #F56565;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    body {
-      background-color: var(--bg-main);
-      color: var(--text-main);
-      width: 100vw;
-      min-height: 100vh;
-      overflow-x: hidden;
-      padding: 20px;
-    }
-
-    .app-header {
-      width: 100%;
-      height: 60px;
-      border-bottom: 1px solid var(--border-color);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: var(--bg-main);
-      margin-bottom: 25px;
-    }
-
-    .header-title {
-      font-size: 20px;
-      font-weight: bold;
-      letter-spacing: 0.5px;
-    }
-
-    .version-text {
-      font-size: 14px;
-      color: var(--color-gold);
-    }
-
-    .header-nav-box {
-      display: flex;
-      gap: 12px;
-    }
-
-    .header-icon-btn {
-      background-color: var(--border-color);
-      color: var(--text-main);
-      border: none;
-      padding: 8px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    .screen-view {
-      display: none;
-      width: 100%;
-    }
-
-    .screen-view.active {
-      display: block !important;
-    }
-
-    .home-content {
-      margin-top: 30px;
-      text-align: center;
-      width: 100%;
-    }
-
-    .main-title {
-      font-size: 24px;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-
-    .sub-title {
-      color: var(--text-muted);
-      font-size: 14px;
-      margin-bottom: 40px;
-    }
-
-    .router-row {
-      display: flex;
-      justify-content: space-between;
-      width: 100%;
-      gap: 15px;
-    }
-
-    .router-card {
-      background-color: var(--bg-card);
-      width: 48%;
-      border-radius: 12px;
-      padding: 24px 16px;
-      border: 1px solid var(--border-accent);
-      cursor: pointer;
-      text-align: center;
-    }
-
-    .router-card-title {
-      font-size: 16px;
-      font-weight: bold;
-      margin-bottom: 8px;
-      color: var(--text-main);
-    }
-
-    .router-card-desc {
-      color: var(--text-dark);
-      font-size: 12px;
-      line-height: 15px;
-    }
-
-    .section-title {
-      color: var(--color-gold);
-      font-size: 22px;
-      font-weight: bold;
-      margin-bottom: 15px;
-      text-align: center;
-    }
-
-    .scan-button-row {
-      display: flex;
-      width: 100%;
-      justify-content: space-between;
-      margin-bottom: 15px;
-    }
-
-    .scan-action-btn {
-      width: 48%;
-      border: 1.5px solid var(--color-gold);
-      background: transparent;
-      border-radius: 6px;
-      padding: 12px 0;
-      color: var(--color-gold);
-      font-weight: bold;
-      font-size: 13px;
-      cursor: pointer;
-    }
-
-    .preview-row {
-      display: flex;
-      width: 100%;
-      justify-content: space-between;
-      margin-bottom: 20px;
-    }
-
-    .preview-box {
-      width: 48%;
-      height: 120px;
-      border: 2px dashed var(--color-gold);
-      border-radius: 8px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: var(--bg-mesh-box);
-    }
-
-    .preview-text {
-      color: var(--text-dark);
-      font-size: 13px;
-    }
-
-    .mesh-container {
-      width: 100%;
-      height: 280px;
-      background-color: var(--bg-surface);
-      border-radius: 12px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border: 1px solid var(--border-color);
-      perspective: 1000px;
-    }
-
-    .card-mesh-wrapper {
-      width: 170px;
-      height: 240px;
-      background-color: var(--bg-card-inner);
-      border: 1px solid var(--border-mesh);
-      border-radius: 10px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-    }
-
-    .mesh-card-text {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text-muted);
-      text-align: center;
-    }
-
-    .indicator-text-box {
-      width: 100%;
-      border: 1.5px dashed var(--color-gold);
-      border-radius: 6px;
-      padding: 10px 0;
-      margin: 15px 0;
-      background-color: var(--bg-mesh-box);
-    }
-
-    .indicator-text {
-      color: var(--color-gold);
-      text-align: center;
-      font-size: 12px;
-      font-weight: bold;
-    }
-
-    .submit-blueprint-btn {
-      width: 100%;
-      background-color: var(--color-teal);
-      border: none;
-      border-radius: 8px;
-      padding: 14px 0;
-      color: var(--bg-main);
-      font-weight: bold;
-      font-size: 14px;
-      cursor: pointer;
-    }
-
-    .full-page-scan-btn {
-      width: 100%;
-      background-color: var(--border-color);
-      border: 1px solid var(--border-mesh);
-      border-radius: 8px;
-      padding: 14px 0;
-      color: var(--text-main);
-      font-weight: bold;
-      font-size: 14px;
-      margin-bottom: 15px;
-      cursor: pointer;
-    }
-
-    .large-camera-placeholder {
-      width: 100%;
-      height: 200px;
-      background-color: var(--bg-mesh-box);
-      border-radius: 10px;
-      border: 1px solid var(--border-accent);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-
-    .text-output-container {
-      width: 100%;
-      background-color: var(--bg-surface);
-      border-radius: 10px;
-      padding: 16px;
-      border: 1px solid var(--border-color);
-    }
-
-    .output-heading {
-      color: var(--color-gold);
-      font-size: 14px;
-      font-weight: bold;
-      margin-bottom: 12px;
-    }
-
-    .list-text {
-      font-family: monospace;
-      font-size: 13px;
-      margin: 6px 0;
-    }
-
-    .key-container {
-      margin-top: 20px;
-      border-top: 1px dashed var(--border-color);
-      padding-top: 15px;
-    }
-
-    .key-heading {
-      font-weight: bold;
-      font-size: 13px;
-      margin-bottom: 8px;
-    }
-
-    .key-row {
-      color: var(--text-muted);
-      font-size: 12px;
-      line-height: 16px;
-      margin-bottom: 8px;
-    }
-
-    .blueprint-main-header {
-      font-size: 22px;
-      font-weight: bold;
-      margin-bottom: 15px;
-    }
-
-    .blueprint-data-card {
-      width: 100%;
-      background-color: var(--bg-surface);
-      border-radius: 10px;
-      padding: 16px;
-      border: 1px solid var(--border-color);
-      margin-top: 15px;
-    }
-
-    .data-row {
-      display: flex;
-      justify-content: space-between;
-      margin: 6px 0;
-      font-size: 13px;
-    }
-
-    .field-label { color: var(--text-muted); }
-    .field-value { font-weight: 500; }
-    .green-text { color: var(--color-green); font-weight: bold; }
-    .gold-text { color: var(--color-gold); font-weight: bold; }
-    .red-text { color: var(--color-red); }
-
-    .divider {
-      height: 1px;
-      background-color: var(--border-color);
-      margin: 12px 0;
-    }
-
-    .sub-box-title {
-      color: var(--color-gold);
-      font-size: 12px;
-      font-weight: bold;
-      margin-bottom: 8px;
-    }
-
-    .total-container {
-      margin: 12px 0;
-      padding: 8px 0;
-      border-top: 1px solid var(--border-mesh);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .total-label { font-weight: bold; font-size: 13px; }
-    .total-value { color: var(--color-green); font-weight: bold; font-size: 16px; }
-
-    .save-history-btn {
-      width: 100%;
-      background-color: var(--color-teal);
-      border: none;
-      border-radius: 8px;
-      padding: 14px 0;
-      color: var(--bg-main);
-      font-weight: bold;
-      font-size: 13px;
-      margin-top: 20px;
-      cursor: pointer;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Trading Card Grading v1.1</title>
+    <!-- Tailwind CSS for modern layout -->
+    <script src="https://jsdelivr.net"></script>
+    <style>
+        body {
+            background-color: #0b1329;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        /* Custom 3D Card Animation Styles */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .preserve-3d {
+            transform-style: preserve-3d;
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+    </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col justify-between p-4 selection:bg-blue-600 selection:text-white">
 
-    <header class="app-header">
-      <div class="header-title">PokeGradeZero <span class="version-text">v5.8</span></div>
-      <div class="header-nav-box">
-        <button id="nav-btn-home" class="header-icon-btn" style="display:none;" onclick="navigateTo('home')">Home</button>
-      </div>
+    <!-- GLOBAL APP HEADER -->
+    <header class="w-full text-center border-b border-slate-800 pb-3 mb-4">
+        <h1 class="text-2xl font-bold tracking-tight">Trading Card Grading</h1>
+        <p class="text-xs font-semibold uppercase tracking-widest text-blue-400 mt-0.5">Version 1.1</p>
     </header>
 
-    <!-- SCREEN 1: HOME VIEW -->
-    <div id="screen-home" class="screen-view active">
-      <div class="home-content">
-        <h1 class="main-title">High-Volume Sorting Blueprint</h1>
-        <p class="sub-title">Select your zero-cost scanning workflow to begin.</p>
-        
-        <div class="router-row">
-          <div class="router-card" onclick="navigateTo('closeup')">
-            <div class="router-card-title">Close-Up</div>
-            <div class="router-card-desc">Deep-dive math evaluation for individual cards.</div>
-          </div>
+    <!-- ========================================== -->
+    <!-- SCREEN 1: HOME SCREEN                      -->
+    <!-- ========================================== -->
+    <main id="screen-home" class="flex-1 flex flex-col justify-center space-y-4 max-w-md mx-auto w-full">
+        <!-- Navigation Router 1: Close-Up Scanner -->
+        <button onclick="navigateTo('screen-closeup')" class="w-full text-left bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-blue-500 transition active:scale-95 duration-200">
+            <div class="flex items-start space-x-4">
+                <div class="p-3 bg-blue-900/50 rounded-lg text-xl">🔍</div>
+                <div>
+                    <h2 class="text-lg font-bold text-white">Close-Up Scanner</h2>
+                    <p class="text-sm text-slate-400 mt-1 leading-relaxed">Deep-dive math evaluation for individual cards.</p>
+                </div>
+            </div>
+        </button>
 
-          <div class="router-card" onclick="navigateTo('multiscan')">
-            <div class="router-card-title">9-Card Page</div>
-            <div class="router-card-desc">Instant sorting tiers sequence layout mapping.</div>
-          </div>
+        <!-- Navigation Router 2: Multiple Card Scan -->
+        <button onclick="navigateTo('screen-multiple')" class="w-full text-left bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-blue-500 transition active:scale-95 duration-200">
+            <div class="flex items-start space-x-4">
+                <div class="p-3 bg-blue-900/50 rounded-lg text-xl">📄</div>
+                <div>
+                    <h2 class="text-lg font-bold text-white">9-Card Page</h2>
+                    <p class="text-sm text-slate-400 mt-1 leading-relaxed">Instant sorting tiers sequence layout mapping.</p>
+                </div>
+            </div>
+        </button>
+
+        <!-- Enhanced Section: Simulated Local History Placeholder -->
+        <div class="pt-6 border-t border-slate-800/60 mt-4">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Simulated Recent Scans</h3>
+            <div class="bg-slate-900/40 rounded-lg p-3 text-xs text-slate-500 text-center border border-dashed border-slate-800">
+                No recent scans saved. Local history updates dynamically.
+            </div>
         </div>
-      </div>
-    </div>
+    </main>
 
-    <!-- SCREEN 2: SCANNER CLOSE UP -->
-    <div id="screen-closeup" class="screen-view">
-      <h2 class="section-title">3D SHOWCASE</h2>
-      
-      <div class="scan-button-row">
-        <button class="scan-action-btn">SCAN FRONT</button>
-        <button class="scan-action-btn">SCAN BACK</button>
-      </div>
+    <!-- ========================================== -->
+    <!-- SCREEN 2: CLOSE-UP SCANNER SCREEN          -->
+    <!-- ========================================== -->
+    <main id="screen-closeup" class="hidden flex-1 flex flex-col max-w-md mx-auto w-full pb-6">
+        <!-- Top Action Row -->
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-sm font-bold uppercase tracking-wider text-slate-400">Close-Up Scanner</h2>
+            <button onclick="navigateTo('screen-home')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-semibold rounded-lg border border-slate-700 transition">
+                🏠 Home
+            </button>
+        </div>
 
-      <div class="preview-row">
-        <div class="preview-box"><span>Front Preview</span></div>
-        <div class="preview-box"><span>Back Preview</span></div>
-      </div>
+        <!-- Camera Interface Boxes / Row -->
+        <div class="grid grid-cols-2 gap-3 mb-5">
+            <!-- Front Target Box -->
+            <div class="flex flex-col space-y-2">
+                <button onclick="triggerCamera('front')" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-xs font-bold rounded-lg transition active:scale-95 text-center">
+                    📸 Scan Front
+                </button>
+                <div class="aspect-[2.5/3.5] bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex items-center justify-center relative p-1">
+                    <img id="img-preview-front" class="hidden w-full h-full object-cover rounded-lg" src="" alt="Front Preview">
+                    <span id="text-preview-front" class="text-2xs font-semibold uppercase tracking-wider text-slate-500 text-center px-2">Front Preview</span>
+                </div>
+            </div>
 
-      <div class="mesh-container">
+            <!-- Back Target Box -->
+            <div class="flex flex-col space-y-2">
+                <button onclick="triggerCamera('back')" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-xs font-bold rounded-lg transition active:scale-95 text-center">
+                    📸 Scan Back
+                </button>
+                <div class="aspect-[2.5/3.5] bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex items-center justify-center relative p-1">
+                    <img id="img-preview-back" class="hidden w-full h-full object-cover rounded-lg" src="" alt="Back Preview">
+                    <span id="text-preview-back" class="text-2xs font-semibold uppercase tracking-wider text-slate-500 text-center px-2">Back Preview</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interactive 3D Canvas Box Container -->
+        <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-4 flex flex-col items-center justify-center mb-5">
+            <div class="w-full aspect-[2.5/3.5] max-w-[200px] perspective-1000 my-2">
+                <div id="three-d-card" class="w-full h-full preserve-3d relative rounded-xl transition-transform duration-100 shadow-2xl border border-slate-800/40" style="transform: rotateY(0deg);">
+                    <!-- 3D Card Front Face -->
+                    <div id="card-face-front" class="absolute inset-0 backface-hidden bg-slate-950 rounded-xl flex flex-col items-center justify-center p-3 text-center border border-slate-700/50">
+                        <img id="three-d-img-front" class="hidden w-full h-full object-cover rounded-lg" src="" alt="3D Front">
+                        <p id="three-d-placeholder-text" class="text-xs font-semibold tracking-wide text-slate-400 px-4">Scan Front To View Image</p>
+                    </div>
+                    <!-- 3D Card Back Face -->
+                    <div id="card-face-back" class="absolute inset-0 backface-hidden bg-slate-950 rounded-xl flex flex-col items-center justify-center p-3 text-center rotate-y-180 border border-slate-700/50">
+                        <img id="three-d-img-back" class="hidden w-full h-full object-cover rounded-lg" src="" alt="3D Back">
+                        <p id="three-d-placeholder-text-back" class="text-xs font-semibold tracking-wide text-slate-400 px-4">Scan Back To View Image</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Interactive UI Feedback -->
+            <div class="bg-slate-950 px-4 py-1.5 rounded-full border border-slate-800 mt-2">
+                <span class="text-2xs uppercase tracking-widest text-slate-400 font-medium">Swipe To Spin Card</span>
+            </div>
+        </div>
+
+        <!-- Hidden Native Camera Utility -->
+        <input type="file" id="camera-input" accept="image/*" capture="environment" class="hidden" onchange="handleCameraCapture(event)">
+
+        <!-- Next Step Router: Information Screen Link -->
+        <button id="btn-goto-info" onclick="navigateTo('screen-info')" class="w-full mt-auto bg-slate-900 border border-slate-800 text-blue-400 font-bold text-sm py-4 rounded-xl flex items-center justify-center space-x-2 active:scale-95 transition">
+            <span>📊 Process Deep-Dive Assessment</span>
+            <span>➔</span>
+        </button>
+    </main>
+
+    <!-- ========================================== -->
+    <!-- SCREEN 3: MULTIPLE CARD SCAN SCREEN        -->
+    <!-- ========================================== -->
+    <main id="screen-multiple" class="hidden flex-1 flex flex-col max-w-md mx-auto w-full pb-6">
+        <!-- Top Action Row -->
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-sm font-bold uppercase tracking-wider text-slate-400">9-Card Page</h2>
+            <button onclick="navigateTo('screen-home')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-semibold rounded-lg border border-slate-700 transition">
+                🏠 Home
+            </button>
+        </div>
+
+        <!-- Page Scan Control Box -->
+        <button onclick="triggerPageScan()" class="w-full py-4 bg-blue-600 hover:bg-blue-500 font-bold text-sm rounded-xl transition active:scale-95 text-center mb-4 flex items-center justify-center space-x-2">
+            <span>📸 Take a Page Scan</span>
+        </button>
+
+        <!-- Large Target Workspace Window -->
+        <div class="w-full aspect-[3/4] bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex flex-col items-center justify-center relative p-2 mb-6">
+            <img id="img-page-preview" class="hidden w-full h-full object-cover rounded-lg" src="" alt="Binder Page Preview">
+            <div id="text-page-placeholder" class="flex flex-col items-center space-y-2 p-4 text-center">
+                <span class="text-4xl">🗂️</span>
