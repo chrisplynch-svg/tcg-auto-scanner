@@ -4,150 +4,140 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Trading Card Grading v1.1</title>
-    <!-- Tailwind CSS v4 CDN Entry Point -->
-    <script src="https://jsdelivr.net"></script>
     <style>
         body {
             background-color: #0b1329;
             color: #ffffff;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            -webkit-tap-highlight-color: transparent;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            box-sizing: border-box;
         }
-        .perspective-1000 { perspective: 1000px; }
-        .preserve-3d { transform-style: preserve-3d; }
-        .backface-hidden { backface-visibility: hidden; }
-        .rotate-y-180 { transform: rotateY(180deg); }
+        header {
+            text-align: center;
+            border-bottom: 1px solid #1e293b;
+            padding-bottom: 12px;
+            margin-bottom: 24px;
+        }
+        h1 { margin: 0; font-size: 24px; font-weight: bold; }
+        .version { font-size: 12px; color: #60a5fa; text-transform: uppercase; font-weight: 600; margin-top: 4px; letter-spacing: 1px; }
+        .container { flex: 1; display: flex; flex-direction: column; max-width: 440px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+        .screen { display: none; flex-direction: column; width: 100%; }
+        .screen.active { display: flex; }
+        
+        button.router {
+            width: 100%; text-align: left; background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; padding: 20px;
+            margin-bottom: 16px; color: white; cursor: pointer; display: flex; align-items: start; transition: transform 0.1s;
+            box-sizing: border-box;
+        }
+        button.router:active { transform: scale(0.98); }
+        .icon { font-size: 24px; margin-right: 16px; background: rgba(30,41,59,0.5); padding: 12px; border-radius: 8px; }
+        .router-title { font-size: 18px; font-weight: bold; margin: 0; }
+        .router-desc { font-size: 14px; color: #94a3b8; margin: 4px 0 0 0; line-height: 1.5; }
+        
+        .history-box { border-top: 1px solid rgba(30,41,59,0.6); margin-top: 16px; padding-top: 24px; }
+        .history-title { font-size: 12px; font-weight: bold; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .history-empty { background: rgba(15,23,42,0.4); border: 1px dashed #1e293b; border-radius: 8px; padding: 12px; font-size: 12px; color: #64748b; text-align: center; }
+        
+        .top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .screen-title { font-size: 14px; font-weight: bold; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin: 0; }
+        .btn-nav { background: #1e293b; border: 1px solid #334155; padding: 6px 12px; border-radius: 8px; color: white; font-size: 12px; font-weight: 600; cursor: pointer; }
+        
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .scan-col { display: flex; flex-direction: column; gap: 8px; }
+        .btn-scan { background: #2563eb; color: white; border: none; border-radius: 8px; padding: 12px; font-size: 12px; font-weight: bold; cursor: pointer; text-align: center; }
+        
+        .preview-box { aspect-ratio: 2.5/3.5; background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; display: flex; align-items: center; justify-content: center; position: relative; padding: 4px; overflow: hidden; box-sizing: border-box; }
+        .preview-box img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
+        .preview-text { font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 1px; text-align: center; }
+        
+        .canvas-3d { background: rgba(15,23,42,0.6); border: 1px solid #1e293b; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 20px; }
+        .scene-3d { width: 100%; aspect-ratio: 2.5/3.5; max-width: 180px; perspective: 1000px; margin: 8px 0; }
+        .card-3d { width: 100%; height: 100%; transform-style: preserve-3d; position: relative; transition: transform 0.1s; transform: rotateY(0deg); }
+        .face { position: absolute; inset: 0; backface-visibility: hidden; background: #020617; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px; text-align: center; border: 1px solid rgba(51,65,85,0.5); box-sizing: border-box; }
+        .face img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
+        .face.back { transform: rotateY(180deg); }
+        
+        .badge-swipe { background: #020617; border: 1px solid #1e293b; padding: 6px 16px; border-radius: 9999px; margin-top: 8px; }
+        .badge-swipe span { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #94a3b8; font-weight: 500; }
+        
+        .btn-action { background: #0f172a; border: 1px solid #1e293b; color: #60a5fa; font-weight: bold; font-size: 14px; padding: 16px; border-radius: 12px; width: 100%; cursor: pointer; text-align: center; margin-top: auto; display: flex; align-items: center; justify-content: center; gap: 8px; box-sizing: border-box; }
+        
+        .workspace-9 { width: 100%; aspect-ratio: 3/4; background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px; margin-bottom: 24px; box-sizing: border-box; }
+        .workspace-9 img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
+        
+        .results-9 { background: rgba(15,23,42,0.8); border: 1px solid #1e293b; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+        .results-title { font-size: 12px; font-weight: bold; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #1e293b; padding-bottom: 8px; margin: 0 0 16px 0; }
+        .list-9 { font-family: monospace; font-size: 14px; display: flex; flex-direction: column; gap: 8px; }
+        
+        .key-9 { border-top: 1px solid #1e293b; margin-top: 12px; padding-top: 12px; font-size: 12px; display: flex; flex-direction: column; gap: 8px; }
+        .key-title { font-weight: bold; letter-spacing: 0.5px; }
+        .key-item { display: flex; gap: 8px; align-items: start; color: #cbd5e1; }
+        .key-item strong { color: white; font-weight: 600; }
+        
+        .report-box { background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 16px; font-size: 14px; box-sizing: border-box; }
+        .report-title { font-size: 12px; font-weight: bold; color: #60a5fa; border-bottom: 1px solid #1e293b; padding-bottom: 8px; margin: 0; text-transform: uppercase; letter-spacing: 1px; }
+        .report-line { color: #cbd5e1; line-height: 1.6; }
+        .report-line strong { color: white; }
+        
+        .tier-card { background: rgba(6,78,59,0.4); border: 1px solid rgba(16,185,129,0.6); border-radius: 8px; padding: 12px; }
+        .tier-status { font-weight: bold; color: #34d399; display: flex; align-items: center; gap: 6px; }
+        .tier-badge { font-size: 12px; background: #10b981; color: #020617; padding: 1px 6px; border-radius: 4px; font-weight: 900; }
+        
+        .math-block { margin-top: 12px; padding-left: 8px; border-left: 1px solid rgba(16,185,129,0.6); font-family: monospace; font-size: 12px; display: flex; flex-direction: column; gap: 4px; color: #cbd5e1; }
+        .math-head { font-weight: bold; color: white; padding-top: 4px; }
+        .math-sub { padding-left: 12px; }
+        .text-rose { color: #f43f5e; }
+        .text-emerald { color: #10b981; font-weight: bold; }
+        .text-slate { color: #94a3b8; border-top: 1px solid #1e293b; margin-top: 4px; padding-top: 2px; }
+        
+        .grid-cols-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 12px; padding-top: 4px; }
+        .grid-block { display: flex; flex-direction: column; gap: 2px; }
+        .grid-block span { font-weight: bold; color: #94a3b8; }
+        
+        .next-scan { border-top: 1px solid #1e293b; padding-top: 8px; font-size: 12px; color: #93c5fd; font-style: italic; }
+        .next-scan span { font-weight: bold; font-style: normal; color: #94a3b8; display: block; margin-bottom: 4px; }
+        
+        footer { text-align: center; font-size: 12px; color: #475569; letter-spacing: 0.5px; margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(15,23,42,0.6); }
+        .hidden { display: none !important; }
+        input[type="file"] { display: none; }
+        svg.mock-svg { width: 100%; height: 100%; border-radius: 8px; display: block; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col p-4 selection:bg-blue-600 selection:text-white">
+<body>
 
-    <!-- GLOBAL APP HEADER WITH VERSION NUMBER DISPLAY -->
-    <header class="w-full text-center border-b border-slate-800 pb-3 mb-6">
-        <h1 class="text-2xl font-bold tracking-tight">Trading Card Grading</h1>
-        <p id="app-version-display" class="text-xs font-semibold uppercase tracking-widest text-blue-400 mt-0.5">Version 1.1</p>
+    <header>
+        <h1>Trading Card Grading</h1>
+        <div class="version">Version 1.1</div>
     </header>
 
-    <!-- SINGLE SECURE WRAPPER WINDOW (Prevents iOS WebKit White Screens) -->
-    <div id="app-view-container" class="flex-1 flex flex-col max-w-md mx-auto w-full">
-        <!-- Content injects dynamically right here via JavaScript -->
-    </div>
-
-    <!-- Hidden Native System Camera Capture Link -->
-    <input type="file" id="camera-input" accept="image/*" capture="environment" class="hidden" onchange="handleCameraCapture(event)">
-
-    <footer class="text-center text-xs text-slate-600 mt-6 tracking-wide pt-4 border-t border-slate-900/60">
-        Personal Environment Sandbox App Setup
-    </footer>
-
-    <script>
-        // Global State variables storage engine
-        let activeCameraTarget = 'front';
-        let frontImageCache = '';
-        let backImageCache = '';
-        let pageImageCache = '';
-
-        // Global Version Control System
-        const APP_VERSION = "v1.1";
-
-        // Sync visual header array tracker string on initialization
-        document.getElementById('app-version-display').innerText = "Version " + APP_VERSION.replace('v', '');
-
-        // Screen HTML Generators Matrix
-        const screens = {
-            home: () => `
-                <div class="flex-1 flex flex-col justify-center space-y-4 w-full animated fadeIn">
-                    <!-- Close-Up Scanner Router -->
-                    <button onclick="navigateTo('closeup')" class="w-full text-left bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-blue-500 transition active:scale-95 duration-200">
-                        <div class="flex items-start space-x-4">
-                            <div class="p-3 bg-blue-900/50 rounded-lg text-xl">🔍</div>
-                            <div>
-                                <h2 class="text-lg font-bold text-white">Close-Up Scanner</h2>
-                                <p class="text-sm text-slate-400 mt-1 leading-relaxed">Deep-dive math evaluation for individual cards.</p>
-                            </div>
-                        </div>
-                    </button>
-
-                    <!-- 9-Card Page Router -->
-                    <button onclick="navigateTo('multiple')" class="w-full text-left bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-blue-500 transition active:scale-95 duration-200">
-                        <div class="flex items-start space-x-4">
-                            <div class="p-3 bg-blue-900/50 rounded-lg text-xl">📄</div>
-                            <div>
-                                <h2 class="text-lg font-bold text-white">9-Card Page</h2>
-                                <p class="text-sm text-slate-400 mt-1 leading-relaxed">Instant sorting tiers sequence layout mapping.</p>
-                            </div>
-                        </div>
-                    </button>
-
-                    <!-- Simulated History Dashboard -->
-                    <div class="pt-6 border-t border-slate-800/60 mt-4">
-                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Simulated Recent Scans</h3>
-                        <div class="bg-slate-900/40 rounded-lg p-3 text-xs text-slate-500 text-center border border-dashed border-slate-800">
-                            No recent scans saved. Local history updates dynamically.
-                        </div>
-                    </div>
+    <div class="container">
+        
+        <!-- SCREEN 1: HOME SCREEN -->
+        <div id="screen-home" class="screen active">
+            <button onclick="navigateTo('screen-closeup')" class="router">
+                <div class="icon">🔍</div>
+                <div>
+                    <h2 class="router-title">Close-Up Scanner</h2>
+                    <p class="router-desc">Deep-dive math evaluation for individual cards.</p>
                 </div>
-            `,
-            closeup: () => `
-                <div class="flex-1 flex flex-col w-full pb-6 animated fadeIn">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-sm font-bold uppercase tracking-wider text-slate-400">Close-Up Scanner</h2>
-                        <button onclick="navigateTo('home')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-semibold rounded-lg border border-slate-700 transition">
-                            🏠 Home
-                        </button>
-                    </div>
+            </button>
 
-                    <div class="grid grid-cols-2 gap-3 mb-5">
-                        <div class="flex flex-col space-y-2">
-                            <button onclick="triggerCamera('front')" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-xs font-bold rounded-lg transition active:scale-95 text-center">
-                                📸 Scan Front
-                            </button>
-                            <div class="aspect-[2.5/3.5] bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex items-center justify-center relative p-1">
-                                ${frontImageCache ? `<img class="w-full h-full object-cover rounded-lg" src="${frontImageCache}">` : `<span class="text-xs font-semibold uppercase tracking-wider text-slate-500 text-center px-2">Front Preview</span>`}
-                            </div>
-                        </div>
-                        <div class="flex flex-col space-y-2">
-                            <button onclick="triggerCamera('back')" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-xs font-bold rounded-lg transition active:scale-95 text-center">
-                                📸 Scan Back
-                            </button>
-                            <div class="aspect-[2.5/3.5] bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex items-center justify-center relative p-1">
-                                ${backImageCache ? `<img class="w-full h-full object-cover rounded-lg" src="${backImageCache}">` : `<span class="text-xs font-semibold uppercase tracking-wider text-slate-500 text-center px-2">Back Preview</span>`}
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 3D Card Area Box -->
-                    <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-4 flex flex-col items-center justify-center mb-5">
-                        <div class="w-full aspect-[2.5/3.5] max-w-[180px] perspective-1000 my-2">
-                            <div id="three-d-card" class="w-full h-full preserve-3d relative rounded-xl transition-transform duration-100 shadow-2xl" style="transform: rotateY(0deg);">
-                                <div class="absolute inset-0 backface-hidden bg-slate-950 rounded-xl flex flex-col items-center justify-center p-3 text-center border border-slate-700/50">
-                                    ${frontImageCache ? `<img class="w-full h-full object-cover rounded-lg" src="${frontImageCache}">` : `<p class="text-xs font-semibold tracking-wide text-slate-400 px-4">Scan Front To View Image</p>`}
-                                </div>
-                                <div class="absolute inset-0 backface-hidden bg-slate-950 rounded-xl flex flex-col items-center justify-center p-3 text-center rotate-y-180 border border-slate-700/50">
-                                    ${backImageCache ? `<img class="w-full h-full object-cover rounded-lg" src="${backImageCache}">` : `<p class="text-xs font-semibold tracking-wide text-slate-400 px-4">Scan Back To View Image</p>`}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bg-slate-950 px-4 py-1.5 rounded-full border border-slate-800 mt-2">
-                            <span class="text-xs uppercase tracking-widest text-slate-400 font-medium">Swipe To Spin Card</span>
-                        </div>
-                    </div>
-
-                    <button onclick="navigateTo('info')" class="w-full mt-auto bg-slate-900 border border-slate-800 text-blue-400 font-bold text-sm py-4 rounded-xl flex items-center justify-center space-x-2 active:scale-95 transition">
-                        <span>📊 Process Deep-Dive Assessment</span>
-                        <span>➔</span>
-                    </button>
+            <button onclick="navigateTo('screen-multiple')" class="router">
+                <div class="icon">📄</div>
+                <div>
+                    <h2 class="router-title">9-Card Page</h2>
+                    <p class="router-desc">Instant sorting tiers sequence layout mapping.</p>
                 </div>
-            `,
-            multiple: () => `
-                <div class="flex-1 flex flex-col w-full pb-6 animated fadeIn">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-sm font-bold uppercase tracking-wider text-slate-400">9-Card Page</h2>
-                        <button onclick="navigateTo('home')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-semibold rounded-lg border border-slate-700 transition">
-                            🏠 Home
-                        </button>
-                    </div>
+            </button>
 
-                    <button onclick="triggerPageScan()" class="w-full py-4 bg-blue-600 hover:bg-blue-500 font-bold text-sm rounded-xl transition active:scale-95 text-center mb-4">
-                        📸 Take a Page Scan
-                    </button>
+            <div class="history-box">
+                <div class="history-title">Simulated Recent Scans</div>
+                <div class="history-empty">No recent scans saved. Local history updates dynamically.</div>
+            </div>
+        </div>
 
+        <!-- SCREEN 2: CLOSE-UP SCANNER SCREEN -->
