@@ -30,8 +30,8 @@
     <!-- ========================================== -->
     <!-- SCREEN 1: HOME SCREEN                      -->
     <!-- ========================================== -->
-    <main id="screen-home" class="block flex-1 flex flex-col justify-center space-y-4 max-w-md mx-auto w-full">
-        <!-- Close-Up Scanner Router -->
+    <main id="screen-home" class="flex-1 flex flex-col justify-center space-y-4 max-w-md mx-auto w-full">
+        <!-- Navigation Card 1 -->
         <button onclick="navigateTo('screen-closeup')" class="w-full text-left bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-blue-500 transition active:scale-95 duration-200">
             <div class="flex items-start space-x-4">
                 <div class="p-3 bg-blue-900/50 rounded-lg text-xl">🔍</div>
@@ -42,7 +42,7 @@
             </div>
         </button>
 
-        <!-- 9-Card Page Router -->
+        <!-- Navigation Card 2 -->
         <button onclick="navigateTo('screen-multiple')" class="w-full text-left bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-blue-500 transition active:scale-95 duration-200">
             <div class="flex items-start space-x-4">
                 <div class="p-3 bg-blue-900/50 rounded-lg text-xl">📄</div>
@@ -53,7 +53,7 @@
             </div>
         </button>
 
-        <!-- Simulated History Sandbox -->
+        <!-- History Dashboard View -->
         <div class="pt-6 border-t border-slate-800/60 mt-4">
             <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Simulated Recent Scans</h3>
             <div class="bg-slate-900/40 rounded-lg p-3 text-xs text-slate-500 text-center border border-dashed border-slate-800">
@@ -74,7 +74,7 @@
         </div>
 
         <div class="grid grid-cols-2 gap-3 mb-5">
-            <!-- Scan Front Box -->
+            <!-- Scan Front Button Box -->
             <div class="flex flex-col space-y-2">
                 <button onclick="triggerCamera('front')" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-xs font-bold rounded-lg transition active:scale-95 text-center">
                     📸 Scan Front
@@ -85,7 +85,7 @@
                 </div>
             </div>
 
-            <!-- Scan Back Box -->
+            <!-- Scan Back Button Box -->
             <div class="flex flex-col space-y-2">
                 <button onclick="triggerCamera('back')" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-xs font-bold rounded-lg transition active:scale-95 text-center">
                     📸 Scan Back
@@ -97,7 +97,7 @@
             </div>
         </div>
 
-        <!-- Interactive 3D Frame -->
+        <!-- 3D Canvas Box -->
         <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-4 flex flex-col items-center justify-center mb-5">
             <div class="w-full aspect-[2.5/3.5] max-w-[200px] perspective-1000 my-2">
                 <div id="three-d-card" class="w-full h-full preserve-3d relative rounded-xl transition-transform duration-100 shadow-2xl" style="transform: rotateY(0deg);">
@@ -116,10 +116,7 @@
             </div>
         </div>
 
-        <!-- Hidden Native File Device Input Pipeline -->
-        <input type="file" id="camera-input" accept="image/*" capture="environment" class="hidden" onchange="handleCameraCapture(event)">
-
-        <!-- Router Link to Information Screen Layout -->
+        <!-- Next Processing Router Step -->
         <button onclick="navigateTo('screen-info')" class="w-full mt-auto bg-slate-900 border border-slate-800 text-blue-400 font-bold text-sm py-4 rounded-xl flex items-center justify-center space-x-2 active:scale-95 transition">
             <span>📊 Process Deep-Dive Assessment</span>
             <span>➔</span>
@@ -154,3 +151,7 @@
             <div class="space-y-2 font-mono text-sm">
                 <div>1️⃣ Charizard Base Set Foil 🟢 ($350.00)</div>
                 <div>2️⃣ Blastoise Base Set Foil 🟡 ($85.00)</div>
+                <div>3️⃣ Venusaur Base Set Foil 🟢 ($120.00)</div>
+                <div>4️⃣ Pikachu Red Cheeks Shadowless 🟡 ($65.00)</div>
+                <div>5️⃣ Machamp First Edition Foil 🔴 ($12.00)</div>
+                <div>6️⃣ Mewtwo Base Set Foil 🔴 ($18.00)</div>
