@@ -17,14 +17,13 @@
         .preview-box { width: 100%; height: 110px; background-color: #0F1A30; border-radius: 6px; border: 1px solid #0b1528; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #6B7280; overflow: hidden; padding: 2px; }
         .preview-box img { width: 100%; height: 100%; object-fit: contain; }
         .display-container { background-color: #131F3B; border: 1px solid rgba(30, 58, 138, 0.4); border-radius: 12px; padding: 16px 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 8px; }
-        /* Enlarged 3D scene viewport to fill vertical real estate */
-        .scene { perspective: 1000px; width: 250px; height: 350px; margin-bottom: 8px; }
-        .c3d { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.1s ease-out; }
+        .scene { perspective: 1000px; width: 220px; height: 308px; margin-bottom: 12px; }
+        .c3d { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; }
         .face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .face img { width: 100%; height: 100%; object-fit: contain; }
         .back { transform: rotateY(180deg); }
-        .spin-text { font-size: 10px; color: #60A5FA; font-family: monospace; letter-spacing: 0.05em; text-transform: uppercase; background-color: rgba(15, 26, 48, 0.8); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(30, 58, 138, 0.5); }
-        .action-btn { display: none; width: 100%; background-color: #2563EB; color: #ffffff; font-weight: 700; padding: 12px 0; border-radius: 10px; text-align: center; text-decoration: none; margin-bottom: 4px; font-size: 14px; }
+        .spin-text { font-size: 10px; color: #60A5FA; font-family: monospace; letter-spacing: 0.05em; text-transform: uppercase; background-color: rgba(15, 26, 48, 0.8); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(30, 58, 138, 0.5); text-align: center; width: auto; display: inline-block; }
+        .action-btn { display: none; width: 100%; background-color: #2563EB; color: #ffffff; font-weight: 700; padding: 12px 0; border-radius: 10px; text-align: center; text-decoration: none; margin-top: 8px; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -49,7 +48,7 @@
 
         <div class="display-container">
             <div class="scene">
-                <div id="spin-1" class="c3d" data-rot="0">
+                <div id="spin-1" class="c3d">
                     <div class="face bg-[#1A2A4C]" style="border: 1px solid rgba(59, 130, 246, 0.3);">
                         <img id="m-front" style="display:none; width:100%; height:100%; object-fit:contain;">
                         <p id="lbl-f" style="font-size: 12px; color:#9CA3AF; text-align:center; padding:0 8px;">Scan Front To View Image</p>
@@ -60,7 +59,9 @@
                     </div>
                 </div>
             </div>
-            <p class="spin-text">Swipe To Spin Card</p>
+            <div>
+                <p class="spin-text">Swipe To Spin Card</p>
+            </div>
         </div>
 
         <a id="btn-go" href="info.html" class="action-btn">🔍 Generate Info Breakdown</a>
@@ -69,7 +70,7 @@
     <script>
         let f="", b="";
         function runImg(input, face) {
-            if (input.files && input.files) {
+            if (input.files && input.files[0]) {
                 const r = new FileReader();
                 r.onload = function(e) {
                     const src = e.target.result;
@@ -99,16 +100,55 @@
                         if(btn) btn.style.display = 'block';
                     }
                 };
-                r.readAsDataURL(input.files);
+                r.readAsDataURL(input.files[0]);
             }
         }
-        function spin(id) {
-            const el = document.getElementById(id); if(!el) return;
-            let sx = 0, rot = 0;
-            el.addEventListener('touchstart', (e) => { sx = e.touches.clientX; rot = parseFloat(el.getAttribute('data-rot')) || 0; }, {passive:true});
-            el.addEventListener('touchmove', (e) => { const d = e.touches.clientX - sx; let nr = rot + (d * 0.6); el.style.transform = `rotateY(${nr}deg)`; el.setAttribute('data-rot', nr); }, {passive:true});
+
+        // Active Finger Touch Drag Spinning Engine Matrix
+        function initSpin(id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+
+            let startX = 0;
+            let currentRot = 0;
+            let isMoving = false;
+
+            el.addEventListener('touchstart', function(e) {
+                startX = e.touches[0].clientX;
+                isMoving = true;
+            }, { passive: true });
+
+            el.addEventListener('touchmove', function(e) {
+                if (!isMoving) return;
+                const deltaX = e.touches[0].clientX - startX;
+                // Controls rotational touch slide tracking alignment
+                let targetRot = currentRot + (deltaX * 0.5);
+                el.style.transform = "rotateY(" + targetRot + "deg)";
+            }, { passive: true });
+
+            el.addEventListener('touchend', function(e) {
+                if (!isMoving) return;
+                isMoving = false;
+                // Read and lock the final resting transform layout value
+                const style = window.getComputedStyle(el);
+                const transform = style.transform || style.webkitTransform;
+                if (transform && transform !== 'none') {
+                    const values = transform.split('(')[1].split(')')[0].split(',');
+                    const a = values[0];
+                    const b = values[1];
+                    let angle = Math.round(Math.atan2(b, a) * (180/Math.PI));
+                    currentRot = angle;
+                }
+            });
         }
-        document.addEventListener("DOMContentLoaded", () => { spin('spin-1'); });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            initSpin('spin-1');
+        });
+        // Instant secondary execution layer if window load beat DOM execution
+        window.addEventListener("load", function() {
+            initSpin('spin-1');
+        });
     </script>
 </body>
 </html>
