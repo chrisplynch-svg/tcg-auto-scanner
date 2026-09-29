@@ -3,41 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trading Card Grading v1.1</title>
+    <title>Trading Card Grading - Home</title>
     <script src="https://tailwindcss.com"></script>
-    <!-- Built-in Fallback Styles if CDN drops -->
-    <style>
-        body { background-color: #0B1528 !important; color: #ffffff !important; margin: 0; padding: 16px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        .app-container { max-width: 440px; margin: 0 auto; text-align: center; }
-        .app-title { font-size: 24px; font-weight: 800; margin-top: 24px; color: #ffffff; text-align: center; }
-        .app-version { font-size: 12px; color: #60A5FA; font-family: monospace; margin-top: 4px; text-align: center; margin-bottom: 40px; }
-        .router-box { display: block; text-align: left; background-color: #16223F; border: 1px solid rgba(30, 58, 138, 0.5); padding: 20px; rounded-radius: 12px; border-radius: 12px; text-decoration: none; margin-bottom: 16px; }
-        .router-title { font-size: 18px; font-weight: 700; color: #ffffff; }
-        .router-desc { font-size: 12px; color: #9CA3AF; margin-top: 4px; line-height: 1.5; }
-    </style>
 </head>
-<body>
+<body class="bg-[#0b132b] text-white min-h-screen flex flex-col items-center justify-center p-6">
+    <header class="text-center mb-10">
+        <h1 class="text-3xl font-bold tracking-wider text-blue-400">TCG Auto Scanner</h1>
+        <p class="text-slate-400 text-sm mt-2">Version 5.1 Portal</p>
+    </header>
 
-    <div class="app-container">
-        <header>
-            <h1 class="app-title">Trading Card Grading</h1>
-            <p class="app-version">v1.1</p>
-        </header>
+    <main class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl w-full">
+        <a href="closeup.html" class="flex flex-col items-center justify-center p-8 bg-[#1c2541] rounded-2xl border border-slate-700 hover:border-blue-500 transition-all text-center group shadow-xl">
+            <span class="text-4xl mb-4 group-hover:scale-110 transition-transform">🔍</span>
+            <h2 class="text-xl font-semibold">3D Card Closeup</h2>
+            <p class="text-xs text-slate-400 mt-2">Inspect your scans in an interactive 3D space</p>
+        </a>
 
-        <main style="width: 100%;">
-            <!-- Router 1 -->
-            <a href="closeup.html" class="router-box">
-                <div class="router-title">🟢 Close-Up Scanner</div>
-                <div class="router-desc">Deep-dive math evaluation for individual cards.</div>
-            </a>
-
-            <!-- Router 2 -->
-            <a href="multiple.html" class="router-box">
-                <div class="router-title">📑 9-Card Page</div>
-                <div class="router-desc">Instant sorting tiers & sequence layout mapping.</div>
-            </a>
-        </main>
-    </div>
-
+        <a href="info.html" class="flex flex-col items-center justify-center p-8 bg-[#1c2541] rounded-2xl border border-slate-700 hover:border-emerald-500 transition-all text-center group shadow-xl">
+            <span class="text-4xl mb-4 group-hover:scale-110 transition-transform">📊</span>
+            <h2 class="text-xl font-semibold">Grading Info Report</h2>
+            <p class="text-xs text-slate-400 mt-2">View complete deep-dive analytics and flaw logging</p>
+        </a>
+    </main>
 </body>
 </html>
