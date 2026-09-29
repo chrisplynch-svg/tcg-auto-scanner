@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Trading Card Grading v1.1 - Closeup</title>
+    <title>Trading Card Grading v1.1 - Scanner Stage</title>
     <script src="https://tailwindcss.com"></script>
     <style>
-        .scene { perspective: 1200px; }
+        .scene { perspective: 1000px; }
         .card-container {
             transform-style: preserve-3d;
             will-change: transform;
-            touch-action: none; /* Prevents mobile scroll hijacking */
+            touch-action: none;
         }
         .card-face {
             backface-visibility: hidden;
@@ -19,115 +19,127 @@
         .card-back { transform: rotateY(180deg); }
     </style>
 </head>
-<body class="bg-[#050b14] text-white min-h-screen flex flex-col p-4 selection:bg-transparent">
+<body class="bg-[#0a1128] text-white min-h-screen flex flex-col p-4 font-sans select-none selection:bg-transparent">
 
     <!-- Top Navigation Header -->
-    <header class="flex justify-between items-center w-full max-w-4xl mx-auto mb-6 px-2">
-        <div class="flex items-baseline space-x-2">
-            <h1 class="text-xl font-bold tracking-wide">Trading Card Grading</h1>
-            <span class="text-xs font-mono text-blue-500 font-bold">v1.1</span>
+    <header class="flex justify-between items-center w-full max-w-md mx-auto mb-4 pt-2">
+        <div class="flex items-baseline space-x-1.5">
+            <h1 class="text-base font-bold tracking-wide">Trading Card Grading</h1>
+            <span class="text-[10px] font-mono text-blue-500 font-bold">v1.1</span>
         </div>
-        <a href="index.html" class="bg-blue-600 hover:bg-blue-700 text-xs px-4 py-1.5 rounded-md font-medium shadow-md transition-colors flex items-center space-x-1">
-            <span>🏠</span> <span>Home</span>
-        </a>
+        <div class="flex space-x-2">
+            <button class="bg-[#111a36] border border-blue-500/40 text-[10px] px-2.5 py-1 rounded-md text-blue-400 font-semibold flex items-center space-x-1">
+                <span>📷</span> <span>Scanner</span>
+            </button>
+            <a href="index.html" class="bg-[#111a36] border border-slate-800 text-[10px] px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 transition-colors font-semibold flex items-center space-x-1">
+                <span>🏠</span> <span>Home</span>
+            </a>
+        </div>
     </header>
 
-    <!-- Content Workspace Split -->
-    <main class="w-full max-w-4xl mx-auto flex flex-col items-center">
+    <!-- Main Workspace Contents -->
+    <main class="w-full max-w-md mx-auto flex-1 flex flex-col space-y-4 pb-24">
         
-        <!-- Previews Row Grid -->
-        <div class="grid grid-cols-2 gap-4 w-full mb-6 max-w-md">
-            <div class="bg-[#0b132b]/60 border border-dashed border-slate-700 rounded-xl p-3 flex flex-col items-center">
-                <span class="text-xs text-slate-400 font-medium mb-2">Front Preview</span>
-                <div class="w-20 h-28 bg-slate-800 rounded-md overflow-hidden border border-slate-700 shadow-inner">
-                    <img id="frontThumb" src="https://pokemontcg.io" alt="Front Preview" class="w-full h-full object-cover">
+        <!-- Top Dual Preview Panes Grid -->
+        <div class="grid grid-cols-2 gap-4 w-full">
+            <div class="bg-[#111a36]/80 border border-slate-800 rounded-xl p-3 flex flex-col items-center shadow-lg">
+                <span class="text-[11px] text-slate-400 font-medium mb-2">Front Preview</span>
+                <div class="w-24 h-32 bg-[#0a1128] rounded-lg overflow-hidden border border-slate-700/50 shadow-inner">
+                    <img src="https://pokemontcg.io" alt="Front Preview Asset" class="w-full h-full object-cover">
                 </div>
             </div>
-            <div class="bg-[#0b132b]/60 border border-dashed border-slate-700 rounded-xl p-3 flex flex-col items-center">
-                <span class="text-xs text-slate-400 font-medium mb-2">Back Preview</span>
-                <div class="w-20 h-28 bg-slate-800 rounded-md overflow-hidden border border-slate-700 shadow-inner">
-                    <img id="backThumb" src="https://pokemontcg.io" alt="Back Preview" class="w-full h-full object-cover">
+            <div class="bg-[#111a36]/80 border border-slate-800 rounded-xl p-3 flex flex-col items-center shadow-lg">
+                <span class="text-[11px] text-slate-400 font-medium mb-2">Back Preview</span>
+                <div class="w-24 h-32 bg-[#0a1128] rounded-lg overflow-hidden border border-slate-700/50 shadow-inner">
+                    <img src="https://pokemontcg.io" alt="Back Preview Asset" class="w-full h-full object-cover">
                 </div>
             </div>
         </div>
 
-        <!-- Major 3D Display Container -->
-        <div class="w-full max-w-md bg-[#0b132b]/40 border border-slate-800 rounded-2xl p-8 flex flex-col items-center justify-center shadow-2xl relative min-h-[460px]">
-            <div class="scene w-64 h-88 relative flex items-center justify-center">
-                <div id="card" class="card-container w-full h-full relative cursor-grab active:cursor-grabbing duration-100 ease-out">
+        <!-- Major Center 3D Stage Container -->
+        <div class="w-full bg-[#111a36]/40 border border-slate-800/80 rounded-2xl p-6 flex flex-col items-center justify-center shadow-2xl relative min-h-[380px]">
+            <div class="scene w-52 h-72 relative flex items-center justify-center">
+                <div id="card" class="card-container w-full h-full relative cursor-grab active:cursor-grabbing transition-transform duration-75 ease-out">
                     
-                    <!-- Front Image Asset -->
-                    <div class="card-face absolute inset-0 w-full h-full rounded-xl overflow-hidden shadow-2xl bg-[#1c2541] border border-slate-700/60">
-                        <img src="https://pokemontcg.io" alt="Front" class="w-full h-full object-cover pointer-events-none">
+                    <!-- Card Face Front View -->
+                    <div class="card-face absolute inset-0 w-full h-full rounded-xl overflow-hidden shadow-2xl border border-slate-700/40">
+                        <img src="https://pokemontcg.io" alt="Card View Front" class="w-full h-full object-cover pointer-events-none">
                     </div>
 
-                    <!-- Back Image Asset -->
-                    <div class="card-face card-back absolute inset-0 w-full h-full rounded-xl overflow-hidden shadow-2xl bg-[#1c2541] border border-slate-700/60">
-                        <img src="https://pokemontcg.io" alt="Back" class="w-full h-full object-cover pointer-events-none">
+                    <!-- Card Face Back View -->
+                    <div class="card-face card-back absolute inset-0 w-full h-full rounded-xl overflow-hidden shadow-2xl border border-slate-700/40">
+                        <img src="https://pokemontcg.io" alt="Card View Back" class="w-full h-full object-cover pointer-events-none">
                     </div>
 
                 </div>
             </div>
 
-            <!-- Action Prompt Footer Label -->
-            <div class="mt-8 border-t border-slate-800/80 pt-4 w-full text-center">
-                <p class="text-[10px] font-mono tracking-[0.25em] text-blue-400/80 uppercase select-none">
+            <!-- Bottom Swipe Label Alignment -->
+            <div class="mt-6 border-t border-slate-800/80 pt-3 w-full text-center">
+                <p class="text-[9px] font-mono tracking-[0.25em] text-blue-400/90 uppercase">
                     SWIPE TO SPIN CARD
                 </p>
+            </div>
+
+            <!-- Static Identification Label Metrics -->
+            <div class="mt-4 text-center space-y-0.5">
+                <h2 class="text-sm font-bold tracking-wide text-slate-200">Sentret</h2>
+                <p class="text-[11px] text-slate-400">Neo Discovery</p>
+                <p class="text-[10px] font-mono text-slate-500">#70/75</p>
             </div>
         </div>
     </main>
 
-    <!-- Pointer Matrix Interaction Engine -->
+    <!-- Bottom Primary Submission Layout Bar -->
+    <div class="fixed bottom-0 left-0 right-0 p-4 bg-[#0a1128]/95 backdrop-blur-md border-t border-slate-900 flex justify-center z-50">
+        <a href="info.html" class="w-full max-w-md bg-blue-600 hover:bg-blue-700 active:scale-[0.99] text-white font-semibold py-3 px-6 rounded-xl shadow-xl transition-all flex items-center justify-center space-x-2 text-sm tracking-wide text-center">
+            <span>🔍</span> <span>Generate Info Breakdown</span>
+        </a>
+    </div>
+
+    <!-- 3D Rotation Processing Script -->
     <script>
         const card = document.getElementById('card');
         let isDragging = false;
         let startX = 0, startY = 0;
-        let currentXRot = 0, currentYRot = -15; // Started tilted slightly like your image
+        let currentXRot = 0, currentYRot = 0;
 
-        // Set baseline transform styling
-        card.style.transform = `rotateX(0deg) rotateY(${currentYRot}deg)`;
+        card.style.transform = `rotateX(${currentXRot}deg) rotateY(${currentYRot}deg)`;
 
         window.addEventListener('pointerdown', (e) => {
             if (!card.contains(e.target)) return;
             isDragging = true;
             startX = e.clientX;
             startY = e.clientY;
-            card.style.transition = 'none'; // Snappy track binding
+            card.style.transition = 'none';
         });
 
         window.addEventListener('pointermove', (e) => {
             if (!isDragging) return;
-            
             const deltaX = e.clientX - startX;
             const deltaY = e.clientY - startY;
 
-            // Sensitivity configuration metrics
-            const nextY = currentYRot + (deltaX * 0.6);
-            const nextX = currentXRot - (deltaY * 0.6);
-
-            // Constraint boundaries to protect rendering vertical extremes
+            const nextY = currentYRot + (deltaX * 0.65);
+            const nextX = currentXRot - (deltaY * 0.65);
             const clampedX = Math.max(-45, Math.min(45, nextX));
 
             card.style.transform = `rotateX(${clampedX}deg) rotateY(${nextY}deg)`;
         });
 
-        const stopTracking = () => {
+        const stopDragging = () => {
             if (!isDragging) return;
             isDragging = false;
-            card.style.transition = 'transform 0.3s ease-out'; // Smooth dampening drop
+            card.style.transition = 'transform 0.4s ease-out';
             
-            // Extract and store ending coordinate values
             const transformStr = card.style.transform;
             const xMatch = transformStr.match(/rotateX\(([-\d.]+)deg\)/);
             const yMatch = transformStr.match(/rotateY\(([-\d.]+)deg\)/);
             
-            if (xMatch) currentXRot = parseFloat(xMatch[1]);
-            if (yMatch) currentYRot = parseFloat(yMatch[1]);
+            if (xMatch) currentXRot = parseFloat(xMatch);
+            if (yMatch) currentYRot = parseFloat(yMatch);
         };
-
-        window.addEventListener('pointerup', stopTracking);
-        window.addEventListener('pointercancel', stopTracking);
+        window.addEventListener('pointerup', stopDragging);
+        window.addEventListener('pointercancel', stopDragging);
     </script>
 </body>
 </html>
