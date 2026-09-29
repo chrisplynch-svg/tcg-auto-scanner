@@ -3,55 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TCG Scanner - Grading Metrics</title>
+    <title>Trading Card Grading v1.1 - Report Analysis</title>
     <script src="https://tailwindcss.com"></script>
 </head>
-<body class="bg-[#0b132b] text-white min-h-screen p-6 font-sans">
-    <header class="max-w-xl mx-auto flex justify-between items-center mb-6">
-        <h1 class="text-xl font-bold tracking-wide border-b-2 border-emerald-500 pb-1">DEEP-DIVE PRE-GRADING</h1>
-        <a href="index.html" class="bg-slate-800 hover:bg-slate-700 text-xs px-3 py-1 rounded border border-slate-700 transition-colors">🏠 Home</a>
+<body class="bg-[#0a1128] text-white min-h-screen flex flex-col p-4 font-sans select-none">
+
+    <!-- Screen Navigation Header -->
+    <header class="flex justify-between items-center w-full max-w-md mx-auto mb-4 pt-2">
+        <div class="flex items-baseline space-x-1.5">
+            <h1 class="text-base font-bold tracking-wide">Trading Card Grading</h1>
+            <span class="text-[10px] font-mono text-blue-500 font-bold">v1.1</span>
+        </div>
+        <div class="flex space-x-2">
+            <a href="closeup.html" class="bg-[#111a36] border border-slate-800 text-[10px] px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 transition-colors font-semibold flex items-center space-x-1">
+                <span>📷</span> <span>Scanner</span>
+            </a>
+            <a href="index.html" class="bg-[#111a36] border border-slate-800 text-[10px] px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 transition-colors font-semibold flex items-center space-x-1">
+                <span>🏠</span> <span>Home</span>
+            </a>
+        </div>
     </header>
 
-    <main class="max-w-xl mx-auto bg-[#1c2541] rounded-2xl border border-slate-700 p-6 shadow-xl space-y-4">
-        <!-- Main Identifiers -->
-        <div class="grid grid-cols-2 gap-4 bg-[#0b132b]/50 p-3 rounded-lg text-sm">
-            <div><span class="text-slate-400 block text-xs">Estimated Grade</span><strong class="text-emerald-400 text-lg">PSA 8 (Est.)</strong></div>
-            <div><span class="text-slate-400 block text-xs">Authenticity Check</span><strong class="text-blue-400 text-sm">VERIFIED PASS</strong></div>
-        </div>
-
-        <!-- Flaw Diagnostics -->
-        <div>
-            <h3 class="text-xs font-mono uppercase tracking-wider text-slate-400 mb-1.5">Flaws Seen</h3>
-            <div class="bg-[#0b132b]/30 border border-slate-800 rounded-lg p-3 text-xs space-y-1 text-slate-300">
-                <p>• Slight micro-scratching upper left window frame.</p>
-                <p>• Back centering biased 65/35 top-to-bottom edge boundary.</p>
+    <!-- Main Output Viewport -->
+    <main class="w-full max-w-md mx-auto flex flex-col space-y-4 pb-10">
+        
+        <!-- Embedded Mini Scanning Visual Panel Frame -->
+        <div class="w-full bg-[#111a36]/40 border border-slate-800/80 rounded-2xl p-4 flex flex-col items-center justify-center shadow-xl">
+            <div class="w-40 h-56 rounded-lg overflow-hidden border border-slate-700/60 shadow-2xl transform rotate-1">
+                <img src="https://pokemontcg.io" alt="Scanned Asset Face" class="w-full h-full object-cover">
+            </div>
+            <p class="text-[9px] font-mono tracking-[0.25em] text-blue-400/70 uppercase mt-4 select-none">
+                SWIPE TO SPIN CARD
+            </p>
+            <div class="mt-3 text-center space-y-0.5">
+                <h2 class="text-sm font-bold tracking-wide text-slate-200">Raichu</h2>
+                <p class="text-[11px] text-slate-400">Base Set Holo</p>
+                <p class="text-[10px] font-mono text-slate-500">#14/102</p>
             </div>
         </div>
 
-        <!-- Valuation Calculations -->
-        <div>
-            <h3 class="text-xs font-mono uppercase tracking-wider text-slate-400 mb-1.5">Financial & Net Profit Math</h3>
-            <div class="grid grid-cols-3 gap-2 text-center text-xs">
-                <div class="bg-[#0b132b]/40 p-2 rounded">
-                    <span class="text-slate-400 block text-[10px]">Raw Value</span>
-                    <span class="font-bold text-slate-200">$4.99</span>
+        <!-- THE DEEP-DIVE PRE-GRADING DISCOVERY RUNNER BLOCK -->
+        <div class="w-full bg-[#111a36]/60 border border-slate-800/80 rounded-2xl p-5 shadow-2xl space-y-4">
+            <h3 class="text-sm font-bold tracking-wide text-slate-200 border-b border-slate-800 pb-2 uppercase font-mono text-blue-400">
+                The Deep-Dive Pre-Grading
+            </h3>
+
+            <!-- Blueprint Analytics Meta -->
+            <div class="space-y-3.5 text-xs text-slate-300">
+                <div class="flex items-start space-x-2">
+                    <span>📊</span>
+                    <p><strong>Estimated Grade:</strong> <span class="text-emerald-400 font-semibold">Gem Mint 10 (Simulated preview)</span></p>
                 </div>
-                <div class="bg-[#0b132b]/40 p-2 rounded">
-                    <span class="text-slate-400 block text-[10px]">Est. Graded Value</span>
-                    <span class="font-bold text-emerald-400">$35.00</span>
+
+                <div class="flex items-start space-x-2">
+                    <span>🔍</span>
+                    <p><strong>Flaws Seen:</strong> <span class="text-slate-400">Centering alignment holds 60/40 front variance; borders are completely crisp.</span></p>
                 </div>
-                <div class="bg-[#0b132b]/40 p-2 rounded">
-                    <span class="text-slate-400 block text-[10px]">Net Margin</span>
-                    <span class="font-bold text-blue-400">+$12.50</span>
+
+                <div class="flex items-start space-x-2">
+                    <span>🟢</span>
+                    <p><strong>Worth Grading?</strong> <span class="text-emerald-400 font-medium">Yes</span></p>
+                </div>
+
+                <div class="flex items-start space-x-2">
+                    <span>💰</span>
+                    <p><strong>Raw Value:</strong> <span class="text-slate-200">$45.00</span></p>
+                </div>
+
+                <div class="flex items-start space-x-2">
+                    <span>📈</span>
+                    <p><strong>Est. Graded Value:</strong> <span class="text-emerald-400 font-semibold">$220.00</span></p>
+                </div>
+
+                <!-- Complete Net Profit Calculations Box Layout -->
+                <div class="bg-[#0a1128]/60 rounded-xl p-3 space-y-1.5 font-mono text-[11px] border border-slate-900">
+                    <p class="text-slate-400 font-bold uppercase tracking-wider text-[9px] mb-1">🧮 Net Profit Math:</p>
+                    <p class="flex justify-between"><span>• Gross Graded Value:</span><span class="text-emerald-400">$220.00</span></p>
+                    <p class="flex justify-between"><span>• Minus Grading Fee:</span><span class="text-rose-400">-$15.00</span></p>
+                    <p class="flex justify-between"><span>• Minus Insured Logistics:</span><span class="text-rose-400">-$14.00</span></p>
+                    <p class="flex justify-between"><span>• Minus Materials:</span><span class="text-rose-400">-$2.00</span></p>
+                    <p class="flex justify-between"><span>• Minus Platform Fee (13.5%):</span><span class="text-rose-400">-$29.70</span></p>
+                    <div class="border-t border-slate-800/80 my-1 pt-1 flex justify-between font-sans text-xs">
+                        <span class="text-slate-400">Total Outlay:</span><span class="text-slate-300 font-semibold">$60.70</span>
+                    </div>
+                    <div class="flex justify-between font-sans text-xs bg-emerald-500/10 p-1.5 rounded border border-emerald-500/20">
+                        <span class="text-emerald-400 font-bold">➡️ Net Realized Payout:</span><span class="text-emerald-400 font-bold">$159.30</span>
+                    </div>
+                </div>
+
+                <div class="flex items-start space-x-2">
+                    <span>📝</span>
+                    <p><strong>Pop Report:</strong> <span class="text-slate-400">1,245 tracked submissions inside active population registers.</span></p>
+                </div>
+
+                <div class="flex items-start space-x-2">
+                    <span>👑</span>
+                    <p><strong>Best Grader:</strong> <span class="text-slate-200">PSA Premium Tiers optimized for baseline liquidation speed.</span></p>
+                </div>
+
+                <div class="flex items-start space-x-2">
+                    <span>💧</span>
+                    <p><strong>Liquidity:</strong> <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 mr-1"></span> <span class="text-slate-400">High volume market transaction depth.</span></p>
+                </div>
+
+                <div class="flex items-start space-x-2">
+                    <span>🛡️</span>
+                    <p><strong>Authenticity:</strong> <span class="text-slate-400">Layer micro-printing matches reference database criteria.</span></p>
+                </div>
+
+                <div class="flex items-start space-x-2">
+                    <span>💡</span>
+                    <p><strong>What to Scan For Next:</strong> <span class="text-blue-300">Search for reverse-holo set parallels across identical card sets.</span></p>
                 </div>
             </div>
-        </div>
-
-        <!-- Market & Logistics Meta -->
-        <div class="grid grid-cols-2 gap-3 pt-2 text-xs border-t border-slate-800">
-            <div><span class="text-slate-400">Best Grader Choice:</span> <span class="font-semibold text-slate-200">PSA</span></div>
-            <div><span class="text-slate-400">Liquidity Score:</span> <span class="font-semibold text-amber-400">Medium-High</span></div>
-            <div class="col-span-2"><span class="text-slate-400">Next Scan Suggestion:</span> <span class="font-mono text-[11px] text-blue-300">Angle Tilt Left Surface Focus</span></div>
         </div>
     </main>
 </body>
