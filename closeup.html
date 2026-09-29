@@ -70,7 +70,7 @@
     <script>
         let f="", b="";
         function runImg(input, face) {
-            if (input.files && input.files[0]) {
+            if (input.files && input.files) {
                 const r = new FileReader();
                 r.onload = function(e) {
                     const src = e.target.result;
@@ -100,17 +100,18 @@
                         if(btn) btn.style.display = 'block';
                     }
                 };
-                r.readAsDataURL(input.files[0]);
+                r.readAsDataURL(input.files);
             }
         }
 
-        // Active Finger Touch Drag Spinning Engine Matrix
+        // Memory-locked, Persistent 3D Rotation Engine
         function initSpin(id) {
             const el = document.getElementById(id);
             if (!el) return;
 
             let startX = 0;
-            let currentRot = 0;
+            let currentRot = 0; // Tracks live movement angle
+            let savedRot = 0;   // Stores locked angle on finger lift
             let isMoving = false;
 
             el.addEventListener('touchstart', function(e) {
@@ -121,34 +122,21 @@
             el.addEventListener('touchmove', function(e) {
                 if (!isMoving) return;
                 const deltaX = e.touches[0].clientX - startX;
-                // Controls rotational touch slide tracking alignment
-                let targetRot = currentRot + (deltaX * 0.5);
-                el.style.transform = "rotateY(" + targetRot + "deg)";
+                // Add new swipe delta straight onto the locked background angle
+                currentRot = savedRot + (deltaX * 0.5);
+                el.style.transform = "rotateY(" + currentRot + "deg)";
             }, { passive: true });
 
-            el.addEventListener('touchend', function(e) {
+            el.addEventListener('touchend', function() {
                 if (!isMoving) return;
                 isMoving = false;
-                // Read and lock the final resting transform layout value
-                const style = window.getComputedStyle(el);
-                const transform = style.transform || style.webkitTransform;
-                if (transform && transform !== 'none') {
-                    const values = transform.split('(')[1].split(')')[0].split(',');
-                    const a = values[0];
-                    const b = values[1];
-                    let angle = Math.round(Math.atan2(b, a) * (180/Math.PI));
-                    currentRot = angle;
-                }
+                // Lock current rotation value so it resumes perfectly next touch
+                savedRot = currentRot;
             });
         }
 
-        document.addEventListener("DOMContentLoaded", function() {
-            initSpin('spin-1');
-        });
-        // Instant secondary execution layer if window load beat DOM execution
-        window.addEventListener("load", function() {
-            initSpin('spin-1');
-        });
+        document.addEventListener("DOMContentLoaded", function() { initSpin('spin-1'); });
+        window.addEventListener("load", function() { initSpin('spin-1'); });
     </script>
 </body>
 </html>
