@@ -16,8 +16,9 @@
         .scan-lbl-text { font-size: 12px; font-weight: 700; display: block; margin-bottom: 4px; color: #ffffff; }
         .preview-box { width: 100%; height: 110px; background-color: #0F1A30; border-radius: 6px; border: 1px solid #0b1528; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #6B7280; overflow: hidden; padding: 2px; }
         .preview-box img { width: 100%; height: 100%; object-fit: contain; }
-        .display-container { background-color: #131F3B; border: 1px solid rgba(30, 58, 138, 0.4); border-radius: 12px; padding: 16px 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 8px; min-height: 350px; }
-        .scene { perspective: 1000px; width: 220px; height: 308px; margin-bottom: 8px; }
+        .display-container { background-color: #131F3B; border: 1px solid rgba(30, 58, 138, 0.4); border-radius: 12px; padding: 16px 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 8px; }
+        /* Enlarged 3D scene viewport to fill vertical real estate */
+        .scene { perspective: 1000px; width: 250px; height: 350px; margin-bottom: 8px; }
         .c3d { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.1s ease-out; }
         .face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .face img { width: 100%; height: 100%; object-fit: contain; }
@@ -68,22 +69,19 @@
     <script>
         let f="", b="";
         function runImg(input, face) {
-            if (input.files && input.files[0]) {
+            if (input.files && input.files) {
                 const r = new FileReader();
                 r.onload = function(e) {
                     const src = e.target.result;
                     
-                    // Force display inside the small preview windows
                     document.getElementById(`p-${face}`).innerHTML = `<img src="${src}" style="width:100%; height:100%; object-fit:contain;">`;
                     
-                    // Target and inject into 3D structure elements
                     const m = document.getElementById(`m-${face}`);
                     if(m) {
                         m.src = src;
                         m.style.display = 'block';
                     }
                     
-                    // Clear structural guidance text fields
                     if(face==='front') {
                         const lblF = document.getElementById(`lbl-f`);
                         if(lblF) lblF.style.display = 'none';
@@ -96,13 +94,12 @@
                     
                     localStorage.setItem(`card-${face}`, src);
                     
-                    // Reveal navigation button when full configurations exist
                     if(f !== "" && b !== "") {
                         const btn = document.getElementById('btn-go');
                         if(btn) btn.style.display = 'block';
                     }
                 };
-                r.readAsDataURL(input.files[0]);
+                r.readAsDataURL(input.files);
             }
         }
         function spin(id) {
