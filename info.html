@@ -48,11 +48,11 @@
                 <p class="spin-text">Swipe To Spin Card</p>
             </div>
 
-            <!-- New Dynamic Card Information Text Frame Positioned Exactly Under Spinner Box -->
+            <!-- Dynamic Data Identification Card Slots -->
             
-                <p id="lbl-card-name" class="font-bold text-sm text-white">Raichu</p>
-                <p id="lbl-card-set" class="text-xs text-blue-400 font-medium mt-0.5">Base Set Holo</p>
-                <p id="lbl-card-num" class="text-[11px] text-gray-400 font-mono mt-0.5">#14/102</p>
+                <p id="lbl-card-name" class="font-bold text-sm text-white">Loading Card...</p>
+                <p id="lbl-card-set" class="text-xs text-blue-400 font-medium mt-0.5">Scanning Reference...</p>
+                <p id="lbl-card-num" class="text-[11px] text-gray-400 font-mono mt-0.5">#--/--</p>
             </div>
         </div>
 
@@ -90,16 +90,6 @@
     </div>
 
     <script>
-        window.addEventListener("load", function() {
-            const frontData = localStorage.getItem("card-front");
-            const backData = localStorage.getItem("card-back");
-            
-            if(frontData) document.getElementById("i-front").src = frontData;
-            if(backData) document.getElementById("i-back").src = backData;
-            
-            initSpin('spin-2');
-        });
-
         function initSpin(id) {
             const el = document.getElementById(id);
             if (!el) return;
@@ -107,13 +97,13 @@
             let startX = 0, currentRot = 0, savedRot = 0, isMoving = false;
 
             el.addEventListener('touchstart', function(e) {
-                startX = e.touches.clientX;
+                startX = e.touches[0].clientX;
                 isMoving = true;
             }, { passive: true });
 
             el.addEventListener('touchmove', function(e) {
                 if (!isMoving) return;
-                const deltaX = e.touches.clientX - startX;
+                const deltaX = e.touches[0].clientX - startX;
                 currentRot = savedRot + (deltaX * 0.5);
                 el.style.transform = "rotateY(" + currentRot + "deg)";
             }, { passive: true });
@@ -124,6 +114,29 @@
                 savedRot = currentRot;
             });
         }
+
+        // Delay execution parameters until phone caches register local assets
+        window.addEventListener("load", function() {
+            const frontData = localStorage.getItem("card-front");
+            const backData = localStorage.getItem("card-back");
+            
+            if(frontData) document.getElementById("i-front").src = frontData;
+            if(backData) document.getElementById("i-back").src = backData;
+
+            // Dynamically rewrite name text fields based on closeup memory inputs
+            const name = localStorage.getItem("card-name") || "Raichu";
+            const set = localStorage.getItem("card-set") || "Base Set Holo";
+            const num = localStorage.getItem("card-num") || "#14/102";
+
+            document.getElementById("lbl-card-name").innerText = name;
+            document.getElementById("lbl-card-set").innerText = set;
+            document.getElementById("lbl-card-num").innerText = num;
+            
+            // Safe initialize after text elements settle
+            setTimeout(function() {
+                initSpin('spin-2');
+            }, 150);
+        });
     </script>
 </body>
 </html>
