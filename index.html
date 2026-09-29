@@ -3,26 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trading Card Grading - Home</title>
+    <title>Trading Card Grading - Hub</title>
     <script src="https://tailwindcss.com"></script>
 </head>
-<body class="bg-[#0b132b] text-white min-h-screen flex flex-col items-center justify-center p-6">
+<body class="bg-[#0a1128] text-white min-h-screen flex flex-col items-center justify-center p-6 select-none">
     <header class="text-center mb-10">
-        <h1 class="text-3xl font-bold tracking-wider text-blue-400">TCG Auto Scanner</h1>
-        <p class="text-slate-400 text-sm mt-2">Version 5.1 Portal</p>
+        <h1 class="text-2xl font-bold tracking-wider text-blue-500">Trading Card Scanner</h1>
+        <p class="text-slate-400 text-xs mt-1">App Workflow Portal v1.1</p>
     </header>
 
-    <main class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl w-full">
-        <a href="closeup.html" class="flex flex-col items-center justify-center p-8 bg-[#1c2541] rounded-2xl border border-slate-700 hover:border-blue-500 transition-all text-center group shadow-xl">
-            <span class="text-4xl mb-4 group-hover:scale-110 transition-transform">🔍</span>
-            <h2 class="text-xl font-semibold">3D Card Closeup</h2>
-            <p class="text-xs text-slate-400 mt-2">Inspect your scans in an interactive 3D space</p>
+    <main class="grid grid-cols-1 gap-4 max-w-xs w-full">
+        <a href="closeup.html" class="flex items-center space-x-4 p-5 bg-[#111a36]/80 rounded-xl border border-slate-800 hover:border-blue-500 transition-all shadow-xl group">
+            <span class="text-2xl group-hover:scale-110 transition-transform">📷</span>
+            <div>
+                <h2 class="text-sm font-bold text-slate-200">Interactive 3D Scanner</h2>
+                <p class="text-[11px] text-slate-400">Capture card images & spin previews</p>
+            </div>
         </a>
 
-        <a href="info.html" class="flex flex-col items-center justify-center p-8 bg-[#1c2541] rounded-2xl border border-slate-700 hover:border-emerald-500 transition-all text-center group shadow-xl">
-            <span class="text-4xl mb-4 group-hover:scale-110 transition-transform">📊</span>
-            <h2 class="text-xl font-semibold">Grading Info Report</h2>
-            <p class="text-xs text-slate-400 mt-2">View complete deep-dive analytics and flaw logging</p>
+        <a href="info.html" class="flex items-center space-x-4 p-5 bg-[#111a36]/80 rounded-xl border border-slate-800 hover:border-emerald-500 transition-all shadow-xl group">
+            <span class="text-2xl group-hover:scale-110 transition-transform">📊</span>
+            <div>
+                <h2 class="text-sm font-bold text-slate-200">Pre-Grading Dashboard</h2>
+                <p class="text-[11px] text-slate-400">Deep-Dive reports & Gemini analytics</p>
+            </div>
         </a>
     </main>
 </body>
