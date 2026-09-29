@@ -14,12 +14,11 @@
         .grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
         .scan-label { background-color: #16223F; border: 1px dashed #1e3a8a; border-radius: 12px; padding: 14px; text-align: center; cursor: pointer; display: block; }
         .scan-lbl-text { font-size: 13px; font-weight: 700; display: block; margin-bottom: 10px; color: #ffffff; }
-        /* Taller and larger side-by-side previews */
         .preview-box { width: 100%; height: 210px; background-color: #0F1A30; border-radius: 8px; border: 1px solid #0b1528; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #6B7280; overflow: hidden; padding: 2px; }
         .preview-box img { width: 100%; height: 100%; object-fit: contain; border-radius: 6px; }
-        .display-container { background-color: #131F3B; border: 1px solid rgba(30, 58, 138, 0.4); border-radius: 12px; padding: 24px 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 20px; }
-        /* Significantly scaled up 3D viewport dimensions */
-        .scene { perspective: 1000px; width: 230px; height: 322px; margin-bottom: 14px; }
+        .display-container { background-color: #131F3B; border: 1px solid rgba(30, 58, 138, 0.4); border-radius: 12px; padding: 24px 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 20px; }
+        /* Maximum scaled up viewport frame size */
+        .scene { perspective: 1200px; width: 300px; height: 420px; margin-bottom: 16px; }
         .c3d { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.1s ease-out; }
         .face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .face img { width: 100%; height: 100%; object-fit: contain; }
@@ -51,8 +50,8 @@
         <div class="display-container">
             <div class="scene">
                 <div id="spin-1" class="c3d" data-rot="0">
-                    <div class="face bg-[#1A2A4C]" style="border: 1px solid rgba(59, 130, 246, 0.3);"><img id="m-front" style="display:none;"><p id="lbl-f" style="font-size: 12px; color:#9CA3AF; text-align:center; padding:0 8px;">Scan Front To View Image</p></div>
-                    <div class="face back bg-[#1A2A4C]" style="border: 1px solid rgba(59, 130, 246, 0.3);"><img id="m-back" style="display:none;"><p style="font-size: 12px; color:#9CA3AF;">Back Image Missing</p></div>
+                    <div class="face bg-[#1A2A4C]" style="border: 1px solid rgba(59, 130, 246, 0.3);"><img id="m-front" style="display:none;"><p id="lbl-f" style="font-size: 13px; color:#9CA3AF; text-align:center; padding:0 8px;">Scan Front To View Image</p></div>
+                    <div class="face back bg-[#1A2A4C]" style="border: 1px solid rgba(59, 130, 246, 0.3);"><img id="m-back" style="display:none;"><p style="font-size: 13px; color:#9CA3AF;">Back Image Missing</p></div>
                 </div>
             </div>
             <p class="spin-text">Swipe To Spin Card</p>
