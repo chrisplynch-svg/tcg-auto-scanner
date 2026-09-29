@@ -68,10 +68,12 @@
     </div>
 
     <script>
-        // Wipe storage slots completely on clean app open to prevent blank frames
         function clearSession() {
             localStorage.removeItem("card-front");
             localStorage.removeItem("card-back");
+            localStorage.removeItem("card-name");
+            localStorage.removeItem("card-set");
+            localStorage.removeItem("card-num");
         }
 
         function checkButtons() {
@@ -99,6 +101,21 @@
                     if (lbl) lbl.style.display = 'none';
                     
                     localStorage.setItem(`card-${face}`, src);
+
+                    // Mock matching card database values during scan execution loops
+                    if(face === 'front') {
+                        // Simulated automatic logic changes card data if a different photo file runs
+                        if(input.files[0].name.toLowerCase().includes('sentret')) {
+                            localStorage.setItem("card-name", "Sentret");
+                            localStorage.setItem("card-set", "Neo Genesis");
+                            localStorage.setItem("card-num", "#71/111");
+                        } else {
+                            localStorage.setItem("card-name", "Raichu");
+                            localStorage.setItem("card-set", "Base Set Holo");
+                            localStorage.setItem("card-num", "#14/102");
+                        }
+                    }
+                    
                     checkButtons();
                 };
                 r.readAsDataURL(input.files[0]);
@@ -108,30 +125,19 @@
         function initSpin(id) {
             const el = document.getElementById(id);
             if (!el) return;
-
             let startX = 0, currentRot = 0, savedRot = 0, isMoving = false;
-
-            el.addEventListener('touchstart', function(e) {
-                startX = e.touches.clientX;
-                isMoving = true;
-            }, { passive: true });
-
+            el.addEventListener('touchstart', function(e) { startX = e.touches[0].clientX; isMoving = true; }, { passive: true });
             el.addEventListener('touchmove', function(e) {
                 if (!isMoving) return;
-                const deltaX = e.touches.clientX - startX;
+                const deltaX = e.touches[0].clientX - startX;
                 currentRot = savedRot + (deltaX * 0.5);
                 el.style.transform = "rotateY(" + currentRot + "deg)";
             }, { passive: true });
-
-            el.addEventListener('touchend', function() {
-                if (!isMoving) return;
-                isMoving = false;
-                savedRot = currentRot;
-            });
+            el.addEventListener('touchend', function() { if (!isMoving) return; isMoving = false; savedRot = currentRot; });
         }
 
         window.addEventListener("load", function() {
-            clearSession(); // Lock clean initialization
+            clearSession();
             initSpin('spin-1');
         });
     </script>
