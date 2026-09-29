@@ -3,161 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pre-Grading Information</title>
+    <title>TCG Scanner - Grading Metrics</title>
     <script src="https://tailwindcss.com"></script>
-    <style>
-        body { background-color: #0B1528 !important; color: #ffffff !important; margin: 0; padding: 12px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        .app-container { max-width: 440px; margin: 0 auto; display: flex; flex-direction: column; }
-        .header-area { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; margin-bottom: 12px; position: relative; }
-        .title-text { font-size: 15px; font-weight: 700; color: #ffffff; width: 50%; line-height: 1.2; }
-        .nav-group { display: flex; gap: 6px; position: absolute; right: 0; }
-        .nav-btn { background-color: #1e3a8a; font-size: 10px; padding: 5px 8px; border-radius: 6px; text-decoration: none; color: #ffffff; font-weight: 600; }
-        .display-container { background-color: #131F3B; border: 1px solid rgba(30, 58, 138, 0.4); border-radius: 12px; padding: 16px 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 12px; }
-        .scene { perspective: 1000px; width: 220px; height: 308px; margin-bottom: 12px; }
-        .c3d { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; }
-        .face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .face img { width: 100%; height: 100%; object-fit: contain; }
-        .back { transform: rotateY(180deg); }
-        .spin-text { font-size: 10px; color: #60A5FA; font-family: monospace; letter-spacing: 0.05em; text-transform: uppercase; background-color: rgba(15, 26, 48, 0.8); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(30, 58, 138, 0.5); text-align: center; }
-        .identity-box { background-color: #0F1A30; border: 1px solid #1e3a8a; border-radius: 8px; padding: 10px; text-align: center; margin-top: 10px; width: 90%; }
-        .info-card { background-color: #131F3B; border: 1px solid rgba(30, 58, 138, 0.4); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
-        .loading-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .4; } }
-    </style>
 </head>
-<body>
-    <div class="app-container">
-        <header class="header-area">
-            <h1 class="title-text">Trading Card Grading <span style="font-size:11px; font-family:monospace; color:#60A5FA; display:block;">v1.1</span></h1>
-            <div class="nav-group">
-                <a href="closeup.html" class="nav-btn">🔍 Scanner</a>
-                <a href="index.html" class="nav-btn">🏠 Home</a>
-            </div>
-        </header>
+<body class="bg-[#0b132b] text-white min-h-screen p-6 font-sans">
+    <header class="max-w-xl mx-auto flex justify-between items-center mb-6">
+        <h1 class="text-xl font-bold tracking-wide border-b-2 border-emerald-500 pb-1">DEEP-DIVE PRE-GRADING</h1>
+        <a href="index.html" class="bg-slate-800 hover:bg-slate-700 text-xs px-3 py-1 rounded border border-slate-700 transition-colors">🏠 Home</a>
+    </header>
 
-        <div class="display-container">
-            <div class="scene">
-                <div id="spin-2" class="c3d">
-                    <div class="face bg-[#1A2A4C]" style="border: 1px solid rgba(59, 130, 246, 0.3);">
-                        <img id="i-front" style="width:100%; height:100%; object-fit:contain;">
-                    </div>
-                    <div class="face back bg-[#1A2A4C]" style="border: 1px solid rgba(59, 130, 246, 0.3);">
-                        <img id="i-back" style="width:100%; height:100%; object-fit:contain;">
-                    </div>
-                </div>
-            </div>
-            <div>
-                <p class="spin-text">Swipe To Spin Card</p>
-            </div>
+    <main class="max-w-xl mx-auto bg-[#1c2541] rounded-2xl border border-slate-700 p-6 shadow-xl space-y-4">
+        <!-- Main Identifiers -->
+        <div class="grid grid-cols-2 gap-4 bg-[#0b132b]/50 p-3 rounded-lg text-sm">
+            <div><span class="text-slate-400 block text-xs">Estimated Grade</span><strong class="text-emerald-400 text-lg">PSA 8 (Est.)</strong></div>
+            <div><span class="text-slate-400 block text-xs">Authenticity Check</span><strong class="text-blue-400 text-sm">VERIFIED PASS</strong></div>
+        </div>
 
-            <!-- Card Profile Box -->
-            
-                <p id="lbl-card-name" class="font-bold text-sm text-white loading-pulse">Analyzing Name...</p>
-                <p id="lbl-card-set" class="text-xs text-blue-400 font-medium mt-0.5 loading-pulse">Identifying Set...</p>
-                <p id="lbl-card-num" class="text-[11px] text-gray-400 font-mono mt-0.5 loading-pulse">#--/--</p>
+        <!-- Flaw Diagnostics -->
+        <div>
+            <h3 class="text-xs font-mono uppercase tracking-wider text-slate-400 mb-1.5">Flaws Seen</h3>
+            <div class="bg-[#0b132b]/30 border border-slate-800 rounded-lg p-3 text-xs space-y-1 text-slate-300">
+                <p>• Slight micro-scratching upper left window frame.</p>
+                <p>• Back centering biased 65/35 top-to-bottom edge boundary.</p>
             </div>
         </div>
 
-        <main class="info-card text-xs space-y-3.5">
-            <h2 class="font-bold text-green-400 text-sm border-b border-blue-900/60 pb-1.5 tracking-wider">THE DEEP-DIVE PRE-GRADING</h2>
-            <div id="ai-output-container" class="space-y-3 text-gray-200 font-medium leading-relaxed">
-                <p id="loading-msg" class="text-center py-6 text-gray-400 font-mono loading-pulse">📡 Connecting to Google AI Studio Evaluation Nodes...</p>
+        <!-- Valuation Calculations -->
+        <div>
+            <h3 class="text-xs font-mono uppercase tracking-wider text-slate-400 mb-1.5">Financial & Net Profit Math</h3>
+            <div class="grid grid-cols-3 gap-2 text-center text-xs">
+                <div class="bg-[#0b132b]/40 p-2 rounded">
+                    <span class="text-slate-400 block text-[10px]">Raw Value</span>
+                    <span class="font-bold text-slate-200">$4.99</span>
+                </div>
+                <div class="bg-[#0b132b]/40 p-2 rounded">
+                    <span class="text-slate-400 block text-[10px]">Est. Graded Value</span>
+                    <span class="font-bold text-emerald-400">$35.00</span>
+                </div>
+                <div class="bg-[#0b132b]/40 p-2 rounded">
+                    <span class="text-slate-400 block text-[10px]">Net Margin</span>
+                    <span class="font-bold text-blue-400">+$12.50</span>
+                </div>
             </div>
-        </main>
-    </div>
+        </div>
 
-    <script>
-        // LINE 73: PASTE YOUR GOOGLE API STUDIO KEY CODE DIRECTLY INSIDE THESE QUOTATION MARKS:
-        const apiKey = "AQ.Ab8RN6Ih-8R_FJTEq60FM7YG99BzvBdTAC-0psV20zJqyTZk4w";
-
-        window.addEventListener("load", function() {
-            const frontData = localStorage.getItem("card-front");
-            const backData = localStorage.getItem("card-back");
-            
-            if(frontData) document.getElementById("i-front").src = frontData;
-            if(backData) document.getElementById("i-back").src = backData;
-
-            initSpin('spin-2');
-
-            if (frontData && backData) {
-                runAIEvaluation(frontData, backData);
-            } else {
-                document.getElementById("ai-output-container").innerHTML = "<p class='text-red-400 text-center'>Missing image source inputs. Please scan again.</p>";
-            }
-        });
-
-        async function runAIEvaluation(frontBase64, backBase64) {
-            const container = document.getElementById("ai-output-container");
-            
-            // Clean out headers from raw base64 arrays safely
-            const cleanFront = frontBase64.split(",")[1];
-            const cleanBack = backBase64.split(",")[1];
-
-            const promptInstruction = "Analyze these front and back trading card images. First, find the Card Name, Set Name, and Card Number (#/#). Second, run a grading check using strict modern grading standards and provide the breakdown formatted EXACTLY like this text template:\n\n" +
-                                      "Card Name: [Insert Name]\n" +
-                                      "Set Name: [Insert Set]\n" +
-                                      "Card Number: [Insert Number]\n\n" +
-                                      "* 📊 Estimated Grade: \n" +
-                                      "* 🔍 Flaws Seen: \n" +
-                                      "* [🟢 or 🔴] Worth Grading? \n" +
-                                      "  * 💰 Raw Value: \n" +
-                                      "  * 📈 Est. Graded Value: \n" +
-                                      "  * 🧮 Net Profit Math:\n" +
-                                      "    * Gross Graded Value: \n" +
-                                      "    * Minus Grading Fee: \n" +
-                                      "    * Minus Insured Logistics: \n" +
-                                      "    * Minus Materials: \n" +
-                                      "    * Minus Platform Fee (13.5%): \n" +
-                                      "    * Total Investment Outlay: \n" +
-                                      "    * ➡️ Net Realized Cash Payout: \n" +
-                                      "* 📈 Pop Report: \n" +
-                                      "* 🏷️ Best Grader: \n" +
-                                      "* 💧 Liquidity: [🟢, 🟡, or 🔴]\n" +
-                                      "* 🛡️ Authenticity: \n" +
-                                      "* 💡 What to Scan For Next:";
-
-            try {
-                const response = await fetch(`https://googleapis.com{apiKey}`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        contents: [{
-                            parts: [
-                                { text: promptInstruction },
-                                { inlineData: { mimeType: "image/jpeg", data: cleanFront } },
-                                { inlineData: { mimeType: "image/jpeg", data: cleanBack } }
-                            ]
-                        }]
-                    })
-                });
-
-                const data = await response.json();
-                
-                // Fallback protection if safety filters override standard output models
-                if(!data.candidates || !data.candidates[0].content) {
-                    container.innerHTML = "<p class='text-yellow-400 text-center'>AI was unable to verify this image structure. Please snap closer under good lighting.</p>";
-                    return;
-                }
-
-                const aiText = data.candidates[0].content.parts[0].text;
-
-                let name = "Card Identified", set = "TCG Expansion Set", num = "#--/--";
-                const lines = aiText.split("\n");
-                let cleanOutputLines = [];
-
-                // Advanced dynamic parsing sequence to lock label identifiers smoothly
-                lines.forEach(line => {
-                    let norm = line.replace(/\*/g, "").trim();
-                    let l = norm.toLowerCase();
-                    
-                    if (l.startsWith("card name:") || l.startsWith("name:")) {
-                        name = norm.split(":")[1].trim();
-                    } else if (l.startsWith("set name:") || l.startsWith("set:")) {
-                        set = norm.split(":")[1].trim();
-                    } else if (l.startsWith("card number:") || l.startsWith("number:")) {
-                        num = norm.split(":")[1].trim();
-                    } else {
-                        if (line.trim() !== "") {
-                            cleanOutputLines.push(line);
-                        }
-                    }
+        <!-- Market & Logistics Meta -->
+        <div class="grid grid-cols-2 gap-3 pt-2 text-xs border-t border-slate-800">
+            <div><span class="text-slate-400">Best Grader Choice:</span> <span class="font-semibold text-slate-200">PSA</span></div>
+            <div><span class="text-slate-400">Liquidity Score:</span> <span class="font-semibold text-amber-400">Medium-High</span></div>
+            <div class="col-span-2"><span class="text-slate-400">Next Scan Suggestion:</span> <span class="font-mono text-[11px] text-blue-300">Angle Tilt Left Surface Focus</span></div>
+        </div>
+    </main>
+</body>
+</html>
