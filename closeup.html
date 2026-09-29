@@ -16,7 +16,7 @@
         .scan-lbl-text { font-size: 12px; font-weight: 700; display: block; margin-bottom: 4px; color: #ffffff; }
         .preview-box { width: 100%; height: 110px; background-color: #0F1A30; border-radius: 6px; border: 1px solid #0b1528; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #6B7280; overflow: hidden; padding: 2px; }
         .preview-box img { width: 100%; height: 100%; object-fit: contain; }
-        .display-container { background-color: #131F3B; border: 1px solid rgba(30, 58, 138, 0.4); border-radius: 12px; padding: 16px 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 8px; }
+        .display-container { background-color: #131F3B; border: 1px solid rgba(30, 58, 138, 0.4); border-radius: 12px; padding: 16px 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 8px; min-height: 350px; }
         .scene { perspective: 1000px; width: 220px; height: 308px; margin-bottom: 12px; }
         .c3d { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; }
         .face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
@@ -70,11 +70,10 @@
     <script>
         let f="", b="";
         function runImg(input, face) {
-            if (input.files && input.files) {
+            if (input.files && input.files[0]) {
                 const r = new FileReader();
                 r.onload = function(e) {
                     const src = e.target.result;
-                    
                     document.getElementById(`p-${face}`).innerHTML = `<img src="${src}" style="width:100%; height:100%; object-fit:contain;">`;
                     
                     const m = document.getElementById(`m-${face}`);
@@ -100,18 +99,18 @@
                         if(btn) btn.style.display = 'block';
                     }
                 };
-                r.readAsDataURL(input.files);
+                r.readAsDataURL(input.files[0]);
             }
         }
 
-        // Memory-locked, Persistent 3D Rotation Engine
+        // Corrected non-snapping 3D finger gesture engine
         function initSpin(id) {
             const el = document.getElementById(id);
             if (!el) return;
 
             let startX = 0;
-            let currentRot = 0; // Tracks live movement angle
-            let savedRot = 0;   // Stores locked angle on finger lift
+            let currentRot = 0;
+            let savedRot = 0;
             let isMoving = false;
 
             el.addEventListener('touchstart', function(e) {
@@ -122,7 +121,6 @@
             el.addEventListener('touchmove', function(e) {
                 if (!isMoving) return;
                 const deltaX = e.touches[0].clientX - startX;
-                // Add new swipe delta straight onto the locked background angle
                 currentRot = savedRot + (deltaX * 0.5);
                 el.style.transform = "rotateY(" + currentRot + "deg)";
             }, { passive: true });
@@ -130,13 +128,16 @@
             el.addEventListener('touchend', function() {
                 if (!isMoving) return;
                 isMoving = false;
-                // Lock current rotation value so it resumes perfectly next touch
-                savedRot = currentRot;
+                savedRot = currentRot; // Locks rotation vector on finger release
             });
         }
 
-        document.addEventListener("DOMContentLoaded", function() { initSpin('spin-1'); });
-        window.addEventListener("load", function() { initSpin('spin-1'); });
+        // Double trigger layer ensuring script setup fires perfectly
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", function() { initSpin('spin-1'); });
+        } else {
+            initSpin('spin-1');
+        }
     </script>
 </body>
 </html>
