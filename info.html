@@ -58,7 +58,6 @@
             </div>
         </div>
 
-        <!-- Automated Live Text Content Target Frame -->
         <main class="info-card text-xs space-y-3.5">
             <h2 class="font-bold text-green-400 text-sm border-b border-blue-900/60 pb-1.5 tracking-wider">THE DEEP-DIVE PRE-GRADING</h2>
             <div id="ai-output-container" class="space-y-3 text-gray-200 font-medium leading-relaxed">
@@ -68,7 +67,7 @@
     </div>
 
     <script>
-        // PASTE YOUR GOOGLE API STUDIO KEY CODE DIRECTLY INSIDE THESE QUOTATION MARKS:
+        // LINE 73: PASTE YOUR GOOGLE API STUDIO KEY CODE DIRECTLY INSIDE THESE QUOTATION MARKS:
         const apiKey = "AQ.Ab8RN6Ih-8R_FJTEq60FM7YG99BzvBdTAC-0psV20zJqyTZk4w";
 
         window.addEventListener("load", function() {
@@ -90,12 +89,14 @@
         async function runAIEvaluation(frontBase64, backBase64) {
             const container = document.getElementById("ai-output-container");
             
-            // Clean split standard data type markers from base64 frames
+            // Clean out headers from raw base64 arrays safely
             const cleanFront = frontBase64.split(",")[1];
             const cleanBack = backBase64.split(",")[1];
 
-            // Direct API instruction prompt command mapping out your exact structure layout rules
-            const promptInstruction = "Analyze these front and back trading card images. First, determine the Card Name, Set Name, and Card Number (#/#). Second, run a grading check using strict modern grading standards and provide the breakdown formatted EXACTLY like this text template:\n\n" +
+            const promptInstruction = "Analyze these front and back trading card images. First, find the Card Name, Set Name, and Card Number (#/#). Second, run a grading check using strict modern grading standards and provide the breakdown formatted EXACTLY like this text template:\n\n" +
+                                      "Card Name: [Insert Name]\n" +
+                                      "Set Name: [Insert Set]\n" +
+                                      "Card Number: [Insert Number]\n\n" +
                                       "* 📊 Estimated Grade: \n" +
                                       "* 🔍 Flaws Seen: \n" +
                                       "* [🟢 or 🔴] Worth Grading? \n" +
@@ -116,7 +117,6 @@
                                       "* 💡 What to Scan For Next:";
 
             try {
-                // Connect to official Google Gemini Flash endpoints
                 const response = await fetch(`https://googleapis.com{apiKey}`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -132,32 +132,32 @@
                 });
 
                 const data = await response.json();
+                
+                // Fallback protection if safety filters override standard output models
+                if(!data.candidates || !data.candidates[0].content) {
+                    container.innerHTML = "<p class='text-yellow-400 text-center'>AI was unable to verify this image structure. Please snap closer under good lighting.</p>";
+                    return;
+                }
+
                 const aiText = data.candidates[0].content.parts[0].text;
 
-                // Dynamic extraction helper targeting your profile header titles
-                let name = "Identified Card", set = "TCG Set Profile", num = "#--/--";
-                
-                // Parse lines to pull target identifier data elements
+                let name = "Card Identified", set = "TCG Expansion Set", num = "#--/--";
                 const lines = aiText.split("\n");
                 let cleanOutputLines = [];
 
+                // Advanced dynamic parsing sequence to lock label identifiers smoothly
                 lines.forEach(line => {
-                    let l = line.toLowerCase();
-                    if (l.includes("card name:") || l.includes("name:")) {
-                        name = line.split(":")[1].trim();
-                    } else if (l.includes("set name:") || l.includes("set:")) {
-                        set = line.split(":")[1].trim();
-                    } else if (l.includes("card number:") || l.includes("number:")) {
-                        num = line.split(":")[1].trim();
+                    let norm = line.replace(/\*/g, "").trim();
+                    let l = norm.toLowerCase();
+                    
+                    if (l.startsWith("card name:") || l.startsWith("name:")) {
+                        name = norm.split(":")[1].trim();
+                    } else if (l.startsWith("set name:") || l.startsWith("set:")) {
+                        set = norm.split(":")[1].trim();
+                    } else if (l.startsWith("card number:") || l.startsWith("number:")) {
+                        num = norm.split(":")[1].trim();
                     } else {
-                        // Keep markdown structures intact for grading rows
-                        cleanOutputLines.push(line);
+                        if (line.trim() !== "") {
+                            cleanOutputLines.push(line);
+                        }
                     }
-                });
-
-                // Update text indicator identity panels cleanly
-                const nameEl = document.getElementById("lbl-card-name");
-                const setEl = document.getElementById("lbl-card-set");
-                const numEl = document.getElementById("lbl-card-num");
-
-                nameEl.innerText = name; nameEl.classList.remove("loading-pulse");
