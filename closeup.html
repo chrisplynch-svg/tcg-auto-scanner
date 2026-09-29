@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Close-Up Scanner</title>
+    <script src="https://tailwindcss.com"></script>
+    <style>
+        .scene { perspective: 1000px; }
+        .c3d { width:100%; height:100%; position:relative; transform-style:preserve-3d; transition:transform 0.1s ease-out; }
+        .face { position:absolute; width:100%; height:100%; backface-visibility:hidden; border-radius:12px; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+        .back { transform: rotateY(180deg); }
+    </style>
+</head>
+<body class="bg-[#0B1528] text-white min-h-screen font-sans p-4">
+    <div class="max-w-md mx-auto">
+        <header class="flex justify-between items-center my-4 relative">
+            <h1 class="text-base font-bold mx-auto">Trading Card Grading <span class="text-xs font-mono text-blue-400">v1.1</span></h1>
+            <a href="index.html" class="bg-blue-900/60 text-xs px-2.5 py-1.5 rounded-lg absolute right-0 no-underline">🏠 Home</a>
+        </header>
+        <div class="grid grid-cols-2 gap-4 mb-4">
+            <label class="bg-[#16223F] border border-dashed border-blue-800 rounded-xl p-4 text-center cursor-pointer">
+                <span class="text-xs font-bold block mb-2">Front Preview</span>
+                <input type="file" accept="image/*" capture="environment" class="hidden" onchange="runImg(this,'front')">
+                <div id="p-front" class="w-full h-32 bg-[#0F1A30] rounded-lg border border-blue-950 flex items-center justify-center text-[10px] text-gray-500">Scan Front</div>
+            </label>
+            <label class="bg-[#16223F] border border-dashed border-blue-800 rounded-xl p-4 text-center cursor-pointer">
+                <span class="text-xs font-bold block mb-2">Back Preview</span>
+                <input type="file" accept="image/*" capture="environment" class="hidden" onchange="runImg(this,'back')">
+                <div id="p-back" class="w-full h-32 bg-[#0F1A30] rounded-lg border border-blue-950 flex items-center justify-center text-[10px] text-gray-500">Scan Back</div>
+            </label>
+        </div>
+        <div class="bg-[#131F3B] border border-blue-900/40 rounded-xl p-4 flex flex-col items-center justify-center mb-4">
+            <div class="scene w-40 h-56 mb-2">
+                <div id="spin-1" class="c3d" data-rot="0">
+                    <div class="face bg-[#1A2A4C] border border-blue-500/30"><img id="m-front" class="hidden w-full h-full object-cover"><p id="lbl-f" class="text-xs text-gray-400 px-2 text-center">Scan Front To View Image</p></div>
+                    <div class="face back bg-[#1A2A4C] border border-blue-500/30"><img id="m-back" class="hidden w-full h-full object-cover"><p class="text-xs text-gray-400">Back Image Missing</p></div>
+                </div>
+            </div>
+            <p class="text-[10px] text-blue-400 font-mono">Swipe To Spin Card</p>
+        </div>
+        <a id="btn-go" href="info.html" class="hidden w-full bg-blue-600 font-bold py-3 rounded-xl text-center block no-underline">🔍 Generate Info Breakdown</a>
+    </div>
+    <script>
+        let f="", b="";
+        function runImg(input, face) {
+            if (input.files && input.files[0]) {
+                const r = new FileReader();
+                r.onload = function(e) {
+                    const src = e.target.result;
+                    document.getElementById(`p-${face}`).innerHTML = `<img src="${src}" class="w-full h-full object-cover rounded-md">`;
+                    const m = document.getElementById(`m-${face}`); m.src = src; m.classList.remove('hidden');
+                    if(face==='front') { const lbl = document.getElementById(`lbl-f`); if(lbl) lbl.classList.add('hidden'); }
+                    if(face==='front') f=src; else b=src;
+                    localStorage.setItem(`card-${face}`, src);
+                    if(f && b) document.getElementById('btn-go').classList.remove('hidden');
+                }; r.readAsDataURL(input.files[0]);
+            }
+        }
+        function spin(id) {
+            const el = document.getElementById(id); if(!el) return;
+            let sx = 0, rot = 0;
+            el.addEventListener('touchstart', (e) => { sx = e.touches.clientX; rot = parseFloat(el.getAttribute('data-rot')) || 0; }, {passive:true});
+            el.addEventListener('touchmove', (e) => { const d = e.touches.clientX - sx; let nr = rot + (d * 0.6); el.style.transform = `rotateY(${nr}deg)`; el.setAttribute('data-rot', nr); }, {passive:true});
+        }
+        document.addEventListener("DOMContentLoaded", () => { spin('spin-1'); });
+    </script>
+</body>
+</html>
