@@ -2,144 +2,144 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Trading Card Grading v1.1 - Scanner Stage</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Close-Up Scanner</title>
     <script src="https://tailwindcss.com"></script>
     <style>
-        .scene { perspective: 1000px; }
-        .card-container {
-            transform-style: preserve-3d;
-            will-change: transform;
-            touch-action: none;
-        }
-        .card-face {
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
-        }
-        .card-back { transform: rotateY(180deg); }
+        body { background-color: #0B1528 !important; color: #ffffff !important; margin: 0; padding: 12px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        .app-container { max-width: 440px; margin: 0 auto; display: flex; flex-direction: column; }
+        .header-area { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; margin-bottom: 8px; position: relative; }
+        .title-text { font-size: 15px; font-weight: 700; margin: 0 auto; color: #ffffff; }
+        .home-btn { background-color: #1e3a8a; font-size: 11px; padding: 4px 10px; border-radius: 6px; text-decoration: none; color: #ffffff; position: absolute; right: 0; }
+        .grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 8px; }
+        .scan-label { background-color: #16223F; border: 1px dashed #1e3a8a; border-radius: 10px; padding: 8px; text-align: center; cursor: pointer; display: block; }
+        .scan-lbl-text { font-size: 12px; font-weight: 700; display: block; margin-bottom: 4px; color: #ffffff; }
+        .preview-box { width: 100%; height: 110px; background-color: #0F1A30; border-radius: 6px; border: 1px solid #0b1528; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #6B7280; overflow: hidden; padding: 2px; }
+        .preview-box img { width: 100%; height: 100%; object-fit: contain; }
+        .display-container { background-color: #131F3B; border: 1px solid rgba(30, 58, 138, 0.4); border-radius: 12px; padding: 16px 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 8px; min-height: 350px; }
+        .scene { perspective: 1000px; width: 220px; height: 308px; margin-bottom: 12px; }
+        .c3d { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; }
+        .face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .face img { width: 100%; height: 100%; object-fit: contain; }
+        .back { transform: rotateY(180deg); }
+        .spin-text { font-size: 10px; color: #60A5FA; font-family: monospace; letter-spacing: 0.05em; text-transform: uppercase; background-color: rgba(15, 26, 48, 0.8); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(30, 58, 138, 0.5); text-align: center; width: auto; display: inline-block; }
+        .action-btn { display: none; width: 100%; background-color: #2563EB; color: #ffffff; font-weight: 700; padding: 12px 0; border-radius: 10px; text-align: center; text-decoration: none; margin-top: 8px; font-size: 14px; }
     </style>
 </head>
-<body class="bg-[#0a1128] text-white min-h-screen flex flex-col p-4 font-sans select-none selection:bg-transparent">
-
-    <!-- Top Navigation Header -->
-    <header class="flex justify-between items-center w-full max-w-md mx-auto mb-4 pt-2">
-        <div class="flex items-baseline space-x-1.5">
-            <h1 class="text-base font-bold tracking-wide">Trading Card Grading</h1>
-            <span class="text-[10px] font-mono text-blue-500 font-bold">v1.1</span>
-        </div>
-        <div class="flex space-x-2">
-            <button class="bg-[#111a36] border border-blue-500/40 text-[10px] px-2.5 py-1 rounded-md text-blue-400 font-semibold flex items-center space-x-1">
-                <span>📷</span> <span>Scanner</span>
-            </button>
-            <a href="index.html" class="bg-[#111a36] border border-slate-800 text-[10px] px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 transition-colors font-semibold flex items-center space-x-1">
-                <span>🏠</span> <span>Home</span>
-            </a>
-        </div>
-    </header>
-
-    <!-- Main Workspace Contents -->
-    <main class="w-full max-w-md mx-auto flex-1 flex flex-col space-y-4 pb-24">
+<body>
+    <div class="app-container">
+        <header class="header-area">
+            <h1 class="title-text">Trading Card Grading <span style="font-size:11px; font-family:monospace; color:#60A5FA;">v1.1</span></h1>
+            <a href="index.html" class="home-btn" onclick="clearSession()">🏠 Home</a>
+        </header>
         
-        <!-- Top Dual Preview Panes Grid -->
-        <div class="grid grid-cols-2 gap-4 w-full">
-            <div class="bg-[#111a36]/80 border border-slate-800 rounded-xl p-3 flex flex-col items-center shadow-lg">
-                <span class="text-[11px] text-slate-400 font-medium mb-2">Front Preview</span>
-                <div class="w-24 h-32 bg-[#0a1128] rounded-lg overflow-hidden border border-slate-700/50 shadow-inner">
-                    <img src="https://pokemontcg.io" alt="Front Preview Asset" class="w-full h-full object-cover">
+        <div class="grid-layout">
+            <label class="scan-label">
+                <span class="scan-lbl-text">Front Preview</span>
+                <input type="file" accept="image/*" capture="environment" style="display:none;" onchange="runImg(this,'front')">
+                <div id="p-front" class="preview-box">Scan Front</div>
+            </label>
+            <label class="scan-label">
+                <span class="scan-lbl-text">Back Preview</span>
+                <input type="file" accept="image/*" capture="environment" style="display:none;" onchange="runImg(this,'back')">
+                <div id="p-back" class="preview-box">Scan Back</div>
+            </label>
+        </div>
+
+        <div class="display-container">
+            <div class="scene">
+                <div id="spin-1" class="c3d">
+                    <div class="face bg-[#1A2A4C]" style="border: 1px solid rgba(59, 130, 246, 0.3);">
+                        <img id="m-front" style="display:none; width:100%; height:100%; object-fit:contain;">
+                        <p id="lbl-f" style="font-size: 12px; color:#9CA3AF; text-align:center; padding:0 8px;">Scan Front To View Image</p>
+                    </div>
+                    <div class="face back bg-[#1A2A4C]" style="border: 1px solid rgba(59, 130, 246, 0.3);">
+                        <img id="m-back" style="display:none; width:100%; height:100%; object-fit:contain;">
+                        <p id="lbl-b" style="font-size: 12px; color:#9CA3AF;">Back Image Missing</p>
+                    </div>
                 </div>
             </div>
-            <div class="bg-[#111a36]/80 border border-slate-800 rounded-xl p-3 flex flex-col items-center shadow-lg">
-                <span class="text-[11px] text-slate-400 font-medium mb-2">Back Preview</span>
-                <div class="w-24 h-32 bg-[#0a1128] rounded-lg overflow-hidden border border-slate-700/50 shadow-inner">
-                    <img src="https://pokemontcg.io" alt="Back Preview Asset" class="w-full h-full object-cover">
-                </div>
+            <div>
+                <p class="spin-text">Swipe To Spin Card</p>
             </div>
         </div>
 
-        <!-- Major Center 3D Stage Container -->
-        <div class="w-full bg-[#111a36]/40 border border-slate-800/80 rounded-2xl p-6 flex flex-col items-center justify-center shadow-2xl relative min-h-[380px]">
-            <div class="scene w-52 h-72 relative flex items-center justify-center">
-                <div id="card" class="card-container w-full h-full relative cursor-grab active:cursor-grabbing transition-transform duration-75 ease-out">
-                    
-                    <!-- Card Face Front View -->
-                    <div class="card-face absolute inset-0 w-full h-full rounded-xl overflow-hidden shadow-2xl border border-slate-700/40">
-                        <img src="https://pokemontcg.io" alt="Card View Front" class="w-full h-full object-cover pointer-events-none">
-                    </div>
-
-                    <!-- Card Face Back View -->
-                    <div class="card-face card-back absolute inset-0 w-full h-full rounded-xl overflow-hidden shadow-2xl border border-slate-700/40">
-                        <img src="https://pokemontcg.io" alt="Card View Back" class="w-full h-full object-cover pointer-events-none">
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- Bottom Swipe Label Alignment -->
-            <div class="mt-6 border-t border-slate-800/80 pt-3 w-full text-center">
-                <p class="text-[9px] font-mono tracking-[0.25em] text-blue-400/90 uppercase">
-                    SWIPE TO SPIN CARD
-                </p>
-            </div>
-
-            <!-- Static Identification Label Metrics -->
-            <div class="mt-4 text-center space-y-0.5">
-                <h2 class="text-sm font-bold tracking-wide text-slate-200">Sentret</h2>
-                <p class="text-[11px] text-slate-400">Neo Discovery</p>
-                <p class="text-[10px] font-mono text-slate-500">#70/75</p>
-            </div>
-        </div>
-    </main>
-
-    <!-- Bottom Primary Submission Layout Bar -->
-    <div class="fixed bottom-0 left-0 right-0 p-4 bg-[#0a1128]/95 backdrop-blur-md border-t border-slate-900 flex justify-center z-50">
-        <a href="info.html" class="w-full max-w-md bg-blue-600 hover:bg-blue-700 active:scale-[0.99] text-white font-semibold py-3 px-6 rounded-xl shadow-xl transition-all flex items-center justify-center space-x-2 text-sm tracking-wide text-center">
-            <span>🔍</span> <span>Generate Info Breakdown</span>
-        </a>
+        <a id="btn-go" href="info.html" class="action-btn">🔍 Generate Info Breakdown</a>
     </div>
 
-    <!-- 3D Rotation Processing Script -->
     <script>
-        const card = document.getElementById('card');
-        let isDragging = false;
-        let startX = 0, startY = 0;
-        let currentXRot = 0, currentYRot = 0;
+        function clearSession() {
+            localStorage.removeItem("card-front");
+            localStorage.removeItem("card-back");
+            localStorage.removeItem("card-name");
+            localStorage.removeItem("card-set");
+            localStorage.removeItem("card-num");
+        }
 
-        card.style.transform = `rotateX(${currentXRot}deg) rotateY(${currentYRot}deg)`;
+        function checkButtons() {
+            const f = localStorage.getItem("card-front");
+            const b = localStorage.getItem("card-back");
+            if (f && b) {
+                document.getElementById("btn-go").style.display = 'block';
+            }
+        }
 
-        window.addEventListener('pointerdown', (e) => {
-            if (!card.contains(e.target)) return;
-            isDragging = true;
-            startX = e.clientX;
-            startY = e.clientY;
-            card.style.transition = 'none';
+        function runImg(input, face) {
+            if (input.files && input.files[0]) {
+                const r = new FileReader();
+                r.onload = function(e) {
+                    const src = e.target.result;
+                    document.getElementById(`p-${face}`).innerHTML = `<img src="${src}" style='width:100%; height:100%; object-fit:contain;'>`;
+                    
+                    const m = document.getElementById(`m-${face}`);
+                    if (m) {
+                        m.src = src;
+                        m.style.display = 'block';
+                    }
+                    
+                    const lbl = document.getElementById(face === 'front' ? "lbl-f" : "lbl-b");
+                    if (lbl) lbl.style.display = 'none';
+                    
+                    localStorage.setItem(`card-${face}`, src);
+
+                    // Mock matching card database values during scan execution loops
+                    if(face === 'front') {
+                        // Simulated automatic logic changes card data if a different photo file runs
+                        if(input.files[0].name.toLowerCase().includes('sentret')) {
+                            localStorage.setItem("card-name", "Sentret");
+                            localStorage.setItem("card-set", "Neo Genesis");
+                            localStorage.setItem("card-num", "#71/111");
+                        } else {
+                            localStorage.setItem("card-name", "Raichu");
+                            localStorage.setItem("card-set", "Base Set Holo");
+                            localStorage.setItem("card-num", "#14/102");
+                        }
+                    }
+                    
+                    checkButtons();
+                };
+                r.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function initSpin(id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            let startX = 0, currentRot = 0, savedRot = 0, isMoving = false;
+            el.addEventListener('touchstart', function(e) { startX = e.touches[0].clientX; isMoving = true; }, { passive: true });
+            el.addEventListener('touchmove', function(e) {
+                if (!isMoving) return;
+                const deltaX = e.touches[0].clientX - startX;
+                currentRot = savedRot + (deltaX * 0.5);
+                el.style.transform = "rotateY(" + currentRot + "deg)";
+            }, { passive: true });
+            el.addEventListener('touchend', function() { if (!isMoving) return; isMoving = false; savedRot = currentRot; });
+        }
+
+        window.addEventListener("load", function() {
+            clearSession();
+            initSpin('spin-1');
         });
-
-        window.addEventListener('pointermove', (e) => {
-            if (!isDragging) return;
-            const deltaX = e.clientX - startX;
-            const deltaY = e.clientY - startY;
-
-            const nextY = currentYRot + (deltaX * 0.65);
-            const nextX = currentXRot - (deltaY * 0.65);
-            const clampedX = Math.max(-45, Math.min(45, nextX));
-
-            card.style.transform = `rotateX(${clampedX}deg) rotateY(${nextY}deg)`;
-        });
-
-        const stopDragging = () => {
-            if (!isDragging) return;
-            isDragging = false;
-            card.style.transition = 'transform 0.4s ease-out';
-            
-            const transformStr = card.style.transform;
-            const xMatch = transformStr.match(/rotateX\(([-\d.]+)deg\)/);
-            const yMatch = transformStr.match(/rotateY\(([-\d.]+)deg\)/);
-            
-            if (xMatch) currentXRot = parseFloat(xMatch);
-            if (yMatch) currentYRot = parseFloat(yMatch);
-        };
-        window.addEventListener('pointerup', stopDragging);
-        window.addEventListener('pointercancel', stopDragging);
     </script>
 </body>
 </html>
