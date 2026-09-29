@@ -5,135 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trading Card Grading v1.1</title>
     <script src="https://tailwindcss.com"></script>
-    <style>
-        .card-scene { perspective: 1000px; }
-        .card-3d { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.1s ease-out; }
-        .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .card-back { transform: rotateY(180deg); }
-    </style>
 </head>
 <body class="bg-[#0B1528] text-white min-h-screen font-sans">
 
-    <!-- HOME SCREEN -->
+    <!-- HOME SCREEN CONTAINER -->
     <div id="screen-home" class="max-w-md mx-auto p-4 flex flex-col items-center">
         <header class="text-center mt-6 mb-10">
             <h1 class="text-2xl font-bold">Trading Card Grading</h1>
             <p class="text-xs text-blue-400 font-mono">v1.1</p>
         </header>
+
         <main class="w-full space-y-4">
-            <button onclick="nav('screen-closeup')" class="w-full text-left bg-[#16223F] border border-blue-900/50 p-5 rounded-xl block">
-                <div class="text-lg font-bold">🟢 Close-Up Scanner</div>
-                <div class="text-xs text-gray-400">Deep-dive math evaluation for individual cards.</div>
-            </button>
-            <button onclick="nav('screen-multiple')" class="w-full text-left bg-[#16223F] border border-blue-900/50 p-5 rounded-xl block">
-                <div class="text-lg font-bold">📑 9-Card Page</div>
-                <div class="text-xs text-gray-400">Instant sorting tiers & sequence layout mapping.</div>
-            </button>
+            <!-- Router 1: Links directly to your new closeup.html page -->
+            <a href="closeup.html" class="w-full text-left bg-[#16223F] border border-blue-900/50 p-5 rounded-xl block no-underline transition-transform active:scale-95">
+                <div class="text-lg font-bold text-white">🟢 Close-Up Scanner</div>
+                <div class="text-xs text-gray-400 mt-1">Deep-dive math evaluation for individual cards.</div>
+            </a>
+
+            <!-- Router 2: Links directly to your upcoming multiple.html page -->
+            <a href="multiple.html" class="w-full text-left bg-[#16223F] border border-blue-900/50 p-5 rounded-xl block no-underline transition-transform active:scale-95">
+                <div class="text-lg font-bold text-white">📑 9-Card Page</div>
+                <div class="text-xs text-gray-400 mt-1">Instant sorting tiers & sequence layout mapping.</div>
+            </a>
         </main>
     </div>
 
-    <!-- CLOSE-UP SCANNER -->
-    <div id="screen-closeup" class="hidden max-w-md mx-auto p-4 flex flex-col">
-        <header class="flex justify-between items-center my-4">
-            <h1 class="text-lg font-bold mx-auto">Trading Card Grading <span class="text-xs font-mono text-blue-400">v1.1</span></h1>
-            <button onclick="nav('screen-home')" class="bg-blue-900/60 text-xs px-2.5 py-1.5 rounded-lg absolute right-4">🏠 Home</button>
-        </header>
-        <div class="grid grid-cols-2 gap-4 mb-4">
-            <label class="bg-[#16223F] border border-dashed border-blue-800 rounded-xl p-4 text-center cursor-pointer">
-                <span class="text-xs font-bold block mb-2">Front Preview</span>
-                <input type="file" accept="image/*" capture="environment" class="hidden" onchange="img(this,'front')">
-                <div id="p-front" class="w-full h-32 bg-[#0F1A30] rounded-lg border border-blue-950 flex items-center justify-center text-[10px] text-gray-500">Scan Front</div>
-            </label>
-            <label class="bg-[#16223F] border border-dashed border-blue-800 rounded-xl p-4 text-center cursor-pointer">
-                <span class="text-xs font-bold block mb-2">Back Preview</span>
-                <input type="file" accept="image/*" capture="environment" class="hidden" onchange="img(this,'back')">
-                <div id="p-back" class="w-full h-32 bg-[#0F1A30] rounded-lg border border-blue-950 flex items-center justify-center text-[10px] text-gray-500">Scan Back</div>
-            </label>
-        </div>
-        <div class="bg-[#131F3B] border border-blue-900/40 rounded-xl p-4 flex flex-col items-center justify-center mb-4">
-            <div class="card-scene w-40 h-56 mb-2">
-                <div id="card-spin-1" class="card-3d" data-rot="0">
-                    <div class="card-face bg-[#1A2A4C] border border-blue-500/30"><img id="m-front" class="hidden w-full h-full object-cover"><p id="lbl-f" class="text-xs text-gray-400">Scan Front To View Image</p></div>
-                    <div class="card-face card-back bg-[#1A2A4C] border border-blue-500/30"><img id="m-back" class="hidden w-full h-full object-cover"><p class="text-xs text-gray-400">Back Image Missing</p></div>
-                </div>
-            </div>
-            <p class="text-[10px] text-blue-400 font-mono">Swipe To Spin Card</p>
-        </div>
-        <button id="btn-go" onclick="nav('screen-info')" class="hidden w-full bg-blue-600 font-bold py-3 rounded-xl text-center">🔍 Generate Info Breakdown</button>
-    </div>
-
-    <!-- 9-CARD PAGE SCANNER -->
-    <div id="screen-multiple" class="hidden max-w-md mx-auto p-4 flex flex-col">
-        <header class="flex justify-between items-center my-4">
-            <h1 class="text-lg font-bold mx-auto">Trading Card Grading <span class="text-xs font-mono text-blue-400">v1.1</span></h1>
-            <button onclick="nav('screen-home')" class="bg-blue-900/60 text-xs px-2.5 py-1.5 rounded-lg absolute right-4">🏠 Home</button>
-        </header>
-        <label class="bg-[#16223F] border border-dashed border-blue-800 rounded-xl p-5 text-center cursor-pointer">
-            <span class="text-sm font-bold block mb-2">📸 Take a Page Scan</span>
-            <input type="file" accept="image/*" capture="environment" class="hidden" onchange="pageScan(this)">
-            <div id="p-page" class="w-full h-44 bg-[#0F1A30] rounded-lg border border-blue-950 flex items-center justify-center text-xs text-gray-500 mt-2">Camera box view</div>
-        </label>
-        <div id="box-page" class="hidden bg-[#131F3B] p-4 rounded-xl space-y-3 mt-4">
-            <h2 class="text-xs font-bold text-blue-400 uppercase border-b border-blue-900/60 pb-1">The 9-Card Page Review Format</h2>
-            <ol class="space-y-1.5 text-xs font-medium" id="list-page"></ol>
-            <div class="pt-3 border-t border-blue-900/60 text-[11px] text-gray-300">
-                <h3 class="font-bold text-gray-200 mb-1">🔑 ACTION KEY</h3>
-                <p>🟢 <strong>THE PULL TIER:</strong> Close-ups on pool table for deep evaluation.</p>
-                <p>🟡 <strong>THE CASH RAW TIER:</strong> Real market value, sell raw. Skip photos.</p>
-                <p>🔴 <strong>THE BINDER TIER:</strong> Low value. Keep in binder as bulk lot.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- INFORMATION SCREEN -->
-    <div id="screen-info" class="hidden max-w-md mx-auto p-4 flex flex-col">
-        <header class="flex justify-between items-center my-4 relative">
-            <h1 class="text-lg font-bold mx-auto">Trading Card Grading</h1>
-            <div class="absolute right-0 flex gap-1.5"><button onclick="nav('screen-closeup')" class="bg-blue-900/60 text-[10px] px-2 py-1 rounded">🔍 Scanner</button><button onclick="nav('screen-home')" class="bg-blue-900/60 text-[10px] px-2 py-1 rounded">🏠 Home</button></div>
-        </header>
-        <div class="bg-[#131F3B] border border-blue-900/40 rounded-xl p-4 flex flex-col items-center justify-center mb-4">
-            <div class="card-scene w-40 h-56 mb-2">
-                <div id="card-spin-2" class="card-3d" data-rot="0">
-                    <div class="card-face bg-[#1A2A4C] border border-blue-500/30"><img id="i-front" class="w-full h-full object-cover"></div>
-                    <div class="card-face card-back bg-[#1A2A4C] border border-blue-500/30"><img id="i-back" class="w-full h-full object-cover"></div>
-                </div>
-            </div>
-            <p class="text-[10px] text-blue-400 font-mono">Swipe To Spin Card</p>
-        </div>
-        <main class="bg-[#131F3B] border border-blue-900/40 rounded-xl p-4 text-xs space-y-3">
-            <h2 class="font-bold text-green-400 border-b border-blue-900/60 pb-1">THE DEEP-DIVE PRE-GRADING</h2>
-            <p>📊 <strong>Estimated Grade:</strong> Gem Mint 10</p>
-            <p>🔍 <strong>Flaws Seen:</strong> None visible surface alignment.</p>
-            <div class="bg-[#0B1528] p-2.5 rounded border border-blue-950 space-y-1">
-                <p>🟢 <strong>Worth Grading?</strong> Yes</p>
-                <p>💰 <strong>Raw Value:</strong> $45.00 | 📈 <strong>Est. Graded Value:</strong> $220.00</p>
-                <p class="font-bold text-white pt-1">🧮 Net Profit Math:</p>
-                <p class="pl-2 text-gray-400">Gross Value: $220.00 | Grading Fee: -$15.00 | Logistics: -$14.00 | Materials: -$2.00 | Platform (13.5%): -$29.70</p>
-                <p class="pl-2 font-bold text-green-400">➡️ Net Realized Cash Payout: $159.30</p>
-            </div>
-            <p>📈 <strong>Pop Report:</strong> 1,245 entries | 🏷️ <strong>Best Grader:</strong> PSA Matrix</p>
-            <p>💧 <strong>Liquidity:</strong> 🟢 High volume | 🛡️ <strong>Authenticity:</strong> Verified</p>
-            <p>💡 <strong>What to Scan For Next:</strong> Check rear print alignments.</p>
-        </main>
-    </div>
-
-    <script>
-        let fSrc="", bSrc="";
-        function nav(id) {
-            ['screen-home','screen-closeup','screen-multiple','screen-info'].forEach(s=>{document.getElementById(s).classList.add('hidden');});
-            document.getElementById(id).classList.remove('hidden'); window.scrollTo(0,0);
-        }
-        function img(input, face) {
-            if (input.files && input.files[0]) {
-                const r = new FileReader();
-                r.onload = function(e) {
-                    document.getElementById(`p-${face}`).innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover rounded-md">`;
-                    const m = document.getElementById(`m-${face}`); m.src = e.target.result; m.classList.remove('hidden');
-                    const lbl = document.getElementById(`lbl-f`); if(lbl && face==='front') lbl.classList.add('hidden');
-                    document.getElementById(`i-${face}`).src = e.target.result;
-                    if(face==='front') fSrc=e.target.result; else bSrc=e.target.result;
-                    if(fSrc && bSrc) document.getElementById('btn-go').classList.remove('hidden');
-                }; r.readAsDataURL(input.files[0]);
-            }
-        }
-        function pageScan(input) {
+</body>
+</html>
