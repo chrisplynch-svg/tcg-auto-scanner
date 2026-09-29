@@ -18,7 +18,7 @@
         .preview-box img { width: 100%; height: 100%; object-fit: contain; }
         .display-container { background-color: #131F3B; border: 1px solid rgba(30, 58, 138, 0.4); border-radius: 12px; padding: 16px 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 8px; min-height: 350px; }
         .scene { perspective: 1000px; width: 220px; height: 308px; margin-bottom: 12px; }
-        .c3d { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; }
+        .c3d { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.1s ease-out; }
         .face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .face img { width: 100%; height: 100%; object-fit: contain; }
         .back { transform: rotateY(180deg); }
@@ -69,41 +69,43 @@
 
     <script>
         let f="", b="";
+        function checkImages() {
+            if (f !== "" && b !== "") {
+                const btn = document.getElementById('btn-go');
+                if (btn) btn.style.display = 'block';
+            }
+        }
+
         function runImg(input, face) {
             if (input.files && input.files[0]) {
                 const r = new FileReader();
                 r.onload = function(e) {
                     const src = e.target.result;
-                    document.getElementById(`p-${face}`).innerHTML = `<img src="${src}" style="width:100%; height:100%; object-fit:contain;">`;
+                    document.getElementById(`p-${face}`).innerHTML = `<img src="${src}">`;
                     
                     const m = document.getElementById(`m-${face}`);
-                    if(m) {
+                    if (m) {
                         m.src = src;
                         m.style.display = 'block';
                     }
                     
-                    if(face==='front') {
+                    if (face === 'front') {
                         const lblF = document.getElementById(`lbl-f`);
-                        if(lblF) lblF.style.display = 'none';
-                        f=src;
+                        if (lblF) lblF.style.display = 'none';
+                        f = src;
                     } else {
                         const lblB = document.getElementById(`lbl-b`);
-                        if(lblB) lblB.style.display = 'none';
-                        b=src;
+                        if (lblB) lblB.style.display = 'none';
+                        b = src;
                     }
                     
                     localStorage.setItem(`card-${face}`, src);
-                    
-                    if(f !== "" && b !== "") {
-                        const btn = document.getElementById('btn-go');
-                        if(btn) btn.style.display = 'block';
-                    }
+                    checkImages();
                 };
                 r.readAsDataURL(input.files[0]);
             }
         }
 
-        // Corrected non-snapping 3D finger gesture engine
         function initSpin(id) {
             const el = document.getElementById(id);
             if (!el) return;
@@ -128,16 +130,13 @@
             el.addEventListener('touchend', function() {
                 if (!isMoving) return;
                 isMoving = false;
-                savedRot = currentRot; // Locks rotation vector on finger release
+                savedRot = currentRot;
             });
         }
 
-        // Double trigger layer ensuring script setup fires perfectly
-        if (document.readyState === "loading") {
-            document.addEventListener("DOMContentLoaded", function() { initSpin('spin-1'); });
-        } else {
+        window.addEventListener("load", function() {
             initSpin('spin-1');
-        }
+        });
     </script>
 </body>
 </html>
