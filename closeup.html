@@ -30,7 +30,7 @@
     <div class="app-container">
         <header class="header-area">
             <h1 class="title-text">Trading Card Grading <span style="font-size:11px; font-family:monospace; color:#60A5FA;">v1.1</span></h1>
-            <a href="index.html" class="home-btn">🏠 Home</a>
+            <a href="index.html" class="home-btn" onclick="clearSession()">🏠 Home</a>
         </header>
         
         <div class="grid-layout">
@@ -68,26 +68,16 @@
     </div>
 
     <script>
-        // Check local disk storage directly to reveal the blue breakdown trigger
-        function syncState() {
-            const frontSrc = localStorage.getItem("card-front");
-            const backSrc = localStorage.getItem("card-back");
+        // Wipe storage slots completely on clean app open to prevent blank frames
+        function clearSession() {
+            localStorage.removeItem("card-front");
+            localStorage.removeItem("card-back");
+        }
 
-            if (frontSrc) {
-                document.getElementById("p-front").innerHTML = `<img src="${frontSrc}" style='width:100%; height:100%; object-fit:contain;'>`;
-                const mFront = document.getElementById("m-front");
-                mFront.src = frontSrc;
-                mFront.style.display = 'block';
-                document.getElementById("lbl-f").style.display = 'none';
-            }
-            if (backSrc) {
-                document.getElementById("p-back").innerHTML = `<img src="${backSrc}" style='width:100%; height:100%; object-fit:contain;'>`;
-                const mBack = document.getElementById("m-back");
-                mBack.src = backSrc;
-                mBack.style.display = 'block';
-                document.getElementById("lbl-b").style.display = 'none';
-            }
-            if (frontSrc && backSrc) {
+        function checkButtons() {
+            const f = localStorage.getItem("card-front");
+            const b = localStorage.getItem("card-back");
+            if (f && b) {
                 document.getElementById("btn-go").style.display = 'block';
             }
         }
@@ -96,8 +86,20 @@
             if (input.files && input.files[0]) {
                 const r = new FileReader();
                 r.onload = function(e) {
-                    localStorage.setItem(`card-${face}`, e.target.result);
-                    syncState();
+                    const src = e.target.result;
+                    document.getElementById(`p-${face}`).innerHTML = `<img src="${src}" style='width:100%; height:100%; object-fit:contain;'>`;
+                    
+                    const m = document.getElementById(`m-${face}`);
+                    if (m) {
+                        m.src = src;
+                        m.style.display = 'block';
+                    }
+                    
+                    const lbl = document.getElementById(face === 'front' ? "lbl-f" : "lbl-b");
+                    if (lbl) lbl.style.display = 'none';
+                    
+                    localStorage.setItem(`card-${face}`, src);
+                    checkButtons();
                 };
                 r.readAsDataURL(input.files[0]);
             }
@@ -129,7 +131,7 @@
         }
 
         window.addEventListener("load", function() {
-            syncState();
+            clearSession(); // Lock clean initialization
             initSpin('spin-1');
         });
     </script>
