@@ -10,19 +10,22 @@
         .app-container { max-width: 440px; margin: 0 auto; }
         .header-area { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; margin-bottom: 24px; position: relative; }
         .title-text { font-size: 16px; font-weight: 700; margin: 0 auto; color: #ffffff; }
-        .home-btn { bg-color: rgba(30, 58, 138, 0.6); background-color: #1e3a8a; font-size: 12px; padding: 6px 12px; border-radius: 8px; text-decoration: none; color: #ffffff; position: absolute; right: 0; }
-        .grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-        .scan-label { background-color: #16223F; border: 1px dashed #1e3a8a; border-radius: 12px; padding: 16px; text-align: center; cursor: pointer; display: block; }
-        .scan-lbl-text { font-size: 12px; font-weight: 700; display: block; margin-bottom: 8px; color: #ffffff; }
-        .preview-box { w-full; height: 144px; height: 144px; background-color: #0F1A30; border-radius: 8px; border: 1px solid #0b1528; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #6B7280; overflow: hidden; padding: 4px; }
-        .preview-box img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; }
-        .display-container { background-color: #131F3B; border: 1px solid rgba(30, 58, 138, 0.4); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 16px; }
-        .scene { perspective: 1000px; width: 160px; height: 224px; margin-bottom: 8px; }
+        .home-btn { background-color: #1e3a8a; font-size: 12px; padding: 6px 12px; border-radius: 8px; text-decoration: none; color: #ffffff; position: absolute; right: 0; }
+        .grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+        .scan-label { background-color: #16223F; border: 1px dashed #1e3a8a; border-radius: 12px; padding: 14px; text-align: center; cursor: pointer; display: block; }
+        .scan-lbl-text { font-size: 13px; font-weight: 700; display: block; margin-bottom: 10px; color: #ffffff; }
+        /* Taller and larger side-by-side previews */
+        .preview-box { width: 100%; height: 210px; background-color: #0F1A30; border-radius: 8px; border: 1px solid #0b1528; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #6B7280; overflow: hidden; padding: 2px; }
+        .preview-box img { width: 100%; height: 100%; object-fit: contain; border-radius: 6px; }
+        .display-container { background-color: #131F3B; border: 1px solid rgba(30, 58, 138, 0.4); border-radius: 12px; padding: 24px 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 20px; }
+        /* Significantly scaled up 3D viewport dimensions */
+        .scene { perspective: 1000px; width: 230px; height: 322px; margin-bottom: 14px; }
         .c3d { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.1s ease-out; }
         .face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .face img { width: 100%; height: 100%; object-fit: contain; }
         .back { transform: rotateY(180deg); }
-        .spin-text { font-size: 10px; color: #60A5FA; font-family: monospace; letter-spacing: 0.05em; text-transform: uppercase; background-color: rgba(15, 26, 48, 0.8); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(30, 58, 138, 0.5); }
-        .action-btn { display: none; width: 100%; background-color: #2563EB; color: #ffffff; font-weight: 700; py-3; padding: 12px 0; border-radius: 12px; text-align: center; text-decoration: none; }
+        .spin-text { font-size: 11px; color: #60A5FA; font-family: monospace; letter-spacing: 0.05em; text-transform: uppercase; background-color: rgba(15, 26, 48, 0.8); padding: 5px 14px; border-radius: 9999px; border: 1px solid rgba(30, 58, 138, 0.5); }
+        .action-btn { display: none; width: 100%; background-color: #2563EB; color: #ffffff; font-weight: 700; padding: 14px 0; border-radius: 12px; text-align: center; text-decoration: none; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
     </style>
 </head>
 <body>
@@ -48,8 +51,8 @@
         <div class="display-container">
             <div class="scene">
                 <div id="spin-1" class="c3d" data-rot="0">
-                    <div class="face bg-[#1A2A4C]" style="border: 1px solid rgba(59, 130, 246, 0.3);"><img id="m-front" style="display:none; width:100%; height:100%; object-fit:cover;"><p id="lbl-f" style="font-size: 12px; color:#9CA3AF; text-align:center; padding:0 8px;">Scan Front To View Image</p></div>
-                    <div class="face back bg-[#1A2A4C]" style="border: 1px solid rgba(59, 130, 246, 0.3);"><img id="m-back" style="display:none; width:100%; height:100%; object-fit:cover;"><p style="font-size: 12px; color:#9CA3AF;">Back Image Missing</p></div>
+                    <div class="face bg-[#1A2A4C]" style="border: 1px solid rgba(59, 130, 246, 0.3);"><img id="m-front" style="display:none;"><p id="lbl-f" style="font-size: 12px; color:#9CA3AF; text-align:center; padding:0 8px;">Scan Front To View Image</p></div>
+                    <div class="face back bg-[#1A2A4C]" style="border: 1px solid rgba(59, 130, 246, 0.3);"><img id="m-back" style="display:none;"><p style="font-size: 12px; color:#9CA3AF;">Back Image Missing</p></div>
                 </div>
             </div>
             <p class="spin-text">Swipe To Spin Card</p>
@@ -78,7 +81,7 @@
             const el = document.getElementById(id); if(!el) return;
             let sx = 0, rot = 0;
             el.addEventListener('touchstart', (e) => { sx = e.touches.clientX; rot = parseFloat(el.getAttribute('data-rot')) || 0; }, {passive:true});
-            el.addEventListener('touchmove', (e) => { const d = e.touches.clientX - sx; let anonymityRot = rot + (d * 0.6); el.style.transform = `rotateY(${anonymityRot}deg)`; el.setAttribute('data-rot', anonymityRot); }, {passive:true});
+            el.addEventListener('touchmove', (e) => { const d = e.touches.clientX - sx; let nr = rot + (d * 0.6); el.style.transform = `rotateY(${nr}deg)`; el.setAttribute('data-rot', nr); }, {passive:true});
         }
         document.addEventListener("DOMContentLoaded", () => { spin('spin-1'); });
     </script>
