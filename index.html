@@ -5,27 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trading Card Grading v1.1</title>
     <script src="https://tailwindcss.com"></script>
+    <!-- Built-in Fallback Styles if CDN drops -->
+    <style>
+        body { background-color: #0B1528 !important; color: #ffffff !important; margin: 0; padding: 16px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        .app-container { max-width: 440px; margin: 0 auto; text-align: center; }
+        .app-title { font-size: 24px; font-weight: 800; margin-top: 24px; color: #ffffff; text-align: center; }
+        .app-version { font-size: 12px; color: #60A5FA; font-family: monospace; margin-top: 4px; text-align: center; margin-bottom: 40px; }
+        .router-box { display: block; text-align: left; background-color: #16223F; border: 1px solid rgba(30, 58, 138, 0.5); padding: 20px; rounded-radius: 12px; border-radius: 12px; text-decoration: none; margin-bottom: 16px; }
+        .router-title { font-size: 18px; font-weight: 700; color: #ffffff; }
+        .router-desc { font-size: 12px; color: #9CA3AF; margin-top: 4px; line-height: 1.5; }
+    </style>
 </head>
-<body class="bg-[#0B1528] text-white min-h-screen font-sans">
+<body>
 
-    <!-- HOME SCREEN CONTAINER -->
-    <div id="screen-home" class="max-w-md mx-auto p-4 flex flex-col items-center">
-        <header class="text-center mt-6 mb-10">
-            <h1 class="text-2xl font-bold">Trading Card Grading</h1>
-            <p class="text-xs text-blue-400 font-mono">v1.1</p>
+    <div class="app-container">
+        <header>
+            <h1 class="app-title">Trading Card Grading</h1>
+            <p class="app-version">v1.1</p>
         </header>
 
-        <main class="w-full space-y-4">
-            <!-- Router 1: Links directly to your new closeup.html page -->
-            <a href="closeup.html" class="w-full text-left bg-[#16223F] border border-blue-900/50 p-5 rounded-xl block no-underline transition-transform active:scale-95">
-                <div class="text-lg font-bold text-white">🟢 Close-Up Scanner</div>
-                <div class="text-xs text-gray-400 mt-1">Deep-dive math evaluation for individual cards.</div>
+        <main style="width: 100%;">
+            <!-- Router 1 -->
+            <a href="closeup.html" class="router-box">
+                <div class="router-title">🟢 Close-Up Scanner</div>
+                <div class="router-desc">Deep-dive math evaluation for individual cards.</div>
             </a>
 
-            <!-- Router 2: Links directly to your upcoming multiple.html page -->
-            <a href="multiple.html" class="w-full text-left bg-[#16223F] border border-blue-900/50 p-5 rounded-xl block no-underline transition-transform active:scale-95">
-                <div class="text-lg font-bold text-white">📑 9-Card Page</div>
-                <div class="text-xs text-gray-400 mt-1">Instant sorting tiers & sequence layout mapping.</div>
+            <!-- Router 2 -->
+            <a href="multiple.html" class="router-box">
+                <div class="router-title">📑 9-Card Page</div>
+                <div class="router-desc">Instant sorting tiers & sequence layout mapping.</div>
             </a>
         </main>
     </div>
