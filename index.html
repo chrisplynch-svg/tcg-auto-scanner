@@ -6,14 +6,14 @@
     <title>Trading Card Grading v1.1</title>
     <script src="https://jsdelivr.net"></script>
     <style>
-        body { background-color: #0B1528 !important; color: #ffffff !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: #0B1528 !important; color: #ffffff !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 16px; }
         .scene { perspective: 1000px; width: 200px; height: 280px; }
         .c3d { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.1s ease-out; }
         .face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid rgba(59, 130, 246, 0.3); }
         .back { transform: rotateY(180deg); }
     </style>
 </head>
-<body class="p-4 min-h-screen flex justify-center">
+<body class="min-h-screen flex justify-center">
 
     <div class="w-full max-w-[440px] flex flex-col">
         <!-- GLOBAL APP HEADER -->
@@ -75,17 +75,17 @@
                 <div class="scene">
                     <div id="card-3d-closeup" class="c3d">
                         <div class="face bg-[#1A2A4C]">
-                            <img id="view-img-front" class="hidden w-full h-full object-contain">
+                            <img id="view-img-front" class="hidden w-full h-full object-contain" alt="Front view">
                             <p id="lbl-f-miss" class="text-xs text-gray-400 text-center px-4 font-medium">Scan Front To View Image</p>
                         </div>
                         <div class="face back bg-[#1A2A4C]">
-                            <img id="view-img-back" class="hidden w-full h-full object-contain">
+                            <img id="view-img-back" class="hidden w-full h-full object-contain" alt="Back view">
                             <p id="lbl-b-miss" class="text-xs text-gray-400 font-medium">Back Image Missing</p>
                         </div>
                     </div>
                 </div>
                 <div class="mt-5">
-                    <p class="text-[10px] text-blue-400 font-mono tracking-widest uppercase bg-[#0F1A30] border border-blue-900/50 px-4 py-1.5 rounded-full">Swipe To Spin Card</p>
+                    <p class="text-[10px] text-blue-400 font-mono tracking-widest uppercase bg-[#0F1A30] border border-blue-900/50 px-4 py-1.5 rounded-full selection:bg-transparent">Swipe To Spin Card</p>
                 </div>
             </div>
 
@@ -106,9 +106,7 @@
                 <h2 class="text-xs font-bold text-blue-400 uppercase tracking-wider border-b border-blue-950 pb-2">📋 The 9-Card Page Review</h2>
                 
                 <!-- Sequential Text List Container -->
-                <div id="multi-text-list" class="space-y-2 text-xs font-medium text-gray-200">
-                    <!-- Dynamic fragments generate here -->
-                </div>
+                <div id="multi-text-list" class="space-y-2 text-xs font-medium text-gray-200"></div>
 
                 <!-- Strict Color Action Key Footer -->
                 <div class="border-t border-blue-950 pt-3 space-y-2.5">
@@ -129,7 +127,8 @@
                 <div class="scene">
                     <div id="card-3d-info" class="c3d">
                         <div class="face bg-[#1A2A4C]">
-                            <img id="info-img-front" class="w-full h-full object-contain">
+                            <img id="info-img-front" class="w-full h-full object-contain" alt="Info Front">
                         </div>
                         <div class="face back bg-[#1A2A4C]">
-                            <img id="info-img-back" class="w-full h-full object-contain">
+                            <img id="info-img-back" class="w-full h-full object-contain" alt="Info Back">
+                        </div>
