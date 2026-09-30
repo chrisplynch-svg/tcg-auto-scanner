@@ -4,119 +4,81 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Close-Up Scanner</title>
-    <script src="https://tailwindcss.com"></script>
+    <script src="https://jsdelivr.net"></script>
     <style>
         body { background-color: #0B1528 !important; color: #ffffff !important; margin: 0; padding: 12px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        .app-container { max-width: 440px; margin: 0 auto; display: flex; flex-direction: column; }
-        .header-area { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; margin-bottom: 8px; position: relative; }
-        .title-text { font-size: 15px; font-weight: 700; margin: 0 auto; color: #ffffff; }
-        .home-btn { background-color: #1e3a8a; font-size: 11px; padding: 4px 10px; border-radius: 6px; text-decoration: none; color: #ffffff; position: absolute; right: 0; }
-        .grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 8px; }
-        .scan-label { background-color: #16223F; border: 1px dashed #1e3a8a; border-radius: 10px; padding: 8px; text-align: center; cursor: pointer; display: block; }
-        .scan-lbl-text { font-size: 12px; font-weight: 700; display: block; margin-bottom: 4px; color: #ffffff; }
-        .preview-box { width: 100%; height: 110px; background-color: #0F1A30; border-radius: 6px; border: 1px solid #0b1528; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #6B7280; overflow: hidden; padding: 2px; }
-        .preview-box img { width: 100%; height: 100%; object-fit: contain; }
-        .display-container { background-color: #131F3B; border: 1px solid rgba(30, 58, 138, 0.4); border-radius: 12px; padding: 16px 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 8px; min-height: 350px; }
         .scene { perspective: 1000px; width: 220px; height: 308px; margin-bottom: 12px; }
-        .c3d { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; }
-        .face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .face img { width: 100%; height: 100%; object-fit: contain; }
+        .c3d { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.1s ease-out; }
+        .face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid rgba(59, 130, 246, 0.3); }
         .back { transform: rotateY(180deg); }
-        .spin-text { font-size: 10px; color: #60A5FA; font-family: monospace; letter-spacing: 0.05em; text-transform: uppercase; background-color: rgba(15, 26, 48, 0.8); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(30, 58, 138, 0.5); text-align: center; width: auto; display: inline-block; }
-        .action-btn { display: none; width: 100%; background-color: #2563EB; color: #ffffff; font-weight: 700; padding: 12px 0; border-radius: 10px; text-align: center; text-decoration: none; margin-top: 8px; font-size: 14px; }
     </style>
 </head>
-<body>
-    <div class="app-container">
-        <header class="header-area">
-            <h1 class="title-text">Trading Card Grading <span style="font-size:11px; font-family:monospace; color:#60A5FA;">v1.1</span></h1>
-            <a href="index.html" class="home-btn" onclick="clearSession()">🏠 Home</a>
+<body class="flex justify-center">
+    <div class="w-full max-w-[440px] flex flex-col">
+        <header class="flex justify-between items-center mt-1 mb-4 relative pb-2 border-b border-blue-900/40">
+            <h1 class="text-sm font-bold text-white">Trading Card Grading <span class="text-blue-400 font-mono text-[11px]">v1.1</span></h1>
+            <a href="index.html" class="bg-blue-900 text-[11px] px-3 py-1 rounded-md font-bold text-white">🏠 Home</a>
         </header>
         
-        <div class="grid-layout">
-            <label class="scan-label">
-                <span class="scan-lbl-text">Front Preview</span>
-                <input type="file" accept="image/*" capture="environment" style="display:none;" onchange="runImg(this,'front')">
-                <div id="p-front" class="preview-box">Scan Front</div>
+        <div class="grid grid-cols-2 gap-3 mb-3">
+            <label class="bg-[#16223F] border border-dashed border-blue-800 rounded-xl p-3 text-center cursor-pointer block">
+                <span class="text-xs font-bold text-white block mb-1">Front Preview</span>
+                <input type="file" accept="image/*" capture="environment" class="hidden" onchange="runImg(this,'front')">
+                <div id="p-front" class="w-full h-[110px] bg-[#0F1A30] rounded-lg flex items-center justify-center text-[10px] text-gray-500 overflow-hidden">Scan Front</div>
             </label>
-            <label class="scan-label">
-                <span class="scan-lbl-text">Back Preview</span>
-                <input type="file" accept="image/*" capture="environment" style="display:none;" onchange="runImg(this,'back')">
-                <div id="p-back" class="preview-box">Scan Back</div>
+            <label class="bg-[#16223F] border border-dashed border-blue-800 rounded-xl p-3 text-center cursor-pointer block">
+                <span class="text-xs font-bold text-white block mb-1">Back Preview</span>
+                <input type="file" accept="image/*" capture="environment" class="hidden" onchange="runImg(this,'back')">
+                <div id="p-back" class="w-full h-[110px] bg-[#0F1A30] rounded-lg flex items-center justify-center text-[10px] text-gray-500 overflow-hidden">Scan Back</div>
             </label>
         </div>
 
-        <div class="display-container">
+        <div class="bg-[#131F3B] border border-blue-900/40 rounded-xl p-4 flex flex-col items-center justify-center min-h-[350px] mb-3">
             <div class="scene">
                 <div id="spin-1" class="c3d">
-                    <div class="face bg-[#1A2A4C]" style="border: 1px solid rgba(59, 130, 246, 0.3);">
-                        <img id="m-front" style="display:none; width:100%; height:100%; object-fit:contain;">
-                        <p id="lbl-f" style="font-size: 12px; color:#9CA3AF; text-align:center; padding:0 8px;">Scan Front To View Image</p>
+                    <div class="face bg-[#1A2A4C]">
+                        <img id="m-front" class="hidden w-full h-full object-contain">
+                        <p id="lbl-f" class="text-xs text-gray-400 text-center px-2">Scan Front To View Image</p>
                     </div>
-                    <div class="face back bg-[#1A2A4C]" style="border: 1px solid rgba(59, 130, 246, 0.3);">
-                        <img id="m-back" style="display:none; width:100%; height:100%; object-fit:contain;">
-                        <p id="lbl-b" style="font-size: 12px; color:#9CA3AF;">Back Image Missing</p>
+                    <div class="face back bg-[#1A2A4C]">
+                        <img id="m-back" class="hidden w-full h-full object-contain">
+                        <p id="lbl-b" class="text-xs text-gray-400">Back Image Missing</p>
                     </div>
                 </div>
             </div>
             <div>
-                <p class="spin-text">Swipe To Spin Card</p>
+                <p class="text-[10px] text-blue-400 font-mono tracking-widest uppercase bg-[#0F1A30] border border-blue-900/50 px-4 py-1.5 rounded-full selection:bg-transparent">Swipe To Spin Card</p>
             </div>
         </div>
 
-        <a id="btn-go" href="info.html" class="action-btn">🔍 Generate Info Breakdown</a>
+        <a id="btn-go" href="info.html" class="hidden w-full bg-blue-600 text-white font-bold py-3.5 rounded-xl text-center text-sm shadow-lg shadow-blue-950">🔍 Generate Info Breakdown</a>
     </div>
 
     <script>
-        function clearSession() {
+        window.addEventListener('load', () => {
             localStorage.removeItem("card-front");
             localStorage.removeItem("card-back");
-            localStorage.removeItem("card-name");
-            localStorage.removeItem("card-set");
-            localStorage.removeItem("card-num");
-        }
-
-        function checkButtons() {
-            const f = localStorage.getItem("card-front");
-            const b = localStorage.getItem("card-back");
-            if (f && b) {
-                document.getElementById("btn-go").style.display = 'block';
-            }
-        }
+            initSpin('spin-1');
+        });
 
         function runImg(input, face) {
             if (input.files && input.files[0]) {
                 const r = new FileReader();
                 r.onload = function(e) {
                     const src = e.target.result;
-                    document.getElementById(`p-${face}`).innerHTML = `<img src="${src}" style='width:100%; height:100%; object-fit:contain;'>`;
+                    document.getElementById(`p-${face}`).innerHTML = `<img src="${src}" class='w-full h-full object-cover rounded-md'>`;
                     
                     const m = document.getElementById(`m-${face}`);
-                    if (m) {
-                        m.src = src;
-                        m.style.display = 'block';
-                    }
+                    if (m) { m.src = src; m.style.display = 'block'; }
                     
                     const lbl = document.getElementById(face === 'front' ? "lbl-f" : "lbl-b");
                     if (lbl) lbl.style.display = 'none';
                     
                     localStorage.setItem(`card-${face}`, src);
 
-                    // Mock matching card database values during scan execution loops
-                    if(face === 'front') {
-                        // Simulated automatic logic changes card data if a different photo file runs
-                        if(input.files[0].name.toLowerCase().includes('sentret')) {
-                            localStorage.setItem("card-name", "Sentret");
-                            localStorage.setItem("card-set", "Neo Genesis");
-                            localStorage.setItem("card-num", "#71/111");
-                        } else {
-                            localStorage.setItem("card-name", "Raichu");
-                            localStorage.setItem("card-set", "Base Set Holo");
-                            localStorage.setItem("card-num", "#14/102");
-                        }
+                    if (localStorage.getItem("card-front") && localStorage.getItem("card-back")) {
+                        document.getElementById("btn-go").style.display = 'block';
                     }
-                    
-                    checkButtons();
                 };
                 r.readAsDataURL(input.files[0]);
             }
@@ -126,20 +88,15 @@
             const el = document.getElementById(id);
             if (!el) return;
             let startX = 0, currentRot = 0, savedRot = 0, isMoving = false;
-            el.addEventListener('touchstart', function(e) { startX = e.touches[0].clientX; isMoving = true; }, { passive: true });
-            el.addEventListener('touchmove', function(e) {
+            el.addEventListener('touchstart', e => { startX = e.touches[0].clientX; isMoving = true; }, { passive: true });
+            el.addEventListener('touchmove', e => {
                 if (!isMoving) return;
                 const deltaX = e.touches[0].clientX - startX;
                 currentRot = savedRot + (deltaX * 0.5);
-                el.style.transform = "rotateY(" + currentRot + "deg)";
+                el.style.transform = `rotateY(${currentRot}deg)`;
             }, { passive: true });
-            el.addEventListener('touchend', function() { if (!isMoving) return; isMoving = false; savedRot = currentRot; });
+            el.addEventListener('touchend', () => { if (!isMoving) return; isMoving = false; savedRot = currentRot; });
         }
-
-        window.addEventListener("load", function() {
-            clearSession();
-            initSpin('spin-1');
-        });
     </script>
 </body>
 </html>
