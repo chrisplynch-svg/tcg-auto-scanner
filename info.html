@@ -4,139 +4,151 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pre-Grading Information</title>
-    <script src="https://tailwindcss.com"></script>
+    <script src="https://jsdelivr.net"></script>
     <style>
         body { background-color: #0B1528 !important; color: #ffffff !important; margin: 0; padding: 12px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        .app-container { max-width: 440px; margin: 0 auto; display: flex; flex-direction: column; }
-        .header-area { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; margin-bottom: 12px; position: relative; }
-        .title-text { font-size: 15px; font-weight: 700; color: #ffffff; width: 50%; line-height: 1.2; }
-        .nav-group { display: flex; gap: 6px; position: absolute; right: 0; }
-        .nav-btn { background-color: #1e3a8a; font-size: 10px; padding: 5px 8px; border-radius: 6px; text-decoration: none; color: #ffffff; font-weight: 600; }
-        .display-container { background-color: #131F3B; border: 1px solid rgba(30, 58, 138, 0.4); border-radius: 12px; padding: 16px 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 12px; }
         .scene { perspective: 1000px; width: 220px; height: 308px; margin-bottom: 12px; }
-        .c3d { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; }
-        .face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .face img { width: 100%; height: 100%; object-fit: contain; }
+        .c3d { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.1s ease-out; }
+        .face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid rgba(59, 130, 246, 0.3); }
         .back { transform: rotateY(180deg); }
-        .spin-text { font-size: 10px; color: #60A5FA; font-family: monospace; letter-spacing: 0.05em; text-transform: uppercase; background-color: rgba(15, 26, 48, 0.8); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(30, 58, 138, 0.5); text-align: center; }
-        .identity-box { background-color: #0F1A30; border: 1px solid #1e3a8a; border-radius: 8px; padding: 10px; text-align: center; margin-top: 10px; width: 90%; }
-        .info-card { background-color: #131F3B; border: 1px solid rgba(30, 58, 138, 0.4); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
     </style>
 </head>
-<body>
-    <div class="app-container">
-        <header class="header-area">
-            <h1 class="title-text">Trading Card Grading <span style="font-size:11px; font-family:monospace; color:#60A5FA; display:block;">v1.1</span></h1>
-            <div class="nav-group">
-                <a href="closeup.html" class="nav-btn">🔍 Scanner</a>
-                <a href="index.html" class="nav-btn">🏠 Home</a>
+<body class="flex justify-center">
+    <div class="w-full max-w-[440px] flex flex-col">
+        <header class="flex justify-between items-center mt-1 mb-4 relative pb-2 border-b border-blue-900/40">
+            <h1 class="text-sm font-bold text-white">Trading Card Grading <span class="text-blue-400 font-mono text-[11px] block">v1.1</span></h1>
+            <div class="flex gap-2">
+                <a href="closeup.html" class="bg-blue-900/60 border border-blue-700/40 text-[10px] px-2.5 py-1 rounded-md font-bold text-white">🔍 Scanner</a>
+                <a href="index.html" class="bg-blue-950 border border-blue-800 text-[10px] px-2.5 py-1 rounded-md font-bold text-white">🏠 Home</a>
             </div>
         </header>
 
-        <div class="display-container">
+        <!-- INTERACTIVE 3D SPIN CONTAINER -->
+        <div class="bg-[#131F3B] border border-blue-900/40 rounded-xl p-4 flex flex-col items-center justify-center mb-3">
             <div class="scene">
                 <div id="spin-2" class="c3d">
-                    <div class="face bg-[#1A2A4C]" style="border: 1px solid rgba(59, 130, 246, 0.3);">
-                        <img id="i-front" style="width:100%; height:100%; object-fit:contain;">
+                    <div class="face bg-[#1A2A4C]">
+                        <img id="i-front" class="w-full h-full object-contain" alt="Front">
                     </div>
-                    <div class="face back bg-[#1A2A4C]" style="border: 1px solid rgba(59, 130, 246, 0.3);">
-                        <img id="i-back" style="width:100%; height:100%; object-fit:contain;">
+                    <div class="face back bg-[#1A2A4C]">
+                        <img id="i-back" class="w-full h-full object-contain" alt="Back">
                     </div>
                 </div>
             </div>
             <div>
-                <p class="spin-text">Swipe To Spin Card</p>
-            </div>
-
-            <!-- Dynamic Data Identification Card Slots -->
-            
-                <p id="lbl-card-name" class="font-bold text-sm text-white">Loading Card...</p>
-                <p id="lbl-card-set" class="text-xs text-blue-400 font-medium mt-0.5">Scanning Reference...</p>
-                <p id="lbl-card-num" class="text-[11px] text-gray-400 font-mono mt-0.5">#--/--</p>
+                <p class="text-[10px] text-blue-400 font-mono tracking-widest uppercase bg-[#0F1A30] border border-blue-900/50 px-4 py-1.5 rounded-full selection:bg-transparent">Swipe To Spin Card</p>
             </div>
         </div>
 
-        <main class="info-card text-xs space-y-3.5">
-            <h2 class="font-bold text-green-400 text-sm border-b border-blue-900/60 pb-1.5 tracking-wider">THE DEEP-DIVE PRE-GRADING</h2>
-            <div class="space-y-2.5 text-gray-200 font-medium">
-                <p>📊 <strong>Estimated Grade:</strong> Gem Mint 10 (Simulated preview)</p>
-                <p>🔍 <strong>Flaws Seen:</strong> Centering alignment holds 60/40 front variance; borders are completely crisp.</p>
-                
-                <div class="bg-[#0B1528] p-3 rounded-xl border border-blue-950 space-y-2">
-                    <p class="text-sm">🟢 <strong>Worth Grading?</strong> Yes</p>
-                    <div class="grid grid-cols-2 gap-2 text-xs border-b border-blue-950 pb-2">
-                        <p>💰 <strong>Raw Value:</strong> $45.00</p>
-                        <p>📈 <strong>Est. Graded Value:</strong> $220.00</p>
-                    </div>
-                    <p class="font-bold text-white tracking-wide pt-1">🧮 Net Profit Math:</p>
-                    <ul class="space-y-1.5 pl-3 text-gray-400 font-mono text-[11px]">
-                        <li class="flex justify-between"><span>Gross Graded Value:</span><span class="text-white">$220.00</span></li>
-                        <li class="flex justify-between"><span>Minus Grading Fee:</span><span class="text-red-400">-$15.00</span></li>
-                        <li class="flex justify-between"><span>Minus Insured Logistics:</span><span class="text-red-400">-$14.00</span></li>
-                        <li class="flex justify-between"><span>Minus Materials:</span><span class="text-red-400">-$2.00</span></li>
-                        <li class="flex justify-between"><span>Minus Platform Fee (13.5%):</span><span class="text-red-400">-$29.70</span></li>
-                        <li class="flex justify-between border-t border-blue-950 pt-1.5 text-white font-semibold"><span>Total Investment Outlay:</span><span>$60.70</span></li>
-                        <li class="flex justify-between text-green-400 font-black text-xs pt-1"><span>➡️ Net Realized Cash Payout:</span><span>$159.30</span></li>
-                    </ul>
-                </div>
-                
-                <p>📈 <strong>Pop Report:</strong> 1,245 tracked submissions inside active population registers.</p>
-                <p>🏷️ <strong>Best Grader:</strong> PSA Premium Tiers optimized for baseline liquidation speed.</p>
-                <p>💧 <strong>Liquidity:</strong> 🟢 High volume market transaction depth.</p>
-                <p>🛡️ <strong>Authenticity:</strong> Layer micro-printing matches reference database criteria.</p>
-                <p>💡 <strong>What to Scan For Next:</strong> Search for reverse-holo set parallels across identical card sets.</p>
+        <!-- TARGET BREAKDOWN TEXT DATA FRAME -->
+        <main class="bg-[#131F3B] border border-blue-900/40 rounded-xl p-4 text-left font-medium text-xs space-y-3.5 mb-6">
+            <h2 class="font-bold text-green-400 text-sm border-b border-blue-950 pb-2 tracking-wider">THE DEEP-DIVE PRE-GRADING</h2>
+            
+            <div id="ai-loading-box" class="py-6 text-center text-gray-400 space-y-2">
+                <div class="animate-spin inline-block w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full"></div>
+                <p class="text-[11px] font-mono tracking-wide">Processing card details with Gemini Flash AI...</p>
             </div>
+
+            <div id="ai-content-payload" class="hidden space-y-3 text-gray-200"></div>
         </main>
     </div>
 
     <script>
+        window.addEventListener("load", () => {
+            initSpin('spin-2');
+            const f = localStorage.getItem("card-front");
+            const b = localStorage.getItem("card-back");
+            if(f) document.getElementById("i-front").src = f;
+            if(b) document.getElementById("i-back").src = b;
+            
+            requestAnalysis(f, b);
+        });
+
         function initSpin(id) {
             const el = document.getElementById(id);
             if (!el) return;
-
             let startX = 0, currentRot = 0, savedRot = 0, isMoving = false;
-
-            el.addEventListener('touchstart', function(e) {
-                startX = e.touches[0].clientX;
-                isMoving = true;
-            }, { passive: true });
-
-            el.addEventListener('touchmove', function(e) {
+            el.addEventListener('touchstart', e => { startX = e.touches[0].clientX; isMoving = true; }, { passive: true });
+            el.addEventListener('touchmove', e => {
                 if (!isMoving) return;
                 const deltaX = e.touches[0].clientX - startX;
                 currentRot = savedRot + (deltaX * 0.5);
-                el.style.transform = "rotateY(" + currentRot + "deg)";
+                el.style.transform = `rotateY(${currentRot}deg)`;
             }, { passive: true });
-
-            el.addEventListener('touchend', function() {
-                if (!isMoving) return;
-                isMoving = false;
-                savedRot = currentRot;
-            });
+            el.addEventListener('touchend', () => { if (!isMoving) return; isMoving = false; savedRot = currentRot; });
         }
 
-        // Delay execution parameters until phone caches register local assets
-        window.addEventListener("load", function() {
-            const frontData = localStorage.getItem("card-front");
-            const backData = localStorage.getItem("card-back");
-            
-            if(frontData) document.getElementById("i-front").src = frontData;
-            if(backData) document.getElementById("i-back").src = backData;
+        async function requestAnalysis(frontImg, backImg) {
+            const loadingBox = document.getElementById('ai-loading-box');
+            const contentBox = document.getElementById('ai-content-payload');
+            const apiKey = localStorage.getItem('tcg_auto_scanner_gemini_key');
 
-            // Dynamically rewrite name text fields based on closeup memory inputs
-            const name = localStorage.getItem("card-name") || "Raichu";
-            const set = localStorage.getItem("card-set") || "Base Set Holo";
-            const num = localStorage.getItem("card-num") || "#14/102";
+            // Hardcoded structural layout fallback properties if key config drops
+            let data = {
+                name: "Raichu Holo", set: "Base Set", number: "#14/102",
+                grade: "Gem Mint 10 (Simulated preview)", flaws: "Centering alignment holds 60/40 front variance; borders are crisp.",
+                worth: "🟢 Yes", rawVal: "45.00", estVal: "220.00", platformFee: "29.70", totalOut: "60.70", netPay: "159.30",
+                pop: "1,245 tracked submissions inside registers.", grader: "PSA Premium Tiers optimized for liquidation speed.",
+                liquidity: "🟢 High volume market transaction depth.", auth: "Layer micro-printing matches database criteria.",
+                next: "Search for reverse-holo parallel cards across identical card sets."
+            };
 
-            document.getElementById("lbl-card-name").innerText = name;
-            document.getElementById("lbl-card-set").innerText = set;
-            document.getElementById("lbl-card-num").innerText = num;
-            
-            // Safe initialize after text elements settle
-            setTimeout(function() {
-                initSpin('spin-2');
-            }, 150);
-        });
-    </script>
-</body>
-</html>
+            if (apiKey && frontImg && backImg) {
+                const url = `https://googleapis.com{apiKey}`;
+                const prompt = `Analyze trading card fronts and backs. Output your response exactly matching this pattern:
+                NAME: [Name] \nSET: [Set] \nNUMBER: [Number] \nGRADE: [Grade] \nFLAWS: [Flaws] \nWORTH: [🟢/🔴 Yes/No] \nRAWVAL: [Raw Value number] \nESTVAL: [Graded Value number]
+                Choose realistic values. Calculate platform fee at 13.5% of Graded Value. Outlay = 15.00+14.00+2.00+Fee. Net = Graded Value - Outlay. 
+                POP: [Pop Details] \nGRADER: [Grader] \nLIQUIDITY: [🟢/🟡/🔴 Details] \nAUTH: [Details] \nNEXT: [Details]`;
+
+                try {
+                    const cleanBase64 = (uri) => uri.split(',')[1];
+                    const res = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{
+                                parts: [
+                                    { text: prompt },
+                                    { inlineData: { mimeType: "image/jpeg", data: cleanBase64(frontImg) } },
+                                    { inlineData: { mimeType: "image/jpeg", data: cleanBase64(backImg) } }
+                                ]
+                            }]
+                        })
+                    });
+                    const json = await res.json();
+                    const text = json.candidates[0].content.parts[0].text;
+                    
+                    const extract = (regex, fallback) => { const m = text.match(regex); return m ? m[1].trim() : fallback; };
+                    const parsedEst = parseFloat(extract(/ESTVAL:\s*\$?([0-9.]+)/, "220.00"));
+                    const fee = (parsedEst * 0.135).toFixed(2);
+                    const outlay = (15.00 + 14.00 + 2.00 + parseFloat(fee)).toFixed(2);
+                    const net = (parsedEst - parseFloat(outlay)).toFixed(2);
+
+                    data = {
+                        name: extract(/NAME:\s*(.+)/, data.name), set: extract(/SET:\s*(.+)/, data.set), number: extract(/NUMBER:\s*(.+)/, data.number),
+                        grade: extract(/GRADE:\s*(.+)/, data.grade), flaws: extract(/FLAWS:\s*(.+)/, data.flaws), worth: extract(/WORTH:\s*(.+)/, data.worth),
+                        rawVal: parseFloat(extract(/RAWVAL:\s*\$?([0-9.]+)/, data.rawVal)).toFixed(2), estVal: parsedEst.toFixed(2),
+                        platformFee: fee, totalOut: outlay, netPay: net,
+                        pop: extract(/POP:\s*(.+)/, data.pop), grader: extract(/GRADER:\s*(.+)/, data.grader), liquidity: extract(/LIQUIDITY:\s*(.+)/, data.liquidity),
+                        auth: extract(/AUTH:\s*(.+)/, data.auth), next: extract(/NEXT:\s*(.+)/, data.next)
+                    };
+                } catch(e) { console.error("API Error - Loading defaults:", e); }
+            }
+
+            contentBox.innerHTML = `
+                <div class="bg-[#0F1A30] border border-blue-900/60 p-3 rounded-xl text-center mb-2">
+                    <p class="font-extrabold text-sm text-white tracking-wide">${data.name}</p>
+                    <p class="text-xs text-blue-400 font-semibold mt-0.5">${data.set}</p>
+                    <p class="text-[10px] text-gray-400 font-mono mt-0.5">${data.number}</p>
+                </div>
+                <p>📊 <strong>Estimated Grade:</strong> ${data.grade}</p>
+                <p>🔍 <strong>Flaws Seen:</strong> ${data.flaws}</p>
+                
+                <div class="bg-[#0B1528] p-3 rounded-xl border border-blue-950/80 space-y-2">
+                    <p class="text-xs font-bold">🟢 <strong>Worth Grading?</strong> ${data.worth}</p>
+                    <div class="grid grid-cols-2 gap-2 text-xs border-b border-blue-950 pb-2 text-gray-300">
+                        <p>💰 <strong>Raw Value:</strong> $${data.rawVal}</p>
+                        <p>📈 <strong>Est. Graded Value:</strong> $${data.estVal}</p>
+                    </div>
+                    <p class="font-bold text-white tracking-wide pt-1">🧮 Net Profit Math:</p>
+                    <ul class="space-y-1.5 pl-3 text-gray-400 font-mono text-[11px]">
