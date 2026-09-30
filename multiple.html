@@ -5,173 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>9-Card Page Scanner</title>
     <style>
-        /* Solid pure CSS layouts styled to match your dark blue environment theme */
-        body { 
-            background-color: #0B1528 !important; 
-            color: #ffffff !important; 
-            margin: 0; 
-            padding: 16px; 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-            display: flex;
-            justify-content: center;
-        }
-        .app-container {
-            width: 100%;
-            max-width: 440px;
-            display: flex;
-            flex-direction: column;
-        }
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 4px;
-            margin-bottom: 20px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid rgba(30, 58, 138, 0.4);
-        }
-        h1 {
-            font-size: 15px;
-            font-weight: 700;
-            margin: 0;
-            color: #ffffff;
-        }
-        .version {
-            font-size: 11px;
-            font-family: monospace;
-            color: #60A5FA;
-        }
-        .home-btn {
-            background-color: #1e3a8a;
-            font-size: 11px;
-            padding: 6px 12px;
-            border-radius: 6px;
-            text-decoration: none;
-            color: #ffffff;
-            font-weight: 600;
-        }
-        .scan-label {
-            background-color: #16223F;
-            border: 1px dashed #1e3a8a;
-            border-radius: 14px;
-            padding: 20px 16px;
-            text-align: center;
-            cursor: pointer;
-            display: block;
-            margin-bottom: 20px;
-        }
-        .scan-lbl-text {
-            font-size: 13px;
-            font-weight: 700;
-            display: block;
-            margin-bottom: 8px;
-            color: #ffffff;
-        }
-        .preview-box {
-            width: 100%;
-            min-height: 200px;
-            background-color: #0F1A30;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            color: #6B7280;
-            overflow: hidden;
-        }
-        .preview-box img {
-            width: 100%;
-            max-height: 300px;
-            object-fit: contain;
-            padding: 8px;
-        }
-        .results-box {
-            display: none;
-            background-color: #131F3B;
-            border: 1px solid rgba(30, 58, 138, 0.4);
-            border-radius: 16px;
-            padding: 16px;
-            text-align: left;
-        }
-        .results-title {
-            font-size: 12px;
-            font-weight: 800;
-            color: #60A5FA;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin: 0 0 14px 0;
-            padding-bottom: 6px;
-            border-bottom: 1px solid #0F1A30;
-        }
-        .list-container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            font-size: 13px;
-            font-weight: 500;
-            color: #E5E7EB;
-            margin-bottom: 20px;
-        }
-        .list-row {
-            padding-bottom: 8px;
-            border-bottom: 1px solid rgba(15, 26, 48, 0.4);
-        }
-        .list-row:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-        .key-box {
-            border-top: 1px solid #0F1A30;
-            padding-top: 16px;
-        }
-        .key-title {
-            font-size: 12px;
-            font-weight: 800;
-            color: #ffffff;
-            letter-spacing: 0.02em;
-            margin: 0 0 10px 0;
-        }
-        .key-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            font-size: 11px;
-            line-height: 1.4;
-            color: #D1D5DB;
-        }
-        .key-item {
-            display: flex;
-            align-items: start;
-            gap: 8px;
-        }
+        body { background-color: #0B1528 !important; color: #ffffff !important; margin: 0; padding: 16px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; display: flex; justify-content: center; }
+        .app-container { width: 100%; max-width: 440px; display: flex; flex-direction: column; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; margin-bottom: 20px; padding-bottom: 8px; border-bottom: 1px solid rgba(30, 58, 138, 0.4); }
+        h1 { font-size: 15px; font-weight: 700; margin: 0; color: #ffffff; }
+        .version { font-size: 11px; font-family: monospace; color: #60A5FA; }
+        .home-btn { background-color: #1e3a8a; font-size: 11px; padding: 6px 12px; border-radius: 6px; text-decoration: none; color: #ffffff; font-weight: 600; }
+        .scan-label { background-color: #16223F; border: 1px dashed #1e3a8a; border-radius: 14px; padding: 20px 16px; text-align: center; cursor: pointer; display: block; margin-bottom: 20px; }
+        .scan-lbl-text { font-size: 13px; font-weight: 700; display: block; margin-bottom: 8px; color: #ffffff; }
+        .preview-box { width: 100%; min-height: 200px; background-color: #0F1A30; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #6B7280; overflow: hidden; }
+        .preview-box img { width: 100%; max-height: 300px; object-fit: contain; padding: 8px; }
+        .results-box { display: none; background-color: #131F3B; border: 1px solid rgba(30, 58, 138, 0.4); border-radius: 16px; padding: 16px; text-align: left; }
+        .results-title { font-size: 12px; font-weight: 800; color: #60A5FA; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 14px 0; padding-bottom: 6px; border-bottom: 1px solid #0F1A30; }
+        .list-container { display: flex; flex-direction: column; gap: 10px; font-size: 13px; font-weight: 500; color: #E5E7EB; margin-bottom: 20px; }
+        .list-row { padding-bottom: 8px; border-bottom: 1px solid rgba(15, 26, 48, 0.4); }
+        .list-row:last-child { border-bottom: none; padding-bottom: 0; }
+        .key-box { border-top: 1px solid #0F1A30; padding-top: 16px; }
+        .key-title { font-size: 12px; font-weight: 800; color: #ffffff; letter-spacing: 0.02em; margin: 0 0 10px 0; }
+        .key-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; font-size: 11px; line-height: 1.4; color: #D1D5DB; }
+        .key-item { display: flex; align-items: start; gap: 8px; }
     </style>
 </head>
 <body>
-
     <div class="app-container">
         <header>
             <h1>Trading Card Grading <span class="version">v1.1</span></h1>
             <a href="index.html" class="home-btn">🏠 Home</a>
         </header>
 
-        <!-- BINDER CAMERA INPUT TARGET -->
         <label class="scan-label">
             <span class="scan-lbl-text">📸 Take a Page Scan</span>
             <input type="file" accept="image/*" capture="environment" style="display:none;" onchange="processPage(this)">
             <div id="p-page" class="preview-box">Camera Feed Target</div>
         </label>
 
-        <!-- TARGET BREAKDOWN DISPLAY FRAME -->
         <div id="results-frame" class="results-box">
             <h2 class="results-title">📋 The 9-Card Page Review</h2>
-            
-            <!-- Sequential Text Output -->
             <div id="text-output-list" class="list-container"></div>
 
-            <!-- Custom User Defined Action Key Layout Box -->
             <div class="key-box">
                 <h3 class="key-title">🔑 ACTION KEY</h3>
                 <ul class="key-list">
@@ -189,49 +60,44 @@
                 const r = new FileReader();
                 r.onload = async function(e) {
                     const src = e.target.result;
-                    
-                    // Render image inside view target placeholder area
                     document.getElementById('p-page').innerHTML = `<img src="${src}">`;
                     
                     const frame = document.getElementById('results-frame');
                     const output = document.getElementById('text-output-list');
                     
                     frame.style.display = 'block';
-                    output.innerHTML = `<p style="font-family: monospace; font-size: 11px; color: #9CA3AF; animation: pulse 1.5s infinite;">Analyzing binder grid composition layout parameters via Gemini...</p>`;
+                    output.innerHTML = `<p style="font-family: monospace; font-size: 11px; color: #9CA3AF; text-align:center;">Analyzing page layout parameters via Gemini...</p>`;
                     
                     const apiKey = localStorage.getItem('tcg_auto_scanner_gemini_key');
-                    
-                    // Clean sequential placeholder fallback block matching database values
                     let responseText = `1️⃣ Pikachu Jungle Holo - 🟢 ($45.00)\n2️⃣ Charmander Base Set - 🟡 ($8.50)\n3️⃣ Rattata Base Set - 🔴 ($0.25)\n4️⃣ Pidgey Base Set - 🔴 ($0.20)\n5️⃣ Gengar Fossil Rare - 🟢 ($25.00)\n6️⃣ Squirtle Base Set - 🟡 ($6.00)\n7️⃣ Bulbasaur Base Set - 🟡 ($7.00)\n8️⃣ Machop Base Set - 🔴 ($0.15)\n9️⃣ Abra Base Set - 🔴 ($0.20)`;
                     
                     if (apiKey) {
-                        const endpointUrl = `https://googleapis.com{apiKey}`;
-                        const instructionPrompt = `Analyze this 9-card binder image. Output exactly 9 layout rows mapping positions sequentially from 1 to 9. Format lines exactly as: "[Number Emoji] Name - [Color Circle Emoji] ([Estimated Raw Value])". Use 🟢 if $20+, 🟡 if $5-$19, 🔴 if under $5. Strip all other directions or title headings.`;
+                        const url = `https://googleapis.com{apiKey}`;
+                        const prompt = `Analyze this trading card layout image. List every card individually from 1 to 9 in exact sequence. Format each line exactly as: "[Number Emoji] Name - [Color Circle Emoji] ([Estimated Raw Value])". Use 🟢 if $20+, 🟡 if $5-$19, 🔴 if under $5. Strip out all directions or markdown titles from the main list. Return ONLY the sequential list matching the items seen.`;
                         
                         try {
-                            const rawBase64 = src.split(',')[1];
-                            const networkFetch = await fetch(endpointUrl, {
+                            const pureBase64 = src.split(',')[1];
+                            const response = await fetch(url, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({
                                     contents: [{
                                         parts: [
-                                            { text: instructionPrompt },
-                                            { inlineData: { mimeType: "image/jpeg", data: rawBase64 } }
+                                            { text: prompt },
+                                            { inlineData: { mimeType: "image/jpeg", data: pureBase64 } }
                                         ]
                                     }]
                                 })
                             });
-                            const dataPayload = await networkFetch.json();
-                            if (dataPayload?.candidates?.[0]?.content?.parts?.[0]?.text) {
-                                responseText = dataPayload.candidates[0].content.parts[0].text;
+                            const data = await response.json();
+                            if (data && data.candidates && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0].text) {
+                                responseText = data.candidates[0].content.parts[0].text;
                             }
                         } catch (err) {
-                            console.error("Binder parsing error - using system baseline fallbacks:", err);
+                            console.error("Gemini network layout exception:", err);
                         }
                     }
                     
-                    // Format strings into clean rows for your interface container
                     const rows = responseText.split('\n').filter(line => line.trim().length > 0);
                     output.innerHTML = "";
                     rows.forEach(rowText => {
