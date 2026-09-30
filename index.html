@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trading Card Grading v1.1</title>
     <style>
-        /* Pure, solid styles that require zero external downloads to run */
+        /* High-performance pure CSS matching your exact dark blue environment theme */
         body { 
             background-color: #0B1528 !important; 
             color: #ffffff !important; 
@@ -55,12 +55,45 @@
             text-transform: uppercase;
             letter-spacing: 0.05em;
             display: block;
-            margin-bottom: 4px;
+            margin-bottom: 8px;
+        }
+        .vault-input-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+        .vault-input {
+            background-color: #0F1A30;
+            border: 1px solid rgba(30, 58, 138, 0.6);
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 12px;
+            color: #ffffff;
+            font-family: monospace;
+            flex-1: 1;
+            width: 65%;
+        }
+        .vault-input:focus {
+            outline: none;
+            border-color: #2563EB;
+        }
+        .vault-btn {
+            background-color: #10B981;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .vault-btn:active {
+            transform: scale(0.95);
         }
         .status-text {
-            font-size: 13px;
-            color: #D1D5DB;
-            margin: 0;
+            font-size: 11px;
+            color: #9CA3AF;
+            margin: 4px 0 0 0;
             font-weight: 500;
         }
         .menu-stack {
@@ -103,21 +136,23 @@
             <div class="version">v1.1</div>
         </header>
 
-        <!-- SECURITY VAULT STATE -->
+        <!-- SECURITY VAULT STATE CONFIG -->
         <div class="status-box">
-            <span class="status-label">🔑 System Vault Status</span>
-            <p class="status-text">Local core active. Core script configurations operational.</p>
+            <span class="status-label">🔑 System Vault Configuration</span>
+            <div class="vault-input-group">
+                <input type="password" id="key-vault" placeholder="Paste AQ.Ab8RN... Key Here" class="vault-input">
+                <button onclick="lockKey()" class="vault-btn">Save</button>
+            </div>
+            <p id="key-status" class="status-text">Checking local browser memory banks...</p>
         </div>
 
-        <!-- APP LINKS -->
+        <!-- APP ROUTERS -->
         <nav class="menu-stack">
-            <!-- LINK 1 -->
             <a href="closeup.html" class="router-card">
                 <div class="router-title">🟢 Close-Up Scanner</div>
                 <div class="router-desc">Deep-dive math evaluation for individual cards.</div>
             </a>
 
-            <!-- LINK 2 -->
             <a href="multiple.html" class="router-card">
                 <div class="router-title">📑 9-Card Page</div>
                 <div class="router-desc">Instant sorting tiers & sequence layout mapping.</div>
@@ -125,5 +160,43 @@
         </nav>
     </div>
 
+    <script>
+        const keyName = 'tcg_auto_scanner_gemini_key';
+        
+        // Initializing verification scripts on app launch
+        window.addEventListener('load', () => {
+            const cachedKey = localStorage.getItem(keyName);
+            if (cachedKey) {
+                document.getElementById('key-vault').value = cachedKey;
+                updateStatus(true);
+            } else { 
+                updateStatus(false); 
+            }
+        });
+
+        function lockKey() {
+            const val = document.getElementById('key-vault').value.trim();
+            if (val) { 
+                localStorage.setItem(keyName, val); 
+                updateStatus(true); 
+            } else { 
+                localStorage.removeItem(keyName); 
+                updateStatus(false); 
+            }
+        }
+
+        function updateStatus(active) {
+            const el = document.getElementById('key-status');
+            if (el) {
+                if (active) { 
+                    el.textContent = "🟢 Key loaded securely on your iPhone."; 
+                    el.style.color = "#34D399";
+                } else { 
+                    el.textContent = "🔴 Key missing. Information slots will load simulation fallbacks."; 
+                    el.style.color = "#F59E0B";
+                }
+            }
+        }
+    </script>
 </body>
 </html>
