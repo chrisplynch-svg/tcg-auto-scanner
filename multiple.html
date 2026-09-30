@@ -71,10 +71,13 @@
                     
                     if (apiKey) {
                         const url = `https://googleapis.com{apiKey}`;
-                        const prompt = `Identify every card seen in this layout from left to right, top to bottom. List each item out starting with sequential number emojis from 1️⃣ to 9️⃣. Show only the name, the tier circle color emoji (🟢 if $20+, 🟡 if $5-$19, 🔴 if under $5), and the estimated raw value inside parentheses. Strip all other directions, lines, and intro comments.`;
+                        const prompt = `Identify every card seen in this layout from left to right, top to bottom. List each item out starting with sequential number emojis from 1️⃣ to 9️⃣. Show only the name, the tier circle color emoji (🟢 if $20+, 🟡 if $5-$19, 🔴 if under $5), and the estimated raw value inside parentheses. Strip all other directions, lines, and intro comments. Return ONLY the sequential list matching the items seen.`;
                         
                         try {
-                            const pureBase64 = src.split(',')[1];
+                            // Extract ONLY the raw base64 data string segment, omitting header blocks
+                            const parts = src.split(',');
+                            const cleanBase64 = parts[1];
+
                             const response = await fetch(url, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
@@ -82,11 +85,12 @@
                                     contents: [{
                                         parts: [
                                             { text: prompt },
-                                            { inlineData: { mimeType: "image/jpeg", data: pureBase64 } }
+                                            { inlineData: { mimeType: "image/jpeg", data: cleanBase64 } }
                                         ]
                                     }]
                                 })
                             });
+                            
                             const data = await response.json();
                             if (data && data.candidates && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0].text) {
                                 responseText = data.candidates[0].content.parts[0].text;
@@ -96,7 +100,6 @@
                         }
                     }
                     
-                    // Direct delivery to screen container avoiding text splitter blockages
                     output.textContent = responseText;
                 };
                 r.readAsDataURL(input.files[0]);
