@@ -4,47 +4,125 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trading Card Grading v1.1</title>
-    <!-- Light Tailwind styles optimized for mobile rendering engines -->
-    <script src="https://jsdelivr.net"></script>
     <style>
+        /* Pure, solid styles that require zero external downloads to run */
         body { 
             background-color: #0B1528 !important; 
             color: #ffffff !important; 
             margin: 0; 
-            padding: 16px; 
+            padding: 24px 16px; 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+        }
+        .app-container {
+            width: 100%;
+            max-width: 440px;
+            text-align: center;
+        }
+        header {
+            margin-bottom: 40px;
+        }
+        h1 {
+            font-size: 24px;
+            font-weight: 800;
+            margin: 0;
+            color: #ffffff;
+            letter-spacing: -0.02em;
+        }
+        .version {
+            font-size: 11px;
+            font-family: monospace;
+            color: #60A5FA;
+            margin-top: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .status-box {
+            background-color: #131F3B;
+            border: 1px solid rgba(30, 58, 138, 0.4);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: left;
+            margin-bottom: 32px;
+        }
+        .status-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #60A5FA;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .status-text {
+            font-size: 13px;
+            color: #D1D5DB;
+            margin: 0;
+            font-weight: 500;
+        }
+        .menu-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .router-card {
+            display: block;
+            text-align: left;
+            background-color: #16223F;
+            border: 1px solid rgba(30, 58, 138, 0.4);
+            padding: 20px;
+            border-radius: 16px;
+            text-decoration: none;
+            transition: transform 0.1s ease;
+        }
+        .router-card:active {
+            transform: scale(0.98);
+        }
+        .router-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+        .router-desc {
+            font-size: 12px;
+            color: #9CA3AF;
+            margin-top: 6px;
+            line-height: 1.4;
         }
     </style>
 </head>
-<body class="min-h-screen flex justify-center items-center">
+<body>
 
-    <div class="w-full max-w-[440px] text-center px-4">
-        <!-- APP HEADER LAYER -->
-        <header class="mb-12">
-            <h1 class="text-2xl font-extrabold tracking-tight text-white">Trading Card Grading</h1>
-            <p class="text-xs font-mono text-blue-400 mt-1.5 uppercase tracking-widest">v1.1</p>
+    <div class="app-container">
+        <!-- HEADER -->
+        <header>
+            <h1>Trading Card Grading</h1>
+            <div class="version">v1.1</div>
         </header>
 
-        <!-- SECURITY KEY STATUS INDICATOR -->
-        <div class="bg-[#131F3B] border border-blue-900/40 p-4 rounded-xl text-left mb-8 shadow-inner">
-            <label class="text-[11px] font-bold text-blue-400 block uppercase tracking-wide mb-1">🔑 System Key Status</label>
-            <p class="text-xs text-gray-300 font-medium">Local vault active. Key configurations isolated.</p>
+        <!-- SECURITY VAULT STATE -->
+        <div class="status-box">
+            <span class="status-label">🔑 System Vault Status</span>
+            <p class="status-text">Local core active. Core script configurations operational.</p>
         </div>
 
-        <!-- MAIN APP NAVIGATION ROUTERS -->
-        <main class="w-full space-y-4">
-            <!-- ROUTER 1: INDIVIDUAL CARD SCANNER -->
-            <a href="closeup.html" class="block text-left bg-[#16223F] border border-blue-900/40 p-5 rounded-2xl active:scale-[0.98] transition-all shadow-md">
-                <div class="text-base font-bold text-white flex items-center gap-2">🟢 Close-Up Scanner</div>
-                <div class="text-xs text-gray-400 mt-1 leading-relaxed">Deep-dive math evaluation for individual cards.</div>
+        <!-- APP LINKS -->
+        <nav class="menu-stack">
+            <!-- LINK 1 -->
+            <a href="closeup.html" class="router-card">
+                <div class="router-title">🟢 Close-Up Scanner</div>
+                <div class="router-desc">Deep-dive math evaluation for individual cards.</div>
             </a>
 
-            <!-- ROUTER 2: BINDER COMPOSITION MATRIX -->
-            <a href="multiple.html" class="block text-left bg-[#16223F] border border-blue-900/40 p-5 rounded-2xl active:scale-[0.98] transition-all shadow-md">
-                <div class="text-base font-bold text-white flex items-center gap-2">📑 9-Card Page</div>
-                <div class="text-xs text-gray-400 mt-1 leading-relaxed">Instant sorting tiers & sequence layout mapping.</div>
+            <!-- LINK 2 -->
+            <a href="multiple.html" class="router-card">
+                <div class="router-title">📑 9-Card Page</div>
+                <div class="router-desc">Instant sorting tiers & sequence layout mapping.</div>
             </a>
-        </main>
+        </nav>
     </div>
 
 </body>
