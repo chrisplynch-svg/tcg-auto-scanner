@@ -2,7 +2,73 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Card Grading v1.1</title>
+    <script src="https://jsdelivr.net"></script>
+    <style>
+        body { background-color: #0B1528 !important; color: #ffffff !important; margin: 0; padding: 16px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    </style>
+</head>
+<body class="min-h-screen flex justify-center items-center">
+
+    <div class="w-full max-w-[440px] text-center">
+        <header class="mb-10">
+            <h1 class="text-2xl font-extrabold text-white tracking-tight">Trading Card Grading</h1>
+            <p class="text-xs font-mono text-blue-400 mt-1">v1.1</p>
+        </header>
+
+        <!-- SECURE LOCAL API STORAGE KEY CONFIG -->
+        <div class="bg-[#131F3B] border border-blue-900/40 p-4 rounded-xl text-left space-y-2 mb-6">
+            <label class="text-xs font-bold text-blue-300 block">🔑 Gemini API Key Configuration</label>
+            <div class="flex gap-2">
+                <input type="password" id="key-vault" placeholder="Paste AQ.Ab8RN... Key Here" class="bg-[#0F1A30] border border-blue-950 rounded-lg px-3 py-2 text-xs text-white flex-1 font-mono focus:outline-none">
+                <button onclick="lockKey()" class="bg-green-600 text-xs px-4 rounded-lg font-bold text-white active:scale-95 transition-transform">Save</button>
+            </div>
+            <p id="key-status" class="text-[10px] text-gray-400 font-medium"></p>
+        </div>
+
+        <main class="w-full space-y-4">
+            <!-- ROUTER 1 -->
+            <a href="closeup.html" class="block text-left bg-[#16223F] border border-blue-900/50 p-5 rounded-2xl active:scale-[0.99] transition-transform">
+                <div class="text-base font-bold text-white">🟢 Close-Up Scanner</div>
+                <div class="text-xs text-gray-400 mt-1.5 leading-relaxed">Deep-dive math evaluation for individual cards.</div>
+            </a>
+
+            <!-- ROUTER 2 -->
+            <a href="multiple.html" class="block text-left bg-[#16223F] border border-blue-900/50 p-5 rounded-2xl active:scale-[0.99] transition-transform">
+                <div class="text-base font-bold text-white">📑 9-Card Page</div>
+                <div class="text-xs text-gray-400 mt-1.5 leading-relaxed">Instant sorting tiers & sequence layout mapping.</div>
+            </a>
+        </main>
+    </div>
+
+    <script>
+        const keyName = 'tcg_auto_scanner_gemini_key';
+        window.addEventListener('load', () => {
+            const cachedKey = localStorage.getItem(keyName);
+            if (cachedKey) {
+                document.getElementById('key-vault').value = cachedKey;
+                updateStatus(true);
+            } else { updateStatus(false); }
+        });
+        function lockKey() {
+            const val = document.getElementById('key-vault').value.trim();
+            if (val) { localStorage.setItem(keyName, val); updateStatus(true); } 
+            else { localStorage.removeItem(keyName); updateStatus(false); }
+        }
+        function updateStatus(active) {
+            const el = document.getElementById('key-status');
+            if (active) { el.textContent = "🟢 Key loaded securely on your iPhone."; el.className = "text-[10px] text-green-400 font-medium"; }
+            else { el.textContent = "🔴 Key missing. Information slots will load simulation fallbacks."; el.className = "text-[10px] text-amber-500 font-medium"; }
+        }
+    </script>
+</body>
+</html>
+viewport" content="width=device-width, initial-scale=1.0">
     <title>Trading Card Grading v1.1</title>
     <script src="https://jsdelivr.net"></script>
     <style>
