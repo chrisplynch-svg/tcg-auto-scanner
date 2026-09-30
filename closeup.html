@@ -5,176 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Close-Up Scanner</title>
     <style>
-        /* Pure, solid styles matching your exact dark blue dashboard theme */
-        body { 
-            background-color: #0B1528 !important; 
-            color: #ffffff !important; 
-            margin: 0; 
-            padding: 16px; 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-            display: flex;
-            justify-content: center;
-        }
-        .app-container {
-            width: 100%;
-            max-width: 440px;
-            display: flex;
-            flex-direction: column;
-        }
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 4px;
-            margin-bottom: 16px;
-            padding-bottom: 8px;
-            border-b: 1px solid rgba(30, 58, 138, 0.4);
-            position: relative;
-        }
-        h1 {
-            font-size: 15px;
-            font-weight: 700;
-            margin: 0;
-            color: #ffffff;
-        }
-        .version {
-            font-size: 11px;
-            font-family: monospace;
-            color: #60A5FA;
-        }
-        .home-btn {
-            background-color: #1e3a8a;
-            font-size: 11px;
-            padding: 6px 12px;
-            border-radius: 6px;
-            text-decoration: none;
-            color: #ffffff;
-            font-weight: 600;
-        }
-        .grid-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-        .scan-label {
-            background-color: #16223F;
-            border: 1px dashed #1e3a8a;
-            border-radius: 12px;
-            padding: 12px 8px;
-            text-align: center;
-            cursor: pointer;
-            display: block;
-        }
-        .scan-lbl-text {
-            font-size: 12px;
-            font-weight: 700;
-            display: block;
-            margin-bottom: 6px;
-            color: #ffffff;
-        }
-        .preview-box {
-            width: 100%;
-            height: 100px;
-            background-color: #0F1A30;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            color: #6B7280;
-            overflow: hidden;
-        }
-        .preview-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .display-container {
-            background-color: #131F3B;
-            border: 1px solid rgba(30, 58, 138, 0.4);
-            border-radius: 16px;
-            padding: 24px 12px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 16px;
-            min-height: 340px;
-        }
-        .scene {
-            perspective: 1000px;
-            width: 200px;
-            height: 280px;
-            margin-bottom: 16px;
-        }
-        .c3d {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 0.1s ease-out;
-        }
-        .face {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            border: 1px solid rgba(59, 130, 246, 0.3);
-        }
-        .face img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-        .back {
-            transform: rotateY(180deg);
-        }
-        .spin-text-box {
-            margin-top: 4px;
-        }
-        .spin-text {
-            font-size: 10px;
-            color: #60A5FA;
-            font-family: monospace;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            background-color: rgba(15, 26, 48, 0.8);
-            padding: 6px 16px;
-            border-radius: 9999px;
-            border: 1px solid rgba(30, 58, 138, 0.5);
-            text-align: center;
-            display: inline-block;
-        }
-        .action-btn {
-            display: none;
-            width: 100%;
-            background-color: #2563EB;
-            color: #ffffff;
-            font-weight: 700;
-            padding: 14px 0;
-            border-radius: 12px;
-            text-align: center;
-            text-decoration: none;
-            font-size: 14px;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
-        }
+        body { background-color: #0B1528 !important; color: #ffffff !important; margin: 0; padding: 12px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; display: flex; justify-content: center; }
+        .app-container { width: 100%; max-width: 440px; display: flex; flex-direction: column; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid rgba(30, 58, 138, 0.4); position: relative; }
+        h1 { font-size: 15px; font-weight: 700; margin: 0; color: #ffffff; }
+        .version { font-size: 11px; font-family: monospace; color: #60A5FA; }
+        .home-btn { background-color: #1e3a8a; font-size: 11px; padding: 6px 12px; border-radius: 6px; text-decoration: none; color: #ffffff; font-weight: 600; }
+        .grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+        .scan-label { background-color: #16223F; border: 1px dashed #1e3a8a; border-radius: 12px; padding: 12px 8px; text-align: center; cursor: pointer; display: block; }
+        .scan-lbl-text { font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px; color: #ffffff; }
+        .preview-box { width: 100%; height: 100px; background-color: #0F1A30; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #6B7280; overflow: hidden; }
+        .preview-box img { width: 100%; height: 100%; object-fit: cover; }
+        .display-container { background-color: #131F3B; border: 1px solid rgba(30, 58, 138, 0.4); border-radius: 16px; padding: 24px 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 16px; min-height: 340px; }
+        .scene { perspective: 1000px; width: 200px; height: 280px; margin-bottom: 16px; }
+        .c3d { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.1s ease-out; }
+        .face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid rgba(59, 130, 246, 0.3); }
+        .face img { width: 100%; height: 100%; object-fit: contain; }
+        .back { transform: rotateY(180deg); }
+        .spin-text { font-size: 10px; color: #60A5FA; font-family: monospace; letter-spacing: 0.05em; text-transform: uppercase; background-color: rgba(15, 26, 48, 0.8); padding: 6px 16px; border-radius: 9999px; border: 1px solid rgba(30, 58, 138, 0.5); text-align: center; display: inline-block; }
+        .action-btn { display: block; visibility: hidden; opacity: 0; width: 100%; background-color: #2563EB; color: #ffffff; font-weight: 700; padding: 14px 0; border-radius: 12px; text-align: center; text-decoration: none; font-size: 14px; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); transition: opacity 0.3s ease, visibility 0.3s ease; }
     </style>
 </head>
 <body>
-
     <div class="app-container">
         <header>
             <h1>Trading Card Grading <span class="version">v1.1</span></h1>
             <a href="index.html" class="home-btn">🏠 Home</a>
         </header>
         
-        <!-- CAMERA INPUTS -->
         <div class="grid-layout">
             <label class="scan-label">
                 <span class="scan-lbl-text">Front Preview</span>
@@ -188,7 +46,6 @@
             </label>
         </div>
 
-        <!-- 3D SPINNING FIELD CONTAINER -->
         <div class="display-container">
             <div class="scene">
                 <div id="spin-1" class="c3d">
@@ -202,17 +59,17 @@
                     </div>
                 </div>
             </div>
-            <div class="spin-text-box">
+            <div>
                 <p class="spin-text">Swipe To Spin Card</p>
             </div>
         </div>
 
-        <!-- LOWER HUB NAVIGATION LINK -->
         <a id="btn-go" href="info.html" class="action-btn">🔍 Generate Info Breakdown</a>
     </div>
 
     <script>
-        // Reset old local image variables on clear initializations
+        let captured = { front: false, back: false };
+
         window.addEventListener('load', () => {
             localStorage.removeItem("card-front");
             localStorage.removeItem("card-back");
@@ -224,11 +81,8 @@
                 const r = new FileReader();
                 r.onload = function(e) {
                     const src = e.target.result;
-                    
-                    // Render image inside camera placeholder preview targets
                     document.getElementById(`p-${face}`).innerHTML = `<img src="${src}">`;
                     
-                    // Bind file directly to interactive 3D frame textures
                     const m = document.getElementById(`m-${face}`);
                     if (m) { 
                         m.src = src; 
@@ -241,41 +95,34 @@
                     const lbl = document.getElementById(face === 'front' ? "lbl-f" : "lbl-b");
                     if (lbl) lbl.style.display = 'none';
                     
-                    // Push binary image data straight to active memory registers
                     localStorage.setItem(`card-${face}`, src);
+                    captured[face] = true;
 
-                    // Unhide evaluation routing link block only when front AND back metrics are captured
-                    if (localStorage.getItem("card-front") && localStorage.getItem("card-back")) {
-                        document.getElementById("btn-go").style.display = 'block';
+                    // Direct independent verification block to force button to render instantly
+                    if (captured.front && captured.back) {
+                        const goBtn = document.getElementById("btn-go");
+                        if (goBtn) {
+                            goBtn.style.visibility = 'visible';
+                            goBtn.style.opacity = '1';
+                        }
                     }
                 };
                 r.readAsDataURL(input.files[0]);
             }
         }
 
-        // Rock-solid gesture speed listener parameters
         function initSpin(id) {
             const el = document.getElementById(id);
             if (!el) return;
             let startX = 0, currentRot = 0, savedRot = 0, isMoving = false;
-            
-            el.addEventListener('touchstart', function(e) { 
-                startX = e.touches[0].clientX; 
-                isMoving = true; 
-            }, { passive: true });
-            
-            el.addEventListener('touchmove', function(e) {
+            el.addEventListener('touchstart', e => { startX = e.touches[0].clientX; isMoving = true; }, { passive: true });
+            el.addEventListener('touchmove', e => {
                 if (!isMoving) return;
                 const deltaX = e.touches[0].clientX - startX;
                 currentRot = savedRot + (deltaX * 0.5);
-                el.style.transform = "rotateY(" + currentRot + "deg)";
+                el.style.transform = `rotateY(${currentRot}deg)`;
             }, { passive: true });
-            
-            el.addEventListener('touchend', function() { 
-                if (!isMoving) return; 
-                isMoving = false; 
-                savedRot = currentRot; 
-            });
+            el.addEventListener('touchend', () => { if (!isMoving) return; isMoving = false; savedRot = currentRot; });
         }
     </script>
 </body>
