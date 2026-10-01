@@ -5,193 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pre-Grading Information</title>
     <style>
-        /* Pure, high-performance styles matching your dark blue system dashboard */
-        body { 
-            background-color: #0B1528 !important; 
-            color: #ffffff !important; 
-            margin: 0; 
-            padding: 12px; 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-            display: flex;
-            justify-content: center;
-        }
-        .app-container {
-            width: 100%;
-            max-width: 440px;
-            display: flex;
-            flex-direction: column;
-        }
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 4px;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid rgba(30, 58, 138, 0.4);
-            position: relative;
-        }
-        h1 {
-            font-size: 15px;
-            font-weight: 700;
-            color: #ffffff;
-            width: 50%;
-            line-height: 1.2;
-        }
-        .version {
-            font-size: 11px;
-            font-family: monospace;
-            color: #60A5FA;
-            display: block;
-        }
-        .nav-group {
-            display: flex;
-            gap: 6px;
-            position: absolute;
-            right: 0;
-        }
-        .nav-btn {
-            background-color: #1e3a8a;
-            font-size: 10px;
-            padding: 6px 10px;
-            border-radius: 6px;
-            text-decoration: none;
-            color: #ffffff;
-            font-weight: 600;
-        }
-        .display-container {
-            background-color: #131F3B;
-            border: 1px solid rgba(30, 58, 138, 0.4);
-            border-radius: 12px;
-            padding: 16px 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 12px;
-        }
-        .scene {
-            perspective: 1000px;
-            width: 200px;
-            height: 280px;
-            margin-bottom: 12px;
-        }
-        .c3d {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 0.1s ease-out;
-        }
-        .face {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            border: 1px solid rgba(59, 130, 246, 0.3);
-        }
-        .face img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-        .back {
-            transform: rotateY(180deg);
-        }
-        .spin-text-box {
-            margin-top: 4px;
-        }
-        .spin-text {
-            font-size: 10px;
-            color: #60A5FA;
-            font-family: monospace;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            background-color: rgba(15, 26, 48, 0.8);
-            padding: 4px 12px;
-            border-radius: 9999px;
-            border: 1px solid rgba(30, 58, 138, 0.5);
-            text-align: center;
-        }
-        .info-card {
-            background-color: #131F3B;
-            border: 1px solid rgba(30, 58, 138, 0.4);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 16px;
-            text-align: left;
-        }
-        .info-title {
-            font-size: 13px;
-            font-weight: 800;
-            color: #10B981;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            margin: 0 0 14px 0;
-            padding-bottom: 6px;
-            border-bottom: 1px solid rgba(30, 58, 138, 0.3);
-        }
-        .data-stack {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            font-size: 12px;
-            font-weight: 500;
-            color: #E5E7EB;
-        }
-        .math-box {
-            background-color: #0B1528;
-            border: 1px solid rgba(30, 58, 138, 0.2);
-            border-radius: 10px;
-            padding: 12px;
-            margin-top: 4px;
-        }
-        .math-title {
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 8px;
-            display: block;
-        }
-        .math-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            font-family: monospace;
-            font-size: 11px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            color: #9CA3AF;
-        }
-        .math-row {
-            display: flex;
-            justify-content: space-between;
-        }
-        .math-total {
-            border-top: 1px solid rgba(30, 58, 138, 0.3);
-            padding-top: 6px;
-            margin-top: 4px;
-            color: #ffffff;
-            font-weight: 600;
-        }
-        .math-payout {
-            color: #34D399;
-            font-weight: 900;
-            font-size: 12px;
-            margin-top: 2px;
-        }
-        .pulse-text {
-            font-family: monospace;
-            font-size: 11px;
-            color: #9CA3AF;
-            text-align: center;
-            padding: 20px 0;
-        }
+        body { background-color: #0B1528 !important; color: #ffffff !important; margin: 0; padding: 12px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; display: flex; justify-content: center; }
+        .app-container { width: 100%; max-width: 440px; display: flex; flex-direction: column; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(30, 58, 138, 0.4); position: relative; }
+        h1 { font-size: 15px; font-weight: 700; color: #ffffff; width: 50%; line-height: 1.2; }
+        .version { font-size: 11px; font-family: monospace; color: #60A5FA; display: block; }
+        .nav-group { display: flex; gap: 6px; position: absolute; right: 0; }
+        .nav-btn { background-color: #1e3a8a; font-size: 10px; padding: 6px 10px; border-radius: 6px; text-decoration: none; color: #ffffff; font-weight: 600; }
+        .display-container { background-color: #131F3B; border: 1px solid rgba(30, 58, 138, 0.4); border-radius: 12px; padding: 16px 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 12px; }
+        .scene { perspective: 1200px; width: 250px; height: 350px; margin-bottom: 12px; }
+        .c3d { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.1s ease-out; }
+        .face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid rgba(59, 130, 246, 0.3); }
+        .face img { width: 100%; height: 100%; object-fit: contain; }
+        .back { transform: rotateY(180deg); }
+        .spin-text { font-size: 10px; color: #60A5FA; font-family: monospace; letter-spacing: 0.05em; text-transform: uppercase; background-color: rgba(15, 26, 48, 0.8); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(30, 58, 138, 0.5); text-align: center; }
+        .info-card { background-color: #131F3B; border: 1px solid rgba(30, 58, 138, 0.4); border-radius: 12px; padding: 16px; margin-bottom: 16px; text-align: left; }
+        .info-title { font-size: 13px; font-weight: 800; color: #10B981; letter-spacing: 0.05em; text-transform: uppercase; margin: 0 0 14px 0; padding-bottom: 6px; border-bottom: 1px solid rgba(30, 58, 138, 0.3); }
+        .data-stack { display: flex; flex-direction: column; gap: 12px; font-size: 12px; font-weight: 500; color: #E5E7EB; }
+        .math-box { background-color: #0B1528; border: 1px solid rgba(30, 58, 138, 0.2); border-radius: 10px; padding: 12px; margin-top: 4px; }
+        .math-title { font-weight: 700; color: #ffffff; margin-bottom: 8px; display: block; }
+        .math-list { list-style: none; padding: 0; margin: 0; font-family: monospace; font-size: 11px; display: flex; flex-direction: column; gap: 6px; color: #9CA3AF; }
+        .math-row { display: flex; justify-content: space-between; }
+        .math-total { border-top: 1px solid rgba(30, 58, 138, 0.3); padding-top: 6px; margin-top: 4px; color: #ffffff; font-weight: 600; }
+        .math-payout { color: #34D399; font-weight: 900; font-size: 12px; margin-top: 2px; }
+        .pulse-text { font-family: monospace; font-size: 11px; color: #9CA3AF; text-align: center; padding: 20px 0; }
     </style>
 </head>
 <body>
@@ -204,7 +41,6 @@
             </div>
         </header>
 
-        <!-- LIVE INTERACTIVE 3D SPINNING CONTAINER -->
         <div class="display-container">
             <div class="scene">
                 <div id="spin-2" class="c3d">
@@ -216,19 +52,14 @@
                     </div>
                 </div>
             </div>
-            <div class="spin-text-box">
+            <div>
                 <p class="spin-text">Swipe To Spin Card</p>
             </div>
         </div>
 
-        <!-- MAIN DEEP-DIVE PRE-GRADING TARGET INTERFACE -->
         <main class="info-card">
             <h2 class="info-title">THE DEEP-DIVE PRE-GRADING</h2>
-            
-            <div id="ai-loading" class="pulse-text">
-                Processing card details with Gemini Flash AI...
-            </div>
-
+            <div id="ai-loading" class="pulse-text">Processing card details with Gemini Flash AI...</div>
             <div id="ai-payload" class="data-stack" style="display:none;"></div>
         </main>
     </div>
@@ -236,25 +67,21 @@
     <script>
         window.addEventListener("load", () => {
             initSpin('spin-2');
-            
-            // Extract captured image components out of physical memory banks
-            const frontData = localStorage.getItem("card-front");
-            const backData = localStorage.getItem("card-back");
-            
-            if(frontData) document.getElementById("i-front").src = frontData;
-            if(backData) document.getElementById("i-back").src = backData;
-            
-            runEvaluation(frontData, backData);
+            const f = localStorage.getItem("card-front");
+            const b = localStorage.getItem("card-back");
+            if(f) document.getElementById("i-front").src = f;
+            if(b) document.getElementById("i-back").src = b;
+            runEvaluation(f, b);
         });
 
         function initSpin(id) {
             const el = document.getElementById(id);
             if (!el) return;
             let startX = 0, currentRot = 0, savedRot = 0, isMoving = false;
-            el.addEventListener('touchstart', e => { startX = e.touches.clientX; isMoving = true; }, { passive: true });
+            el.addEventListener('touchstart', e => { startX = e.touches[0].clientX; isMoving = true; }, { passive: true });
             el.addEventListener('touchmove', e => {
                 if (!isMoving) return;
-                const deltaX = e.touches.clientX - startX;
+                const deltaX = e.touches[0].clientX - startX;
                 currentRot = savedRot + (deltaX * 0.5);
                 el.style.transform = `rotateY(${currentRot}deg)`;
             }, { passive: true });
@@ -266,16 +93,47 @@
             const container = document.getElementById('ai-payload');
             const apiKey = localStorage.getItem('tcg_auto_scanner_gemini_key');
 
-            // Production reference defaults to render clean data metrics instantly if engine drops
             let record = {
-                name: "Raichu Holo", set: "Base Set", number: "#14/102",
-                grade: "Gem Mint 10 (Simulated preview)", flaws: "Centering alignment holds 60/40 front variance; borders are crisp.",
-                worth: "🟢 Yes", rawVal: "45.00", estVal: "220.00", fee: "29.70", outlay: "60.70", payout: "159.30",
-                pop: "1,245 tracked submissions inside registers.", grader: "PSA Premium Tiers optimized for liquidation speed.",
-                liquidity: "🟢 High volume market transaction depth.", auth: "Layer micro-printing matches reference database criteria.",
-                next: "Search for reverse-holo parallel cards across identical card sets Parallels."
+                name: "Kadabra", set: "Base Set", number: "#32/102",
+                grade: "Near Mint 7 (Simulated Baseline)", flaws: "Fine edge silvering seen on rear perimeter border lines.",
+                worth: "🟡 Yes", rawVal: "8.00", estVal: "35.00", fee: "4.73", outlay: "35.73", payout: "-0.73",
+                pop: "2,410 submissions active inside tracked public ledger databases.", grader: "PSA Standard Tiers optimized for entry speed.",
+                liquidity: "🟡 Medium transaction asset depth.", auth: "Layer stamps conform to original factory configurations.",
+                next: "Scan front face centering markers to check line variance parameters."
             };
 
             if (apiKey && frontImg && backImg) {
-                const queryUrl = `https://googleapis.com{apiKey}`;
-                const promptString = `Analyze trading card front and back closeups. Determine Name, Set, Number. Choose realistic market raw and graded values. Output exactly matching this regex-ready blueprint:
+                const url = `https://googleapis.com{apiKey}`;
+                const prompt = `Analyze this card front and back image carefully. Identify card name, card set, and card number. Provide a full pre-grading evaluation matching this structural label blueprint down to every character value:
+                NAME: [Name] \nSET: [Set] \nNUMBER: [Number] \nGRADE: [Grade Value] \nFLAWS: [Seen Flaws] \nWORTH: [🟢/🟡/🔴 Yes/No] \nRAWVAL: [Raw Market Price] \nESTVAL: [Estimated High Graded Value Price] \nPOP: [Population metrics] \nGRADER: [Recommended Grader Service] \nLIQUIDITY: [🟢/🟡/🔴 Market Depth] \nAUTH: [Authenticity indicators] \nNEXT: [Next targets]`;
+
+                try {
+                    const cleanBase64 = (uri) => uri.split(',')[1];
+                    const res = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{
+                                parts: [
+                                    { text: prompt },
+                                    { inlineData: { mimeType: "image/jpeg", data: cleanBase64(frontImg) } },
+                                    { inlineData: { mimeType: "image/jpeg", data: cleanBase64(backImg) } }
+                                ]
+                            }]
+                        })
+                    });
+                    const json = await res.json();
+                    const text = json.candidates[0].content.parts[0].text;
+                    
+                    const extract = (regex, fallback) => { const m = text.match(regex); return m ? m[1].trim() : fallback; };
+                    const grossGraded = parseFloat(extract(/ESTVAL:\s*\$?([0-9.]+)/, "35.00"));
+                    const calcFee = (grossGraded * 0.135).toFixed(2);
+                    const calcOutlay = (15.00 + 14.00 + 2.00 + parseFloat(calcFee)).toFixed(2);
+                    const calcPayout = (grossGraded - parseFloat(calcOutlay)).toFixed(2);
+
+                    record = {
+                        name: extract(/NAME:\s*(.+)/, record.name), set: extract(/SET:\s*(.+)/, record.set), number: extract(/NUMBER:\s*(.+)/, record.number),
+                        grade: extract(/GRADE:\s*(.+)/, record.grade), flaws: extract(/FLAWS:\s*(.+)/, record.flaws), worth: extract(/WORTH:\s*(.+)/, record.worth),
+                        rawVal: parseFloat(extract(/RAWVAL:\s*\$?([0-9.]+)/, record.rawVal)).toFixed(2), estVal: grossGraded.toFixed(2),
+                        fee: calcFee, outlay: calcOutlay, payout: calcPayout,
+                        pop: extract(/POP:\s*(.+)/, record.pop), grader: extract(/GRADER:\s*(.+)/, record.grader), liquidity: extract(/LIQUIDITY:\s*(.+)/, record.liquidity),
