@@ -71,7 +71,7 @@
                     
                     if (apiKey) {
                         const url = `https://googleapis.com{apiKey}`;
-                        const prompt = `Identify every card seen in this layout from left to right, top to bottom. List each item out starting with sequential number emojis from 1️⃣ to 9️⃣. Show only the name, the tier circle color emoji (🟢 if $20+, 🟡 if $5-$19, 🔴 if under $5), and the estimated raw value inside parentheses. Strip out all directions or markdown titles. Return ONLY the sequential list matching the items seen.`;
+                        const prompt = `Identify every trading card seen in this snapshot from top to bottom. List each out starting with consecutive number emojis from 1️⃣ to 9️⃣. Format each row line exactly as: "[Number Emoji] Name - [Color Circle Emoji] ([Estimated Raw Value])". Use 🟢 if $20+, 🟡 if $5-$19, 🔴 if under $5. Strip all entry comments. Return ONLY the sequential text lines list matching the cards present in the photo image.`;
                         
                         try {
                             const cleanBase64 = src.split(',')[1];
