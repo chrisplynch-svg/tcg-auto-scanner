@@ -45,10 +45,10 @@
             <div class="scene">
                 <div id="spin-2" class="c3d">
                     <div class="face bg-[#1A2A4C]">
-                        <img id="i-front" style="width:100%; height:100%; object-fit:contain;" alt="Front view">
+                        <img id="i-front" style="width:100%; height:100%; object-fit:contain;" alt="Front image">
                     </div>
                     <div class="face back bg-[#1A2A4C]">
-                        <img id="i-back" style="width:100%; height:100%; object-fit:contain;" alt="Back view">
+                        <img id="i-back" style="width:100%; height:100%; object-fit:contain;" alt="Back image">
                     </div>
                 </div>
             </div>
@@ -69,8 +69,16 @@
             initSpin('spin-2');
             const f = localStorage.getItem("card-front");
             const b = localStorage.getItem("card-back");
-            if(f) document.getElementById("i-front").src = f;
-            if(b) document.getElementById("i-back").src = b;
+            if(f) {
+                const frontEl = document.getElementById("i-front");
+                frontEl.src = f;
+                frontEl.style.display = 'block';
+            }
+            if(b) {
+                const backEl = document.getElementById("i-back");
+                backEl.src = b;
+                backEl.style.display = 'block';
+            }
             runEvaluation(f, b);
         });
 
@@ -78,10 +86,10 @@
             const el = document.getElementById(id);
             if (!el) return;
             let startX = 0, currentRot = 0, savedRot = 0, isMoving = false;
-            el.addEventListener('touchstart', e => { startX = e.touches[0].clientX; isMoving = true; }, { passive: true });
+            el.addEventListener('touchstart', e => { startX = e.touches.clientX; isMoving = true; }, { passive: true });
             el.addEventListener('touchmove', e => {
                 if (!isMoving) return;
-                const deltaX = e.touches[0].clientX - startX;
+                const deltaX = e.touches.clientX - startX;
                 currentRot = savedRot + (deltaX * 0.5);
                 el.style.transform = `rotateY(${currentRot}deg)`;
             }, { passive: true });
@@ -127,7 +135,7 @@
                     const json = await res.json();
                     if (json && json.candidates && json.candidates[0] && json.candidates[0].content && json.candidates[0].content.parts && json.candidates[0].content.parts[0] && json.candidates[0].content.parts[0].text) {
                         const text = json.candidates[0].content.parts[0].text;
-                        const extract = (regex, fallback) => { const m = text.match(regex); return m ? m[1].trim() : fallback; };
+                        const extract = (regex, fallback) => { const m = text.match(regex); return m ? m.trim() : fallback; };
                         
                         const grossGraded = parseFloat(extract(/ESTVAL:\s*\$?([0-9.]+)/, "220.00"));
                         const calcFee = (grossGraded * 0.135).toFixed(2);
@@ -136,5 +144,3 @@
 
                         record = {
                             name: extract(/NAME:\s*(.+)/, record.name), set: extract(/SET:\s*(.+)/, record.set), number: extract(/NUMBER:\s*(.+)/, record.number),
-                            grade: extract(/GRADE:\s*(.+)/, record.grade), flaws: extract(/FLAWS:\s*(.+)/, record.flaws), worth: extract(/WORTH:\s*(.+)/, record.worth),
-                            rawVal: parseFloat(extract(/RAWVAL:\s*\$?([0-9.]+)/, record.rawVal)).toFixed(2), estVal: grossGraded.toFixed(2),
