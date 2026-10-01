@@ -14,16 +14,23 @@
         .grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
         .scan-label { background-color: #16223F; border: 1px dashed #1e3a8a; border-radius: 12px; padding: 12px 8px; text-align: center; cursor: pointer; display: block; }
         .scan-lbl-text { font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px; color: #ffffff; }
-        .preview-box { width: 100%; height: 100px; background-color: #0F1A30; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #6B7280; overflow: hidden; }
-        .preview-box img { width: 100%; height: 100%; object-fit: cover; }
-        .display-container { background-color: #131F3B; border: 1px solid rgba(30, 58, 138, 0.4); border-radius: 16px; padding: 24px 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 16px; min-height: 340px; }
-        .scene { perspective: 1000px; width: 200px; height: 280px; margin-bottom: 16px; }
+        .preview-box { width: 100%; height: 110px; background-color: #0F1A30; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #6B7280; overflow: hidden; }
+        
+        /* Fixed Object Fit Contain To Prevent Card Splitting Truncation */
+        .preview-box img { width: 100%; height: 100%; object-fit: contain; }
+        
+        .display-container { background-color: #131F3B; border: 1px solid rgba(30, 58, 138, 0.4); border-radius: 16px; padding: 24px 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 20px; min-height: 400px; }
+        
+        /* Upscaled Perspective Scene Settings For Larger Display Sizes */
+        .scene { perspective: 1200px; width: 250px; height: 350px; margin-bottom: 16px; }
         .c3d { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.1s ease-out; }
-        .face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid rgba(59, 130, 246, 0.3); }
+        .face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 14px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid rgba(59, 130, 246, 0.3); }
         .face img { width: 100%; height: 100%; object-fit: contain; }
         .back { transform: rotateY(180deg); }
         .spin-text { font-size: 10px; color: #60A5FA; font-family: monospace; letter-spacing: 0.05em; text-transform: uppercase; background-color: rgba(15, 26, 48, 0.8); padding: 6px 16px; border-radius: 9999px; border: 1px solid rgba(30, 58, 138, 0.5); text-align: center; display: inline-block; }
-        .action-btn { display: none; width: 100%; background-color: #2563EB; color: #ffffff; font-weight: 700; padding: 14px 0; border-radius: 12px; text-align: center; text-decoration: none; font-size: 14px; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
+        
+        /* Fixed Permanent Display Setting Eliminating Hidden State Delays */
+        .action-btn { display: block; width: 100%; background-color: #2563EB; color: #ffffff; font-weight: 700; padding: 14px 0; border-radius: 12px; text-align: center; text-decoration: none; font-size: 14px; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); margin-top: 4px; }
     </style>
 </head>
 <body>
@@ -70,52 +77,48 @@
     <script>
         window.addEventListener('load', () => {
             initSpin('spin-1');
-            checkVaultButton();
+            
+            // Reload cached preview files forward if local sync variables remain active
+            const cachedFront = localStorage.getItem("card-front");
+            const cachedBack = localStorage.getItem("card-back");
+            if(cachedFront) applyImageSource('front', cachedFront);
+            if(cachedBack) applyImageSource('back', cachedBack);
         });
-
-        // Direct vault loop check to force hidden navigation buttons open instantly
-        function checkVaultButton() {
-            const f = localStorage.getItem("card-front");
-            const b = localStorage.getItem("card-back");
-            if (f && b) {
-                document.getElementById("btn-go").style.display = 'block';
-            }
-        }
 
         function runImg(input, face) {
             if (input.files && input.files[0]) {
                 const r = new FileReader();
                 r.onload = function(e) {
                     const src = e.target.result;
-                    document.getElementById(`p-${face}`).innerHTML = `<img src="${src}">`;
-                    
-                    const m = document.getElementById(`m-${face}`);
-                    if (m) { 
-                        m.src = src; 
-                        m.style.display = 'block'; 
-                        m.style.width = '100%';
-                        m.style.height = '100%';
-                        m.style.objectFit = 'contain';
-                    }
-                    
-                    const lbl = document.getElementById(face === 'front' ? "lbl-f" : "lbl-b");
-                    if (lbl) lbl.style.display = 'none';
-                    
                     localStorage.setItem(`card-${face}`, src);
-                    checkVaultButton();
+                    applyImageSource(face, src);
                 };
                 r.readAsDataURL(input.files[0]);
             }
+        }
+
+        function applyImageSource(face, src) {
+            document.getElementById(`p-${face}`).innerHTML = `<img src="${src}">`;
+            const m = document.getElementById(`m-${face}`);
+            if (m) { 
+                m.src = src; 
+                m.style.display = 'block'; 
+                m.style.width = '100%';
+                m.style.height = '100%';
+                m.style.objectFit = 'contain';
+            }
+            const lbl = document.getElementById(face === 'front' ? "lbl-f" : "lbl-b");
+            if (lbl) lbl.style.display = 'none';
         }
 
         function initSpin(id) {
             const el = document.getElementById(id);
             if (!el) return;
             let startX = 0, currentRot = 0, savedRot = 0, isMoving = false;
-            el.addEventListener('touchstart', e => { startX = e.touches[0].clientX; isMoving = true; }, { passive: true });
+            el.addEventListener('touchstart', e => { startX = e.touches.clientX; isMoving = true; }, { passive: true });
             el.addEventListener('touchmove', e => {
                 if (!isMoving) return;
-                const deltaX = e.touches[0].clientX - startX;
+                const deltaX = e.touches.clientX - startX;
                 currentRot = savedRot + (deltaX * 0.5);
                 el.style.transform = `rotateY(${currentRot}deg)`;
             }, { passive: true });
