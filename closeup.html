@@ -3,128 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Close-Up Scanner</title>
+    <title>TCG Scanner - Close-Up (v5.2)</title>
+    <script src="https://tailwindcss.com"></script>
     <style>
-        body { background-color: #0B1528 !important; color: #ffffff !important; margin: 0; padding: 12px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; display: flex; justify-content: center; }
-        .app-container { width: 100%; max-width: 440px; display: flex; flex-direction: column; }
-        header { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid rgba(30, 58, 138, 0.4); position: relative; }
-        h1 { font-size: 15px; font-weight: 700; margin: 0; color: #ffffff; }
-        .version { font-size: 11px; font-family: monospace; color: #60A5FA; }
-        .home-btn { background-color: #1e3a8a; font-size: 11px; padding: 6px 12px; border-radius: 6px; text-decoration: none; color: #ffffff; font-weight: 600; }
-        .grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
-        .scan-label { background-color: #16223F; border: 1px dashed #1e3a8a; border-radius: 12px; padding: 12px 8px; text-align: center; cursor: pointer; display: block; }
-        .scan-lbl-text { font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px; color: #ffffff; }
-        .preview-box { width: 100%; height: 110px; background-color: #0F1A30; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #6B7280; overflow: hidden; }
-        .preview-box img { width: 100%; height: 100%; object-fit: contain; }
-        .display-container { background-color: #131F3B; border: 1px solid rgba(30, 58, 138, 0.4); border-radius: 16px; padding: 24px 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 20px; min-height: 400px; }
-        .scene { perspective: 1200px; width: 250px; height: 350px; margin-bottom: 16px; }
-        .c3d { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.1s ease-out; }
-        .face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 14px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid rgba(59, 130, 246, 0.3); }
-        .face img { width: 100%; height: 100%; object-fit: contain; }
-        .back { transform: rotateY(180deg); }
-        .spin-text { font-size: 10px; color: #60A5FA; font-family: monospace; letter-spacing: 0.05em; text-transform: uppercase; background-color: rgba(15, 26, 48, 0.8); padding: 6px 16px; border-radius: 9999px; border: 1px solid rgba(30, 58, 138, 0.5); text-align: center; display: inline-block; }
-        .action-btn { display: block; width: 100%; background-color: #2563EB; color: #ffffff; font-weight: 700; padding: 14px 0; border-radius: 12px; text-align: center; text-decoration: none; font-size: 14px; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); margin-top: 4px; }
+        body { 
+            background-color: #0B1528 !important; 
+            color: #ffffff !important; 
+            margin: 0; 
+            padding: 16px; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+        }
+        .app-container { max-width: 440px; margin: 0 auto; }
+        .preview-box { background-color: #16223F; border: 2px dashed rgba(30, 58, 138, 0.6); border-radius: 16px; position: relative; overflow: hidden; }
+        .result-card { background-color: #111A30; border: 1px solid rgba(30, 58, 138, 0.4); border-radius: 16px; padding: 16px; text-align: left; }
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <header>
-            <h1>Trading Card Grading <span class="version">v1.1</span></h1>
-            <a href="index.html" class="home-btn">🏠 Home</a>
+
+    <div class="app-container space-y-4">
+        <!-- HEADER ROUTING NAVIGATION -->
+        <header class="flex justify-between items-center py-2">
+            <a href="index.html" class="text-blue-400 font-medium hover:text-blue-300">← Back</a>
+            <h1 class="text-lg font-bold tracking-tight">🔍 Close-Up Scanner</h1>
+            <a href="decks.html" class="text-xs bg-blue-900/40 text-blue-300 border border-blue-500/30 px-2 py-1 rounded">Vault 🗃️</a>
         </header>
-        
-        <div class="grid-layout">
-            <label class="scan-label">
-                <span class="scan-lbl-text">Front Preview</span>
-                <input type="file" accept="image/*" capture="environment" style="display:none;" onchange="runImg(this,'front')">
-                <div id="p-front" class="preview-box">Scan Front</div>
-            </label>
-            <label class="scan-label">
-                <span class="scan-lbl-text">Back Preview</span>
-                <input type="file" accept="image/*" capture="environment" style="display:none;" onchange="runImg(this,'back')">
-                <div id="p-back" class="preview-box">Scan Back</div>
-            </label>
+
+        <!-- SECURITY: SECURE API KEY VAULT INPUT -->
+        <div class="p-3 bg-yellow-950/20 border border-yellow-600/20 rounded-xl text-xs space-y-2">
+            <div class="flex justify-between items-center">
+                <span class="text-yellow-400 font-medium">🔑 Gemini AI API Key Credentials</span>
+                <span id="keyStatus" class="text-red-400 font-mono">🔒 Locked</span>
+            </div>
+            <input type="password" id="apiKeyInput" placeholder="Paste your AI API Key here..." 
+                   class="w-full bg-[#0E172A] border border-blue-900/60 rounded p-2 text-white font-mono text-xs focus:outline-none focus:border-blue-500">
         </div>
 
-        <div class="display-container">
-            <div class="scene">
-                <div id="spin-1" class="c3d">
-                    <div class="face bg-[#1A2A4C]">
-                        <img id="m-front" style="display:none;">
-                        <p id="lbl-f" style="font-size: 12px; color:#9CA3AF; text-align:center; padding:0 12px;">Scan Front To View Image</p>
-                    </div>
-                    <div class="face back bg-[#1A2A4C]">
-                        <img id="m-back" style="display:none;">
-                        <p id="lbl-b" style="font-size: 12px; color:#9CA3AF;">Back Image Missing</p>
-                    </div>
+        <!-- CAMERA LIVE VIEWPORT & SNAPSHOT LAYER -->
+        <div class="preview-box aspect-[3/4] w-full flex flex-col items-center justify-center">
+            <video id="cameraFeed" autoplay playsinline class="w-full h-full object-cover hidden"></video>
+            <canvas id="photoCanvas" class="w-full h-full object-cover hidden"></canvas>
+            
+            <div id="cameraPlaceholder" class="text-center p-6 space-y-2">
+                <p class="text-3xl">📷</p>
+                <p class="text-sm font-semibold text-gray-300">Camera Inactive</p>
+                <p class="text-[11px] text-gray-500 max-w-[200px]">Allow camera permissions or load key to begin.</p>
+            </div>
+        </div>
+
+        <!-- HARDWARE INTERFACE ACTION BUTTONS -->
+        <div class="grid grid-cols-2 gap-3">
+            <button onclick="startCameraStreams()" class="bg-blue-900/40 hover:bg-blue-900/60 border border-blue-500/30 font-medium py-3 rounded-xl text-sm transition-all active:scale-95">
+                🔌 Activate Camera
+            </button>
+            <button id="shutterBtn" onclick="executeCardScan()" disabled class="bg-blue-600 opacity-50 cursor-not-allowed font-bold py-3 rounded-xl text-sm transition-all active:scale-95 text-white">
+                📸 Capture & Analyze
+            </button>
+        </div>
+
+        <!-- DEEP-DIVE PRE-GRADING EVALUATION ARCHITECTURE -->
+        <div id="resultOutput" class="result-card hidden space-y-3">
+            <div class="flex justify-between items-start border-b border-blue-900/40 pb-2">
+                <div>
+                    <h2 id="cardTitle" class="font-bold text-white text-base">--</h2>
+                    <p id="cardMeta" class="text-xs text-gray-400 font-medium">--</p>
+                </div>
+                <div class="text-right">
+                    <span id="badgeTier" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-gray-800 text-gray-400">--</span>
                 </div>
             </div>
-            <div>
-                <p class="spin-text">Swipe To Spin Card</p>
+
+            <!-- Deep-Dive Spec Fields -->
+            <div class="grid grid-cols-2 gap-y-2 gap-x-4 text-xs">
+                <div><span class="text-gray-400">Estimated Grade:</span> <strong id="valGrade" class="text-white block text-sm font-mono">--</strong></div>
+                <div><span class="text-gray-400">Worth Grading?</span> <strong id="valWorth" class="block text-sm">--</strong></div>
+                <div class="col-span-2 border-t border-white/5 my-1"></div>
+                <div><span class="text-gray-400">Raw Value:</span> <strong id="valRaw" class="text-gray-300 block font-mono">--</strong></div>
+                <div><span class="text-gray-400">Est. Graded Value:</span> <strong id="valGraded" class="text-green-400 block font-mono">--</strong></div>
+            </div>
+
+            <!-- Flaws Tracking -->
+            <div class="bg-[#0B1528] p-2.5 rounded-lg border border-blue-900/20 text-xs">
+                <span class="text-gray-400 block mb-1">Flaws Seen:</span>
+                <p id="valFlaws" class="text-gray-300 italic text-[11px]">None detected.</p>
+            </div>
+
+            <!-- Net Profit Math Line Items -->
+            <div class="border-t border-blue-900/40 pt-2 text-xs space-y-1">
+                <span class="text-[10px] font-bold text-blue-400 uppercase tracking-wider block mb-1">Net Profit Math Breakdown</span>
+                <div class="flex justify-between text-gray-400 text-[11px]"><span>Est. Gross Revenue:</span><span id="mathGross" class="font-mono text-white">--</span></div>
+                <div class="flex justify-between text-gray-400 text-[11px]"><span>Est. Fees & Processing (13.5%):</span><span id="mathFees" class="font-mono text-red-400">--</span></div>
+                <div class="flex justify-between font-bold border-t border-white/5 pt-1 text-sm">
+                    <span class="text-gray-300">Net Take-Home Margin:</span>
+                    <span id="mathNet" class="font-mono">--</span>
+                </div>
             </div>
         </div>
-
-        <a id="btn-go" href="info.html" class="action-btn">🔍 Generate Info Breakdown</a>
     </div>
 
+    <!-- AI LOOKUP DRIVER & HARDWARE UTILITIES -->
     <script>
-        window.addEventListener('load', () => {
-            initSpin('spin-1');
-            const cachedFront = localStorage.getItem("card-front");
-            const cachedBack = localStorage.getItem("card-back");
-            if(cachedFront) applyImageSource('front', cachedFront);
-            if(cachedBack) applyImageSource('back', cachedBack);
+        let localStream = null;
+        const video = document.getElementById('cameraFeed');
+        const canvas = document.getElementById('photoCanvas');
+        const apiKeyInput = document.getElementById('apiKeyInput');
+
+        // Check if user has an active key stored locally already
+        document.addEventListener("DOMContentLoaded", () => {
+            const cachedKey = localStorage.getItem("tcg_gemini_key");
+            if (cachedKey) {
+                apiKeyInput.value = cachedKey;
+                updateKeyStatus(true);
+            }
         });
 
-        function runImg(input, face) {
-            if (input.files && input.files[0]) {
-                const r = new FileReader();
-                r.onload = function(e) {
-                    const src = e.target.result;
-                    localStorage.setItem(`card-${face}`, src);
-                    applyImageSource(face, src);
-                };
-                r.readAsDataURL(input.files[0]);
+        apiKeyInput.addEventListener("input", () => {
+            if(apiKeyInput.value.trim().length > 10) {
+                localStorage.setItem("tcg_gemini_key", apiKeyInput.value.trim());
+                updateKeyStatus(true);
+            } else {
+                updateKeyStatus(false);
+            }
+        });
+
+        function updateKeyStatus(isValid) {
+            const status = document.getElementById("keyStatus");
+            const btn = document.getElementById("shutterBtn");
+            if (isValid) {
+                status.textContent = "🔓 Authorized";
+                status.className = "text-green-400 font-mono";
+                btn.disabled = false;
+                btn.className = "bg-blue-600 hover:bg-blue-500 font-bold py-3 rounded-xl text-sm transition-all active:scale-95 text-white cursor-pointer shadow-lg shadow-blue-500/20";
+            } else {
+                status.textContent = "🔒 Locked";
+                status.className = "text-red-400 font-mono";
+                btn.disabled = true;
+                btn.className = "bg-blue-600 opacity-50 cursor-not-allowed font-bold py-3 rounded-xl text-sm transition-all";
             }
         }
 
-        function applyImageSource(face, src) {
-            document.getElementById(`p-${face}`).innerHTML = `<img src="${src}">`;
-            const m = document.getElementById(`m-${face}`);
-            if (m) { 
-                m.src = src; 
-                m.style.display = 'block'; 
-                m.style.width = '100%';
-                m.style.height = '100%';
-                m.style.objectFit = 'contain';
+        async function startCameraStreams() {
+            try {
+                localStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false });
+                video.srcObject = localStream;
+                video.classList.remove("hidden");
+                document.getElementById("cameraPlaceholder").classList.add("hidden");
+            } catch (err) {
+                alert("Could not link mobile camera node. Ensure HTTPS permissions match Vercel secure standards.");
+                console.error(err);
             }
-            const lbl = document.getElementById(face === 'front' ? "lbl-f" : "lbl-b");
-            if (lbl) lbl.style.display = 'none';
         }
 
-        function initSpin(id) {
-            const el = document.getElementById(id);
-            if (!el) return;
-            let startX = 0, currentRot = 0, savedRot = 0, isMoving = false;
+        async function executeCardScan() {
+            const apiKey = apiKeyInput.value.trim();
+            if (!apiKey) return alert("Please supply a valid API credential string.");
+
+            // Capture raw frame snapshot bounding box
+            const ctx = canvas.getContext('2d');
+            canvas.width = video.videoWidth || 640;
+            canvas.height = video.videoHeight || 480;
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
             
-            el.addEventListener('touchstart', e => { 
-                startX = e.touches[0].clientX; 
-                isMoving = true; 
-            }, { passive: true });
+            // Switch display viewframes to simulate freezeframe capture mechanics
+            video.classList.add("hidden");
+            canvas.classList.remove("hidden");
             
-            el.addEventListener('touchmove', e => {
-                if (!isMoving) return;
-                const deltaX = e.touches[0].clientX - startX;
-                currentRot = savedRot + (deltaX * 0.5);
-                el.style.transform = `rotateY(${currentRot}deg)`;
-            }, { passive: true });
+            const rawBase64 = canvas.toDataURL('image/jpeg', 0.85);
+            document.getElementById("shutterBtn").innerText = "⏳ Extracting Assets...";
+
+            // Ship payload package direct to Gemini Gateway Core
+            const payloadData = await analyzeCardImageWithAI(rawBase64, apiKey);
             
-            el.addEventListener('touchend', () => { 
-                if (!isMoving) return; 
-                isMoving = false; 
-                savedRot = currentRot; 
-            });
+            document.getElementById("shutterBtn").innerText = "📸 Capture & Analyze";
+            video.classList.remove("hidden");
+            canvas.classList.add("hidden");
+
+            if (payloadData) {
+                renderEvaluationInterface(payloadData);
+            } else {
+                alert("AI parsing fault. Try leveling lighting profiles or updating key tokens.");
+            }
         }
-    </script>
-</body>
-</html>
+
+        async function analyzeCardImageWithAI(base64String, authKey) {
