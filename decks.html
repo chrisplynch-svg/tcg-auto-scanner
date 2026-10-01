@@ -4,284 +4,123 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Collection Vault</title>
+    <script src="https://tailwindcss.com"></script>
     <style>
-        /* Pure CSS environment styled to match your dark blue dashboard theme */
-        body { 
-            background-color: #0B1528 !important; 
-            color: #ffffff !important; 
-            margin: 0; 
-            padding: 16px; 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-            display: flex;
-            justify-content: center;
-        }
-        .app-container {
-            width: 100%;
-            max-width: 440px;
-            display: flex;
-            flex-direction: column;
-        }
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 4px;
-            margin-bottom: 16px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid rgba(30, 58, 138, 0.4);
-        }
-        h1 {
-            font-size: 16px;
-            font-weight: 800;
-            margin: 0;
-            color: #10B981;
-        }
-        .home-btn {
-            background-color: #1e3a8a;
-            font-size: 11px;
-            padding: 6px 12px;
-            border-radius: 6px;
-            text-decoration: none;
-            color: #ffffff;
-            font-weight: 600;
-        }
-        /* Tab Toggles Matrix Layout */
-        .tab-bar {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            background-color: #131F3B;
-            border: 1px solid rgba(30, 58, 138, 0.3);
-            border-radius: 10px;
-            padding: 4px;
-            margin-bottom: 16px;
-        }
-        .tab-btn {
-            background: none;
-            border: none;
-            color: #9CA3AF;
-            font-size: 12px;
-            font-weight: 700;
-            padding: 8px;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-        .tab-btn.active {
-            background-color: #16223F;
-            color: #ffffff;
-            border: 1px solid rgba(30, 58, 138, 0.4);
-        }
-        .deck-view {
-            display: none;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .deck-view.active {
-            display: flex;
-        }
-        /* Dynamic History Item Rows */
-        .collection-item {
-            background-color: #16223F;
-            border: 1px solid rgba(30, 58, 138, 0.4);
-            border-radius: 14px;
-            padding: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-        }
-        .item-preview {
-            width: 44px;
-            height: 60px;
-            background-color: #0F1A30;
-            border-radius: 6px;
-            border: 1px solid rgba(30, 58, 138, 0.2);
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        .item-preview img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .item-info {
-            flex-grow: 1;
-            text-align: left;
-        }
-        .item-name {
-            font-size: 13px;
-            font-weight: 700;
-            color: #ffffff;
-            margin: 0;
-        }
-        .item-meta {
-            font-size: 11px;
-            color: #9CA3AF;
-            margin: 2px 0 0 0;
-            font-family: monospace;
-        }
-        .actions-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .view-link {
-            background-color: #2563EB;
-            color: #ffffff;
-            font-size: 11px;
-            font-weight: 700;
-            text-decoration: none;
-            padding: 6px 10px;
-            border-radius: 6px;
-            display: inline-block;
-        }
-        .delete-btn {
-            background-color: rgba(248, 113, 113, 0.15);
-            color: #F87171;
-            border: 1px solid rgba(248, 113, 113, 0.3);
-            border-radius: 6px;
-            padding: 5px 8px;
-            font-size: 11px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-        .delete-btn:active {
-            background-color: rgba(248, 113, 113, 0.3);
-        }
-        .wipe-all-btn {
-            background-color: #7F1D1D;
-            border: 1px solid #991B1B;
-            color: #FCA5A5;
-            width: 100%;
-            padding: 12px 0;
-            border-radius: 12px;
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 24px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-        .empty-alert {
-            text-align: center;
-            font-size: 12px;
-            color: #6B7280;
-            padding: 40px 0;
-            font-family: monospace;
-        }
+        body { background-color: #0B1528 !important; color: #ffffff !important; margin: 0; padding: 16px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        .app-container { max-width: 440px; margin: 0 auto; text-align: center; }
+        .deck-card { background-color: #16223F; border: 1px solid rgba(30, 58, 138, 0.5); border-radius: 12px; padding: 16px; margin-bottom: 12px; text-align: left; }
     </style>
 </head>
 <body>
 
     <div class="app-container">
-        <!-- VAULT TOP HEADER -->
-        <header>
-            <h1>🏆 Collection Vault</h1>
-            <a href="index.html" class="home-btn">🏠 Home</a>
+        <header class="flex justify-between items-center mb-6">
+            <a href="index.html" class="text-blue-400 font-medium">← Home</a>
+            <h1 class="text-xl font-bold text-white">🗃️ Collection Vault</h1>
+            <button onclick="clearAllDecks()" class="text-xs text-red-400 border border-red-500/30 px-2 py-1 rounded">Clear All</button>
         </header>
 
-        <!-- SUB-TAB DISPLAY ROUTER NAVIGATION -->
-        <div class="tab-bar">
-            <button onclick="switchTab('singles')" id="tab-singles" class="tab-btn active">🟢 Single Cards</button>
-            <button onclick="switchTab('pages')" id="tab-pages" class="tab-btn">📑 9-Card Pages</button>
-        </div>
+        <!-- Dynamic Deck List Container -->
+        <main id="vaultContainer">
+            <p class="text-gray-400 text-sm mt-8">No saved decks or scanned card batches found.</p>
+        </main>
 
-        <!-- COLLECTION TAB 1: SINGLE DEEP DIVES -->
-        <div id="view-singles" class="deck-view active">
-            <div id="list-singles" class="flex flex-col gap-3"></div>
-        </div>
-
-        <!-- COLLECTION TAB 2: BINDER PAGE SNAPSHOTS -->
-        <div id="view-pages" class="deck-view">
-            <div id="list-pages" class="flex flex-col gap-3"></div>
-        </div>
-
-        <!-- GLOBAL RESET HUB CONTROLS -->
-        <button onclick="wipeAllVaultData()" class="wipe-all-btn">🚨 Clear All Collections</button>
+        <!-- Custom Action Key Legend at the Bottom -->
+        <footer class="mt-8 p-4 bg-[#111A30] rounded-xl border border-blue-900/40 text-left text-xs">
+            <h3 class="font-bold text-blue-400 mb-2 uppercase tracking-wider text-[10px]">Action Key Legend</h3>
+            <div class="space-y-1 text-gray-300">
+                <p><span class="inline-block w-2 h-2 rounded-full bg-green-500 mr-2"></span>🟢 <strong>The Pull Tier:</strong> Send immediately for grading.</p>
+                <p><span class="inline-block w-2 h-2 rounded-full bg-yellow-500 mr-2"></span>🟡 <strong>The Cash Raw Tier:</strong> Sell directly as a raw card.</p>
+                <p><span class="inline-block w-2 h-2 rounded-full bg-red-500 mr-2"></span>🔴 <strong>The Binder Tier:</strong> Low-value personal collection.</p>
+            </div>
+        </footer>
     </div>
 
     <script>
-        // Universal Initializations connecting IndexedDB database storage arrays
-        let dbInstance = null;
-        const dbName = 'tcg_grading_app_database';
-        const storeSingles = 'single_cards_collection';
-        const storePages = 'binder_pages_collection';
-
-        window.addEventListener('load', () => {
-            initDatabase();
-        });
-
-        function initDatabase() {
-            const request = indexedDB.open(dbName, 1);
-            request.onupgradeneeded = (e) => {
-                const db = e.target.result;
-                if (!db.objectStoreNames.contains(storeSingles)) {
-                    db.createObjectStore(storeSingles, { keyPath: 'id', autoIncrement: true });
-                }
-                if (!db.objectStoreNames.contains(storePages)) {
-                    db.createObjectStore(storePages, { keyPath: 'id', autoIncrement: true });
-                }
+        // ==========================================
+        // 1. DATA CORE: SAVE FUNCTION
+        // ==========================================
+        /**
+         * Saves a 9-Card scan batch or Custom Deck to local storage.
+         * @param {string} customName - Name given to this deck/batch.
+         * @param {Array} cardsArray - Array of card objects: [{name: "Charizard", rawVal: 45.00, tier: "pull"}]
+         */
+        function saveDeckToVault(customName, cardsArray) {
+            const currentVault = JSON.parse(localStorage.getItem("tcg_saved_decks")) || [];
+            
+            const newDeckEntry = {
+                id: "deck_" + Date.now(),
+                deckName: customName || "Scanned Batch #" + (currentVault.length + 1),
+                date: new Date().toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }),
+                cards: cardsArray.slice(0, 9) // Strictly limit to your 9-card page counts
             };
-            request.onsuccess = (e) => {
-                dbInstance = e.target.result;
-                loadCollectionDecks();
-            };
-            request.onerror = () => console.error("Database vault initiation exception encountered.");
+            
+            currentVault.unshift(newDeckEntry); // Push newest to the top
+            localStorage.setItem("tcg_saved_decks", JSON.stringify(currentVault));
+            
+            // Refresh display instantly if called while on this screen
+            if (document.getElementById("vaultContainer")) {
+                displaySavedDecks();
+            }
         }
 
-        // High performance navigation toggle switching tab views instantly
-        function switchTab(targetTab) {
-            ['singles', 'pages'].forEach(tab => {
-                document.getElementById(`tab-${tab}`).classList.remove('active');
-                document.getElementById(`view-${tab}`).classList.remove('active');
-            });
-            document.getElementById(`tab-${targetTab}`).classList.add('active');
-            document.getElementById(`view-${targetTab}`).classList.add('active');
-        }
+        // ==========================================
+        // 2. DISPLAY CORE: UI RENDERING LOOP
+        // ==========================================
+        document.addEventListener("DOMContentLoaded", displaySavedDecks);
 
-        function loadCollectionDecks() {
-            renderList(storeSingles, 'list-singles');
-            renderList(storePages, 'list-pages');
-        }
+        function displaySavedDecks() {
+            const container = document.getElementById("vaultContainer");
+            const savedDecks = JSON.parse(localStorage.getItem("tcg_saved_decks")) || [];
 
-        function renderList(storeName, containerId) {
-            const container = document.getElementById(containerId);
-            if (!container || !dbInstance) return;
+            if (savedDecks.length === 0) {
+                container.innerHTML = `<p class="text-gray-400 text-sm mt-8">No saved decks or scanned card batches found.</p>`;
+                return;
+            }
 
-            const transaction = dbInstance.transaction(storeName, 'readonly');
-            const store = transaction.objectStore(storeName);
-            const request = store.getAll();
+            container.innerHTML = ""; // Reset fallback text
 
-            request.onsuccess = () => {
-                const itemsList = request.result;
-                container.innerHTML = "";
+            savedDecks.forEach((deck) => {
+                let cardsHtml = "";
+                
+                deck.cards.forEach((card, cardIdx) => {
+                    const numberEmojis = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣"];
+                    const emoji = numberEmojis[cardIdx] || "🃏";
+                    
+                    let statusDot = "🔴";
+                    if (card.tier === "pull") statusDot = "🟢";
+                    if (card.tier === "cash") statusDot = "🟡";
 
-                if (itemsList.length === 0) {
-                    container.innerHTML = `<p class="empty-alert">Your deck is empty.<br>Go catch some card captures!</p>`;
-                    return;
-                }
-
-                // Loop layout arrays backwards to show your newest captures first
-                itemsList.reverse().forEach(item => {
-                    const row = document.createElement('div');
-                    row.className = 'collection-item';
-
-                    // Determine formatting criteria depending on Singles vs Pages structures
-                    const nameDisplay = item.name || '9-Card Page Snapshot';
-                    const metaDisplay = item.timestamp || new Date().toLocaleDateString();
-                    const thumbnailSrc = item.frontImg || item.pageImg || '';
-
-                    row.innerHTML = `
-                        <div class="item-preview">
-                            ${thumbnailSrc ? `<img src="${thumbnailSrc}">` : '🃏'}
-                        </div>
-                        <div class="item-info">
-                            <p class="item-name">${nameDisplay}</p>
-                            <p class="item-meta">${metaDisplay}</p>
-                        </div>
-                        <div class="actions-group">
-                            <button onclick="deleteIndividualItem('${storeName}', ${item.id}, '${nameDisplay}')" class="delete-btn">🗑️</button>
+                    cardsHtml += `
+                        <div class="flex justify-between items-center py-1.5 border-b border-white/5 text-sm">
+                            <span class="font-medium text-white">${emoji} ${card.name}</span>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xs">${statusDot}</span>
+                                <span class="font-mono text-gray-300">$${card.rawVal.toFixed(2)}</span>
+                            </div>
                         </div>
                     `;
+                });
+
+                const deckBlock = document.createElement("div");
+                deckBlock.className = "deck-card";
+                deckBlock.innerHTML = `
+                    <div class="flex justify-between items-center mb-3 pb-2 border-b border-blue-900/60">
+                        <h2 class="font-bold text-blue-400 text-base">${deck.deckName}</h2>
+                        <span class="text-xs font-mono text-gray-400">${deck.date}</span>
+                    </div>
+                    <div class="space-y-1">${cardsHtml}</div>
+                `;
+                container.appendChild(deckBlock);
+            });
+        }
+
+        function clearAllDecks() {
+            if (confirm("Are you sure you want to permanently empty your Collection Vault?")) {
+                localStorage.removeItem("tcg_saved_decks");
+                displaySavedDecks();
+            }
+        }
+    </script>
+</body>
+</html>
