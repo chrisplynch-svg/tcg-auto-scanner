@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TCG Scanner - Close-Up (v5.2)</title>
+    <title>TCG Scanner - Close-Up (v5.3)</title>
     <script src="https://tailwindcss.com"></script>
     <style>
         body { 
@@ -20,105 +20,115 @@
 </head>
 <body>
 
-    <div class="app-container space-y-4">
-        <!-- HEADER ROUTING NAVIGATION -->
+    <div class="app-container space-y-4 pt-4">
+        <!-- HEADER NAVIGATION: Fixed contrast contrast link bug -->
         <header class="flex justify-between items-center py-2">
-            <a href="index.html" class="text-blue-400 font-medium hover:text-blue-300">← Back</a>
-            <h1 class="text-lg font-bold tracking-tight">🔍 Close-Up Scanner</h1>
-            <a href="decks.html" class="text-xs bg-blue-900/40 text-blue-300 border border-blue-500/30 px-2 py-1 rounded">Vault 🗃️</a>
+            <a href="index.html" class="text-blue-400 font-semibold hover:text-blue-300 flex items-center gap-1">
+                <span>←</span> Back Home
+            </a>
+            <h1 class="text-base font-bold tracking-tight text-white/90">🔍 Close-Up Scanner</h1>
+            <a href="decks.html" class="text-xs bg-blue-900/50 text-blue-300 border border-blue-500/30 px-2 py-1 rounded font-medium">Vault 🗃️</a>
         </header>
 
-        <!-- SECURITY: SECURE API KEY VAULT INPUT -->
-        <div class="p-3 bg-yellow-950/20 border border-yellow-600/20 rounded-xl text-xs space-y-2">
+        <!-- SECURITY VAULT STATUS: Synced with home screen storage keys -->
+        <div class="p-3 bg-[#111A30] border border-blue-900/40 rounded-xl text-xs space-y-2">
             <div class="flex justify-between items-center">
-                <span class="text-yellow-400 font-medium">🔑 Gemini AI API Key Credentials</span>
-                <span id="keyStatus" class="text-red-400 font-mono">🔒 Locked</span>
+                <span class="text-blue-400 font-medium flex items-center gap-1.5">
+                    <span>🔑</span> Gemini AI System Key
+                </span>
+                <span id="keyStatus" class="text-red-400 font-mono font-bold bg-red-950/40 px-2 py-0.5 rounded border border-red-500/20">🔒 Locked</span>
             </div>
-            <input type="password" id="apiKeyInput" placeholder="Paste your AI API Key here..." 
+            <input type="password" id="apiKeyInput" placeholder="Enter or sync your Gemini key..." 
                    class="w-full bg-[#0E172A] border border-blue-900/60 rounded p-2 text-white font-mono text-xs focus:outline-none focus:border-blue-500">
         </div>
 
-        <!-- CAMERA LIVE VIEWPORT & SNAPSHOT LAYER -->
-        <div class="preview-box aspect-[3/4] w-full flex flex-col items-center justify-center">
+        <!-- CAMERA VIEWPORT BOX -->
+        <div class="preview-box aspect-[3/4] w-full flex flex-col items-center justify-center shadow-inner">
             <video id="cameraFeed" autoplay playsinline class="w-full h-full object-cover hidden"></video>
             <canvas id="photoCanvas" class="w-full h-full object-cover hidden"></canvas>
             
             <div id="cameraPlaceholder" class="text-center p-6 space-y-2">
-                <p class="text-3xl">📷</p>
-                <p class="text-sm font-semibold text-gray-300">Camera Inactive</p>
-                <p class="text-[11px] text-gray-500 max-w-[200px]">Allow camera permissions or load key to begin.</p>
+                <p class="text-4xl">📷</p>
+                <p class="text-sm font-semibold text-gray-300">Camera Interrupted</p>
+                <p class="text-[11px] text-gray-500 max-w-[220px] mx-auto">Tap "Activate Camera" below to request live video frames.</p>
             </div>
         </div>
 
-        <!-- HARDWARE INTERFACE ACTION BUTTONS -->
+        <!-- ACTION CONTROLLER INTERFACE -->
         <div class="grid grid-cols-2 gap-3">
-            <button onclick="startCameraStreams()" class="bg-blue-900/40 hover:bg-blue-900/60 border border-blue-500/30 font-medium py-3 rounded-xl text-sm transition-all active:scale-95">
+            <button onclick="startCameraStreams()" class="bg-blue-950/60 hover:bg-blue-900/40 border border-blue-500/30 font-medium py-3 rounded-xl text-xs uppercase tracking-wider transition-all active:scale-95 text-blue-300">
                 🔌 Activate Camera
             </button>
-            <button id="shutterBtn" onclick="executeCardScan()" disabled class="bg-blue-600 opacity-50 cursor-not-allowed font-bold py-3 rounded-xl text-sm transition-all active:scale-95 text-white">
-                📸 Capture & Analyze
+            <button id="shutterBtn" onclick="executeCardScan()" disabled class="bg-blue-600 opacity-50 cursor-not-allowed font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition-all text-white">
+                📸 Run Auto-Scan
             </button>
         </div>
 
-        <!-- DEEP-DIVE PRE-GRADING EVALUATION ARCHITECTURE -->
-        <div id="resultOutput" class="result-card hidden space-y-3">
-            <div class="flex justify-between items-start border-b border-blue-900/40 pb-2">
+        <!-- DEEP-DIVE PRE-GRADING METRICS DISPLAY -->
+        <div id="resultOutput" class="result-card hidden space-y-3 shadow-2xl">
+            <div class="flex justify-between items-start border-b border-blue-900/40 pb-2.5">
                 <div>
                     <h2 id="cardTitle" class="font-bold text-white text-base">--</h2>
-                    <p id="cardMeta" class="text-xs text-gray-400 font-medium">--</p>
+                    <p id="cardMeta" class="text-xs text-gray-400 font-medium mt-0.5">--</p>
                 </div>
-                <div class="text-right">
-                    <span id="badgeTier" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-gray-800 text-gray-400">--</span>
+                <div>
+                    <span id="badgeTier" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">--</span>
                 </div>
             </div>
 
-            <!-- Deep-Dive Spec Fields -->
-            <div class="grid grid-cols-2 gap-y-2 gap-x-4 text-xs">
-                <div><span class="text-gray-400">Estimated Grade:</span> <strong id="valGrade" class="text-white block text-sm font-mono">--</strong></div>
-                <div><span class="text-gray-400">Worth Grading?</span> <strong id="valWorth" class="block text-sm">--</strong></div>
-                <div class="col-span-2 border-t border-white/5 my-1"></div>
-                <div><span class="text-gray-400">Raw Value:</span> <strong id="valRaw" class="text-gray-300 block font-mono">--</strong></div>
-                <div><span class="text-gray-400">Est. Graded Value:</span> <strong id="valGraded" class="text-green-400 block font-mono">--</strong></div>
+            <!-- Core appraisal metadata -->
+            <div class="grid grid-cols-2 gap-y-2.5 gap-x-4 text-xs">
+                <div><span class="text-gray-400 block mb-0.5">Estimated Grade:</span> <strong id="valGrade" class="text-white block text-sm font-mono font-bold">--</strong></div>
+                <div><span class="text-gray-400 block mb-0.5">Worth Grading?</span> <strong id="valWorth" class="block text-sm font-bold">--</strong></div>
+                <div class="col-span-2 border-t border-white/5 my-0.5"></div>
+                <div><span class="text-gray-400 block mb-0.5">Raw Market Value:</span> <strong id="valRaw" class="text-gray-300 block text-sm font-mono">--</strong></div>
+                <div><span class="text-gray-400 block mb-0.5">Est. Graded Value:</span> <strong id="valGraded" class="text-green-400 block text-sm font-mono font-bold">--</strong></div>
             </div>
 
-            <!-- Flaws Tracking -->
-            <div class="bg-[#0B1528] p-2.5 rounded-lg border border-blue-900/20 text-xs">
-                <span class="text-gray-400 block mb-1">Flaws Seen:</span>
-                <p id="valFlaws" class="text-gray-300 italic text-[11px]">None detected.</p>
+            <!-- Flaw registry tracking box -->
+            <div class="bg-[#0B1528] p-2.5 rounded-lg border border-blue-900/30 text-xs">
+                <span class="text-gray-400 font-medium block mb-1 text-[11px] uppercase tracking-wide">Surface Flaws Seen:</span>
+                <p id="valFlaws" class="text-gray-300 italic text-[11px] leading-relaxed">None detected.</p>
             </div>
 
-            <!-- Net Profit Math Line Items -->
+            <!-- Net Profit Deductions Layout -->
             <div class="border-t border-blue-900/40 pt-2 text-xs space-y-1">
-                <span class="text-[10px] font-bold text-blue-400 uppercase tracking-wider block mb-1">Net Profit Math Breakdown</span>
+                <span class="text-[10px] font-bold text-blue-400 uppercase tracking-wider block mb-1.5">Net Profit Math Breakdown</span>
                 <div class="flex justify-between text-gray-400 text-[11px]"><span>Est. Gross Revenue:</span><span id="mathGross" class="font-mono text-white">--</span></div>
                 <div class="flex justify-between text-gray-400 text-[11px]"><span>Est. Fees & Processing (13.5%):</span><span id="mathFees" class="font-mono text-red-400">--</span></div>
-                <div class="flex justify-between font-bold border-t border-white/5 pt-1 text-sm">
-                    <span class="text-gray-300">Net Take-Home Margin:</span>
+                <div class="flex justify-between font-bold border-t border-white/5 pt-1.5 text-sm mt-1">
+                    <span class="text-gray-200">Net Take-Home Margin:</span>
                     <span id="mathNet" class="font-mono">--</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- AI LOOKUP DRIVER & HARDWARE UTILITIES -->
+    <!-- SCRIPT INFRASTRUCTURE ENGINE -->
     <script>
         let localStream = null;
         const video = document.getElementById('cameraFeed');
         const canvas = document.getElementById('photoCanvas');
         const apiKeyInput = document.getElementById('apiKeyInput');
 
-        // Check if user has an active key stored locally already
+        // MULTI-SCREEN SYNC: Automatically pull keys shared by main dashboard memory stores
         document.addEventListener("DOMContentLoaded", () => {
-            const cachedKey = localStorage.getItem("tcg_gemini_key");
-            if (cachedKey) {
-                apiKeyInput.value = cachedKey;
+            // Checks multiple common storage names used by index.html configuration vaults
+            const storedKey = localStorage.getItem("tcg_gemini_key") || 
+                              localStorage.getItem("gemini_api_key") || 
+                              localStorage.getItem("api_key");
+                              
+            if (storedKey && storedKey.trim().length > 10) {
+                apiKeyInput.value = storedKey.trim();
                 updateKeyStatus(true);
             }
         });
 
+        // Handle manual override changes locally inside this specific view
         apiKeyInput.addEventListener("input", () => {
-            if(apiKeyInput.value.trim().length > 10) {
-                localStorage.setItem("tcg_gemini_key", apiKeyInput.value.trim());
+            const cleanKey = apiKeyInput.value.trim();
+            if(cleanKey.length > 10) {
+                localStorage.setItem("tcg_gemini_key", cleanKey);
                 updateKeyStatus(true);
             } else {
                 updateKeyStatus(false);
@@ -129,15 +139,15 @@
             const status = document.getElementById("keyStatus");
             const btn = document.getElementById("shutterBtn");
             if (isValid) {
-                status.textContent = "🔓 Authorized";
-                status.className = "text-green-400 font-mono";
+                status.textContent = "🔓 Ready";
+                status.className = "text-green-400 font-mono font-bold bg-green-950/40 px-2 py-0.5 rounded border border-green-500/20";
                 btn.disabled = false;
-                btn.className = "bg-blue-600 hover:bg-blue-500 font-bold py-3 rounded-xl text-sm transition-all active:scale-95 text-white cursor-pointer shadow-lg shadow-blue-500/20";
+                btn.className = "bg-blue-600 hover:bg-blue-500 font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition-all text-white cursor-pointer shadow-lg shadow-blue-500/20 active:scale-95 animate-pulse";
             } else {
                 status.textContent = "🔒 Locked";
-                status.className = "text-red-400 font-mono";
+                status.className = "text-red-400 font-mono font-bold bg-red-950/40 px-2 py-0.5 rounded border border-red-500/20";
                 btn.disabled = true;
-                btn.className = "bg-blue-600 opacity-50 cursor-not-allowed font-bold py-3 rounded-xl text-sm transition-all";
+                btn.className = "bg-blue-600 opacity-50 cursor-not-allowed font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition-all text-white";
             }
         }
 
@@ -148,40 +158,15 @@
                 video.classList.remove("hidden");
                 document.getElementById("cameraPlaceholder").classList.add("hidden");
             } catch (err) {
-                alert("Could not link mobile camera node. Ensure HTTPS permissions match Vercel secure standards.");
+                alert("Could not access camera module. Ensure site uses HTTPS protocols.");
                 console.error(err);
             }
         }
 
         async function executeCardScan() {
             const apiKey = apiKeyInput.value.trim();
-            if (!apiKey) return alert("Please supply a valid API credential string.");
+            if (!apiKey) return alert("Please supply API credentials to execute lookups.");
 
-            // Capture raw frame snapshot bounding box
             const ctx = canvas.getContext('2d');
             canvas.width = video.videoWidth || 640;
             canvas.height = video.videoHeight || 480;
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            
-            // Switch display viewframes to simulate freezeframe capture mechanics
-            video.classList.add("hidden");
-            canvas.classList.remove("hidden");
-            
-            const rawBase64 = canvas.toDataURL('image/jpeg', 0.85);
-            document.getElementById("shutterBtn").innerText = "⏳ Extracting Assets...";
-
-            // Ship payload package direct to Gemini Gateway Core
-            const payloadData = await analyzeCardImageWithAI(rawBase64, apiKey);
-            
-            document.getElementById("shutterBtn").innerText = "📸 Capture & Analyze";
-            video.classList.remove("hidden");
-            canvas.classList.add("hidden");
-
-            if (payloadData) {
-                renderEvaluationInterface(payloadData);
-            } else {
-                alert("AI parsing fault. Try leveling lighting profiles or updating key tokens.");
-            }
-        }
-
-        async function analyzeCardImageWithAI(base64String, authKey) {
