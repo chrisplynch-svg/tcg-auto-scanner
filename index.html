@@ -24,7 +24,7 @@
         }
         header {
             margin-top: 10px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             text-align: center;
         }
         h1 {
@@ -45,35 +45,35 @@
         .menu-stack {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
             flex-grow: 1;
             justify-content: center;
-            margin-bottom: 30px;
+            margin-bottom: 24px;
         }
         .router-card {
             display: block;
             text-align: left;
             background-color: #16223F;
             border: 1px solid rgba(30, 58, 138, 0.4);
-            padding: 28px 24px;
+            padding: 24px 20px;
             border-radius: 20px;
             text-decoration: none;
-            transition: transform 0.1s ease, border-color 0.2s ease;
+            transition: transform 0.1s ease;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
         .router-card:active {
             transform: scale(0.97);
         }
         .router-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 800;
             color: #ffffff;
         }
         .router-desc {
-            font-size: 13px;
+            font-size: 12px;
             color: #9CA3AF;
-            margin-top: 8px;
-            line-height: 1.5;
+            margin-top: 6px;
+            line-height: 1.4;
         }
         .status-box {
             background-color: #131F3B;
@@ -127,26 +127,34 @@
 <body>
 
     <div class="app-container">
-        <!-- HEADER PUSHED TO ABSOLUTE TOP -->
+        <!-- APP TITLE -->
         <header>
             <h1>Trading Card Grading</h1>
             <div class="version">v1.1</div>
         </header>
 
-        <!-- ROUTER ENGINES MAXIMIZED & CENTERED -->
+        <!-- NAVIGATION ROUTERS STACK -->
         <nav class="menu-stack">
+            <!-- ROUTER 1 -->
             <a href="closeup.html" class="router-card">
                 <div class="router-title">🟢 Close-Up Scanner</div>
                 <div class="router-desc">Deep-dive math evaluation for individual cards.</div>
             </a>
 
+            <!-- ROUTER 2 -->
             <a href="multiple.html" class="router-card">
                 <div class="router-title">📑 9-Card Page</div>
                 <div class="router-desc">Instant sorting tiers & sequence layout mapping.</div>
             </a>
+
+            <!-- ROUTER 3: NEW COLLECTION DECK HUD -->
+            <a href="decks.html" class="router-card" style="border-color: rgba(16, 185, 129, 0.4);">
+                <div class="router-title" style="color: #10B981;">🏆 Collection Vault</div>
+                <div class="router-desc">Browse your growing single card decks and page archives.</div>
+            </a>
         </nav>
 
-        <!-- VAULT BOX MINIMIZED & DROPPED TO BOTTOM -->
+        <!-- VAULT CORE SYSTEM INPUT -->
         <div class="status-box">
             <span class="status-label">🔑 System Vault Configuration</span>
             <div class="vault-input-group">
