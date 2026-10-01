@@ -45,10 +45,10 @@
             <div class="scene">
                 <div id="spin-2" class="c3d">
                     <div class="face bg-[#1A2A4C]">
-                        <img id="i-front" style="width:100%; height:100%; object-fit:contain;" alt="Front image layer">
+                        <img id="i-front" style="width:100%; height:100%; object-fit:contain;" alt="Front view">
                     </div>
                     <div class="face back bg-[#1A2A4C]">
-                        <img id="i-back" style="width:100%; height:100%; object-fit:contain;" alt="Back image layer">
+                        <img id="i-back" style="width:100%; height:100%; object-fit:contain;" alt="Back view">
                     </div>
                 </div>
             </div>
@@ -78,10 +78,10 @@
             const el = document.getElementById(id);
             if (!el) return;
             let startX = 0, currentRot = 0, savedRot = 0, isMoving = false;
-            el.addEventListener('touchstart', e => { startX = e.touches.clientX; isMoving = true; }, { passive: true });
+            el.addEventListener('touchstart', e => { startX = e.touches[0].clientX; isMoving = true; }, { passive: true });
             el.addEventListener('touchmove', e => {
                 if (!isMoving) return;
-                const deltaX = e.touches.clientX - startX;
+                const deltaX = e.touches[0].clientX - startX;
                 currentRot = savedRot + (deltaX * 0.5);
                 el.style.transform = `rotateY(${currentRot}deg)`;
             }, { passive: true });
@@ -108,7 +108,9 @@
                 NAME: [Name] \nSET: [Set] \nNUMBER: [Number] \nGRADE: [Grade] \nFLAWS: [Flaws] \nWORTH: [🟢/🟡/🔴 Yes/No] \nRAWVAL: [Raw Value number] \nESTVAL: [Graded Value number] \nPOP: [Pop Details] \nGRADER: [Grader] \nLIQUIDITY: [🟢/🟡/🔴 Details] \nAUTH: [Details] \nNEXT: [Details]`;
 
                 try {
-                    const cleanBase64 = (uri) => uri.split(',')[1];
+                    const cleanBase64Front = frontImg.split(',')[1];
+                    const cleanBase64Back = backImg.split(',')[1];
+
                     const res = await fetch(url, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -116,8 +118,8 @@
                             contents: [{
                                 parts: [
                                     { text: prompt },
-                                    { inlineData: { mimeType: "image/jpeg", data: cleanBase64(frontImg) } },
-                                    { inlineData: { mimeType: "image/jpeg", data: cleanBase64(backImg) } }
+                                    { inlineData: { mimeType: "image/jpeg", data: cleanBase64Front } },
+                                    { inlineData: { mimeType: "image/jpeg", data: cleanBase64Back } }
                                 ]
                             }]
                         })
@@ -136,4 +138,3 @@
                             name: extract(/NAME:\s*(.+)/, record.name), set: extract(/SET:\s*(.+)/, record.set), number: extract(/NUMBER:\s*(.+)/, record.number),
                             grade: extract(/GRADE:\s*(.+)/, record.grade), flaws: extract(/FLAWS:\s*(.+)/, record.flaws), worth: extract(/WORTH:\s*(.+)/, record.worth),
                             rawVal: parseFloat(extract(/RAWVAL:\s*\$?([0-9.]+)/, record.rawVal)).toFixed(2), estVal: grossGraded.toFixed(2),
-                            fee: calcFee, outlay: calcOutlay, payout: calcPayout,
