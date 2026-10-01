@@ -5,148 +5,135 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trading Card Grading v1.1</title>
     <style>
-        /* High-performance pure CSS matching your exact dark blue environment theme */
         body { 
             background-color: #0B1528 !important; 
             color: #ffffff !important; 
             margin: 0; 
-            padding: 24px 16px; 
+            padding: 16px; 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
             display: flex;
             justify-content: center;
-            align-items: center;
-            min-height: 80vh;
+            min-height: 95vh;
         }
         .app-container {
             width: 100%;
             max-width: 440px;
-            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
         header {
-            margin-bottom: 40px;
+            margin-top: 10px;
+            margin-bottom: 24px;
+            text-align: center;
         }
         h1 {
-            font-size: 24px;
+            font-size: 32px;
             font-weight: 800;
             margin: 0;
             color: #ffffff;
-            letter-spacing: -0.02em;
+            letter-spacing: -0.03em;
         }
         .version {
-            font-size: 11px;
+            font-size: 13px;
             font-family: monospace;
             color: #60A5FA;
-            margin-top: 6px;
+            margin-top: 4px;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-        }
-        .status-box {
-            background-color: #131F3B;
-            border: 1px solid rgba(30, 58, 138, 0.4);
-            border-radius: 12px;
-            padding: 16px;
-            text-align: left;
-            margin-bottom: 32px;
-        }
-        .status-label {
-            font-size: 11px;
-            font-weight: 700;
-            color: #60A5FA;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            display: block;
-            margin-bottom: 8px;
-        }
-        .vault-input-group {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 6px;
-        }
-        .vault-input {
-            background-color: #0F1A30;
-            border: 1px solid rgba(30, 58, 138, 0.6);
-            border-radius: 8px;
-            padding: 8px 12px;
-            font-size: 12px;
-            color: #ffffff;
-            font-family: monospace;
-            flex-1: 1;
-            width: 65%;
-        }
-        .vault-input:focus {
-            outline: none;
-            border-color: #2563EB;
-        }
-        .vault-btn {
-            background-color: #10B981;
-            color: #ffffff;
-            border: none;
-            border-radius: 8px;
-            padding: 8px 16px;
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-        .vault-btn:active {
-            transform: scale(0.95);
-        }
-        .status-text {
-            font-size: 11px;
-            color: #9CA3AF;
-            margin: 4px 0 0 0;
-            font-weight: 500;
         }
         .menu-stack {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 20px;
+            flex-grow: 1;
+            justify-content: center;
+            margin-bottom: 30px;
         }
         .router-card {
             display: block;
             text-align: left;
             background-color: #16223F;
             border: 1px solid rgba(30, 58, 138, 0.4);
-            padding: 20px;
-            border-radius: 16px;
+            padding: 28px 24px;
+            border-radius: 20px;
             text-decoration: none;
-            transition: transform 0.1s ease;
+            transition: transform 0.1s ease, border-color 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
         .router-card:active {
-            transform: scale(0.98);
+            transform: scale(0.97);
         }
         .router-title {
-            font-size: 16px;
-            font-weight: 700;
+            font-size: 20px;
+            font-weight: 800;
             color: #ffffff;
         }
         .router-desc {
-            font-size: 12px;
+            font-size: 13px;
             color: #9CA3AF;
-            margin-top: 6px;
-            line-height: 1.4;
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+        .status-box {
+            background-color: #131F3B;
+            border: 1px solid rgba(30, 58, 138, 0.3);
+            border-radius: 12px;
+            padding: 12px 14px;
+            text-align: left;
+            margin-top: auto;
+            margin-bottom: 10px;
+        }
+        .status-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: #60A5FA;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: block;
+            margin-bottom: 6px;
+        }
+        .vault-input-group {
+            display: flex;
+            gap: 8px;
+        }
+        .vault-input {
+            background-color: #0F1A30;
+            border: 1px solid rgba(30, 58, 138, 0.5);
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 11px;
+            color: #ffffff;
+            font-family: monospace;
+            width: 70%;
+        }
+        .vault-btn {
+            background-color: #10B981;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 14px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .status-text {
+            font-size: 10px;
+            color: #9CA3AF;
+            margin: 4px 0 0 0;
         }
     </style>
 </head>
 <body>
 
     <div class="app-container">
-        <!-- HEADER -->
+        <!-- HEADER PUSHED TO ABSOLUTE TOP -->
         <header>
             <h1>Trading Card Grading</h1>
             <div class="version">v1.1</div>
         </header>
 
-        <!-- SECURITY VAULT STATE CONFIG -->
-        <div class="status-box">
-            <span class="status-label">🔑 System Vault Configuration</span>
-            <div class="vault-input-group">
-                <input type="password" id="key-vault" placeholder="Paste AQ.Ab8RN... Key Here" class="vault-input">
-                <button onclick="lockKey()" class="vault-btn">Save</button>
-            </div>
-            <p id="key-status" class="status-text">Checking local browser memory banks...</p>
-        </div>
-
-        <!-- APP ROUTERS -->
+        <!-- ROUTER ENGINES MAXIMIZED & CENTERED -->
         <nav class="menu-stack">
             <a href="closeup.html" class="router-card">
                 <div class="router-title">🟢 Close-Up Scanner</div>
@@ -158,33 +145,32 @@
                 <div class="router-desc">Instant sorting tiers & sequence layout mapping.</div>
             </a>
         </nav>
+
+        <!-- VAULT BOX MINIMIZED & DROPPED TO BOTTOM -->
+        <div class="status-box">
+            <span class="status-label">🔑 System Vault Configuration</span>
+            <div class="vault-input-group">
+                <input type="password" id="key-vault" placeholder="Paste AQ.Ab8RN... Key Here" class="vault-input">
+                <button onclick="lockKey()" class="vault-btn">Save</button>
+            </div>
+            <p id="key-status" class="status-text">Checking device memory banks...</p>
+        </div>
     </div>
 
     <script>
         const keyName = 'tcg_auto_scanner_gemini_key';
-        
-        // Initializing verification scripts on app launch
         window.addEventListener('load', () => {
             const cachedKey = localStorage.getItem(keyName);
             if (cachedKey) {
                 document.getElementById('key-vault').value = cachedKey;
                 updateStatus(true);
-            } else { 
-                updateStatus(false); 
-            }
+            } else { updateStatus(false); }
         });
-
         function lockKey() {
             const val = document.getElementById('key-vault').value.trim();
-            if (val) { 
-                localStorage.setItem(keyName, val); 
-                updateStatus(true); 
-            } else { 
-                localStorage.removeItem(keyName); 
-                updateStatus(false); 
-            }
+            if (val) { localStorage.setItem(keyName, val); updateStatus(true); } 
+            else { localStorage.removeItem(keyName); updateStatus(false); }
         }
-
         function updateStatus(active) {
             const el = document.getElementById('key-status');
             if (el) {
