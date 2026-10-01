@@ -17,7 +17,7 @@
         .preview-box img { width: 100%; max-height: 300px; object-fit: contain; padding: 8px; }
         .results-box { display: none; background-color: #131F3B; border: 1px solid rgba(30, 58, 138, 0.4); border-radius: 16px; padding: 16px; text-align: left; }
         .results-title { font-size: 12px; font-weight: 800; color: #60A5FA; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 14px 0; padding-bottom: 6px; border-bottom: 1px solid #0F1A30; }
-        .list-container { display: flex; flex-direction: column; gap: 10px; font-size: 13px; font-weight: 500; color: #E5E7EB; margin-bottom: 20px; white-space: pre-wrap; line-height: 1.5; }
+        .list-container { display: flex; flex-direction: column; gap: 10px; font-size: 13px; font-weight: 500; color: #E5E7EB; margin-bottom: 20px; white-space: pre-wrap; line-height: 1.5; font-family: inherit; }
         .key-box { border-top: 1px solid #0F1A30; padding-top: 16px; }
         .key-title { font-size: 12px; font-weight: 800; color: #ffffff; letter-spacing: 0.02em; margin: 0 0 10px 0; }
         .key-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; font-size: 11px; line-height: 1.4; color: #D1D5DB; }
@@ -71,12 +71,10 @@
                     
                     if (apiKey) {
                         const url = `https://googleapis.com{apiKey}`;
-                        const prompt = `Identify every card seen in this layout from left to right, top to bottom. List each item out starting with sequential number emojis from 1️⃣ up to 9️⃣. Show only the name, the tier circle color emoji (🟢 if $20+, 🟡 if $5-$19, 🔴 if under $5), and the estimated raw value inside parentheses. Strip all markdown styling, asterisks, title headers, and introduction commentary text. Return ONLY the 9 sequential text rows matching the cards present in the photo image.`;
+                        const prompt = `Identify every card seen in this layout from left to right, top to bottom. List each item out starting with sequential number emojis from 1️⃣ to 9️⃣. Show only the card name, its action color circle emoji (🟢 if $20+, 🟡 if $5-$19, 🔴 if under $5), and its estimated raw value inside parentheses. Strip all other directions, lines, and intro comments. Return ONLY the final clean sequential list lines.`;
                         
                         try {
-                            const stringSegments = src.split(',');
-                            const targetBase64 = stringSegments[1];
-
+                            const cleanBase64 = src.split(',')[1];
                             const response = await fetch(url, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
@@ -84,7 +82,7 @@
                                     contents: [{
                                         parts: [
                                             { text: prompt },
-                                            { inlineData: { mimeType: "image/jpeg", data: targetBase64 } }
+                                            { inlineData: { mimeType: "image/jpeg", data: cleanBase64 } }
                                         ]
                                     }]
                                 })
