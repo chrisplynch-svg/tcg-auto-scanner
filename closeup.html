@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TCG Auto-Scanner - Close-Up (v5.4)</title>
+    <title>TCG Auto-Scanner - Close-Up (v5.5)</title>
     <script src="https://tailwindcss.com"></script>
     <style>
         /* Exact preservation of your original dark blue app branding */
@@ -42,7 +42,7 @@
             backface-visibility: hidden;
             border-radius: 8px;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            object-cover: cover;
+            object-fit: cover;
             background-color: #111A30;
         }
         .card-face.back { transform: rotateY(180deg); }
@@ -146,7 +146,7 @@
         </div>
     </div>
 
-    <!-- BACKGROUND PROCESSING ENGINE -->
+    <!-- BACKGROUND ROBUST PROCESSING ENGINE -->
     <script>
         let currentTargetSlot = 'front';
         let base64Front = null;
@@ -162,8 +162,8 @@
         }
 
         function processCapturedPhoto(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+            const files = event.target.files;
+            if (!files || files.length === 0) return;
 
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -175,21 +175,22 @@
                     img.src = base64Data;
                     img.classList.remove('hidden');
                     document.getElementById('labelFront').classList.add('opacity-0');
-                    document.getElementById('meshFaceFront').src = base64Data; // Sync into 3D view
+                    document.getElementById('meshFaceFront').src = base64Data; 
                 } else {
                     base64Back = base64Data;
                     const img = document.getElementById('imgPreviewBack');
                     img.src = base64Data;
                     img.classList.remove('hidden');
                     document.getElementById('labelBack').classList.add('opacity-0');
-                    document.getElementById('meshFaceBack').src = base64Data; // Sync into 3D view
+                    document.getElementById('meshFaceBack').src = base64Data; 
                 }
             };
-            reader.readAsDataURL(file);
+            reader.readAsDataURL(files[0]);
         }
 
         async function runComprehensiveAIScan() {
             if (!base64Front) return alert("Please capture the FRONT image slot to run analysis.");
             
-            // Automatically grab your configuration vault key token from your device's memory
             const systemKey = localStorage.getItem("tcg_gemini_key") || localStorage.getItem("gemini_api_key") || localStorage.getItem("api_key");
+            if (!systemKey) return alert("API Token Missing. Please insert your verification credentials on your main dashboard configuration bar.");
+
