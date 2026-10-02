@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Collection Vault - Close-Up Scanner</title>
+    <title>TCG Auto-Scanner - Close-Up (v5.4)</title>
     <script src="https://tailwindcss.com"></script>
     <style>
-        /* Restoring your pure original app look and custom color palette */
+        /* Exact preservation of your original dark blue app branding */
         body { 
             background-color: #0B1528 !important; 
             color: #ffffff !important; 
@@ -15,161 +15,181 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
         }
         .app-container { max-width: 440px; margin: 0 auto; text-align: center; }
-        .preview-box { background-color: #16223F; border: 1px solid rgba(30, 58, 138, 0.5); border-radius: 12px; position: relative; overflow: hidden; }
-        .deck-card { background-color: #16223F; border: 1px solid rgba(30, 58, 138, 0.5); border-radius: 12px; padding: 16px; text-align: left; }
         
-        /* Clear high-visibility colors for links and text overrides */
-        .visible-link { color: #ffffff !important; font-weight: 500; text-decoration: none; }
-        .visible-link:hover { color: #60a5fa !important; }
-        .action-button { background-color: #16223F; border: 1px solid rgba(30, 58, 138, 0.8); color: #ffffff !important; border-radius: 12px; }
-        .action-button:active { transform: scale(0.98); }
+        /* Original dual image box structures */
+        .photo-slot { 
+            background-color: #16223F; 
+            border: 2px dashed rgba(30, 58, 138, 0.6); 
+            border-radius: 12px; 
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        /* 3D Card Animation Viewport Engine */
+        .card-perspective { perspective: 1000px; width: 140px; height: 196px; margin: 0 auto; }
+        .card-3d-object {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s ease;
+        }
+        .card-3d-object.flipped { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            object-cover: cover;
+            background-color: #111A30;
+        }
+        .card-face.back { transform: rotateY(180deg); }
+
+        /* Traditional high-visibility button configurations */
+        .primary-action-btn { 
+            background-color: #16223F; 
+            border: 1px solid rgba(30, 58, 138, 0.8); 
+            color: #ffffff !important; 
+            border-radius: 12px; 
+        }
+        .primary-action-btn:active { transform: scale(0.97); }
     </style>
 </head>
 <body>
 
     <div class="app-container space-y-4">
-        <!-- HEADER NAVIGATION: Forced to clean white text layout -->
-        <header class="flex justify-between items-center py-2 mb-2">
-            <a href="index.html" class="visible-link text-sm">← Home</a>
-            <h1 class="text-xl font-bold text-white">🔍 Close-Up Scanner</h1>
-            <a href="decks.html" class="visible-link text-sm">Vault 🗃️</a>
+        <!-- HEADER LINK ACTIONS -->
+        <header class="flex justify-between items-center py-2 text-white">
+            <a href="index.html" class="text-white hover:text-blue-400 font-medium text-sm">← Home</a>
+            <h1 class="text-xl font-bold">🔍 Close-Up Scanner</h1>
+            <a href="decks.html" class="text-white hover:text-blue-400 text-sm">Vault 🗃️</a>
         </header>
 
-        <!-- HIDDEN MANAGEMENT ROW: Keeps key sync running without cluttering your clean screen -->
-        <div id="syncStatusRow" class="text-center text-xs text-gray-400 pb-2">
-            <span id="keyStatus">🔄 Checking system vault credentials...</span>
-            <input type="password" id="apiKeyInput" class="hidden">
-        </div>
+        <!-- ORIGINAL FRONT & BACK IMAGE SHUTTER CONFIGURATION -->
+        <div class="grid grid-cols-2 gap-4 my-2">
+            <!-- Front Slot Wrapper -->
+            <div onclick="triggerCameraInput('front')" class="photo-slot aspect-[3/4] flex flex-col items-center justify-center p-4 relative">
+                <img id="imgPreviewFront" class="absolute inset-0 w-full h-full object-cover rounded-xl hidden">
+                <div id="labelFront" class="text-center space-y-1">
+                    <p class="text-2xl">📸</p>
+                    <p class="text-xs font-bold text-white">FRONT OF CARD</p>
+                    <p class="text-[10px] text-gray-400">Tap to snap snapshot</p>
+                </div>
+            </div>
 
-        <!-- CAMERA LIVE VIEWPORT & SNAPSHOT LAYER -->
-        <div class="preview-box aspect-[3/4] w-full flex flex-col items-center justify-center mb-4">
-            <video id="cameraFeed" autoplay playsinline class="w-full h-full object-cover hidden"></video>
-            <canvas id="photoCanvas" class="w-full h-full object-cover hidden"></canvas>
-            
-            <div id="cameraPlaceholder" class="text-center p-6 space-y-2">
-                <p class="text-3xl">📷</p>
-                <p class="text-sm font-semibold text-gray-300">Camera Standby</p>
-                <p class="text-[11px] text-gray-400 max-w-[220px]">Tap Activate Camera below to start live scanning feed.</p>
+            <!-- Back Slot Wrapper -->
+            <div onclick="triggerCameraInput('back')" class="photo-slot aspect-[3/4] flex flex-col items-center justify-center p-4 relative">
+                <img id="imgPreviewBack" class="absolute inset-0 w-full h-full object-cover rounded-xl hidden">
+                <div id="labelBack" class="text-center space-y-1">
+                    <p class="text-2xl">📸</p>
+                    <p class="text-xs font-bold text-white">BACK OF CARD</p>
+                    <p class="text-[10px] text-gray-400">Tap to check edges</p>
+                </div>
             </div>
         </div>
 
-        <!-- ACTION BUTTONS: Formatted exactly like your primary interface selections -->
-        <div class="grid grid-cols-2 gap-3 mb-6">
-            <button onclick="startCameraStreams()" class="action-button py-3 text-sm font-semibold">
-                🔌 Activate Camera
-            </button>
-            <button id="shutterBtn" onclick="executeCardScan()" class="action-button py-3 text-sm font-bold bg-blue-600/20 border-blue-500/50">
-                📸 Run Auto-Scan
-            </button>
+        <!-- HIDDEN WEBAPI HARDWARE NODES -->
+        <input type="file" id="cameraHardwareNode" accept="image/*" capture="environment" class="hidden" onchange="processCapturedPhoto(event)">
+
+        <!-- INTERACTIVE 3D SPINNING CARD MODULE -->
+        <div class="py-4">
+            <div class="card-perspective">
+                <div id="spinningCardMesh" onclick="toggle3DRotation()" class="card-3d-object">
+                    <!-- Front Frame Face -->
+                    <img id="meshFaceFront" src="https://pokemontcg.io" class="card-face front">
+                    <!-- Back Frame Face -->
+                    <img id="meshFaceBack" src="https://pokemontcg.io" class="card-face back">
+                </div>
+            </div>
+            <p class="text-[10px] text-gray-400 mt-2">Tap 3D asset frame to execute manual test flips</p>
         </div>
 
-        <!-- THE DEEP-DIVE PRE-GRADING BLUEPRINT DISPLAY -->
-        <div id="resultOutput" class="deck-card hidden space-y-3">
+        <!-- EXECUTION SCAN BUTTONS -->
+        <button id="calcTriggerBtn" onclick="runComprehensiveAIScan()" class="primary-action-btn w-full py-3.5 text-sm font-bold uppercase bg-blue-600/20 border-blue-500/40">
+            🤖 Analyze & Appraise Double Snapshot
+        </button>
+
+        <!-- THE PRE-GRADING STATS BLUEPRINT BLOCK -->
+        <div id="resultOutput" class="bg-[#16223F] border border-blue-900/50 rounded-xl p-4 text-left hidden space-y-3">
             <div class="flex justify-between items-start border-b border-blue-900/60 pb-2">
                 <div>
                     <h2 id="cardTitle" class="font-bold text-white text-base">--</h2>
-                    <p id="cardMeta" class="text-xs text-gray-400 mt-0.5">--</p>
+                    <p id="cardMeta" class="text-xs text-gray-400">-- • --</p>
                 </div>
-                <div class="text-right">
-                    <span id="badgeTier" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-950 text-blue-400 border border-blue-500/20">--</span>
-                </div>
+                <span id="badgeTier" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-950 text-blue-400">--</span>
             </div>
 
-            <!-- Deep-Dive Appraisal Metric Sub-blocks -->
             <div class="grid grid-cols-2 gap-y-2 gap-x-4 text-xs">
                 <div><span class="text-gray-400">Estimated Grade:</span> <strong id="valGrade" class="text-white block font-mono text-sm mt-0.5">--</strong></div>
                 <div><span class="text-gray-400">Worth Grading?</span> <strong id="valWorth" class="block text-sm mt-0.5">--</strong></div>
-                <div class="col-span-2 border-t border-white/5 my-1"></div>
+                <div class="col-span-2 border-t border-white/5 my-0.5"></div>
                 <div><span class="text-gray-400">Raw Market Value:</span> <strong id="valRaw" class="text-gray-200 block font-mono text-sm mt-0.5">--</strong></div>
                 <div><span class="text-gray-400">Est. Graded Value:</span> <strong id="valGraded" class="text-green-400 block font-mono text-sm mt-0.5">--</strong></div>
             </div>
 
-            <!-- Condition Appraisal Log Box -->
             <div class="bg-[#0B1528] p-2.5 rounded border border-blue-900/40 text-xs">
-                <span class="text-blue-400 block mb-1 text-[10px] uppercase font-bold tracking-wide">Flaws Seen:</span>
-                <p id="valFlaws" class="text-gray-300 italic text-[11px] leading-relaxed">Analyzing visual artifacts...</p>
+                <span class="text-blue-400 block mb-1 text-[10px] uppercase font-bold tracking-wide">Appraisal Flaws Found:</span>
+                <p id="valFlaws" class="text-gray-300 italic text-[11px] leading-relaxed">--</p>
             </div>
 
-            <!-- Net Profit Analytics Platform Logic -->
             <div class="border-t border-blue-900/60 pt-2 text-xs space-y-1">
-                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Net Profit Math Breakdown</span>
+                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Net Take-Home Math</span>
                 <div class="flex justify-between text-gray-400 text-[11px]"><span>Est. Gross Revenue:</span><span id="mathGross" class="font-mono text-white">--</span></div>
-                <div class="flex justify-between text-gray-400 text-[11px]"><span>Est. Fees & Processing (13.5%):</span><span id="mathFees" class="font-mono text-red-400">--</span></div>
+                <div class="flex justify-between text-gray-400 text-[11px]"><span>Platform Deductions (13.5%):</span><span id="mathFees" class="font-mono text-red-400">--</span></div>
                 <div class="flex justify-between font-bold border-t border-white/5 pt-1 text-sm mt-1">
-                    <span class="text-gray-200">Net Take-Home Margin:</span>
+                    <span>Net Margin Profit:</span>
                     <span id="mathNet" class="font-mono text-green-400">--</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- AI LOGIC PIPELINE LAYER -->
+    <!-- BACKGROUND PROCESSING ENGINE -->
     <script>
-        let localStream = null;
-        const video = document.getElementById('cameraFeed');
-        const canvas = document.getElementById('photoCanvas');
-        const apiKeyInput = document.getElementById('apiKeyInput');
-        const statusText = document.getElementById('keyStatus');
+        let currentTargetSlot = 'front';
+        let base64Front = null;
+        let base64Back = null;
 
-        // Look for the securely saved key on load
-        document.addEventListener("DOMContentLoaded", () => {
-            const storedKey = localStorage.getItem("tcg_gemini_key") || 
-                              localStorage.getItem("gemini_api_key") || 
-                              localStorage.getItem("api_key");
-                              
-            if (storedKey && storedKey.trim().length > 10) {
-                apiKeyInput.value = storedKey.trim();
-                statusText.innerHTML = "🟢 <span class='text-green-400'>System Vault Connected & Active</span>";
-            } else {
-                statusText.innerHTML = "🟡 <span class='text-yellow-400'>Vault key missing. Enter key on Home screen.</span>";
-            }
-        });
-
-        async function startCameraStreams() {
-            try {
-                localStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false });
-                video.srcObject = localStream;
-                video.classList.remove("hidden");
-                document.getElementById("cameraPlaceholder").classList.add("hidden");
-            } catch (err) {
-                alert("Camera access denied. Ensure connection uses HTTPS.");
-                console.error(err);
-            }
+        function triggerCameraInput(slot) {
+            currentTargetSlot = slot;
+            document.getElementById('cameraHardwareNode').click();
         }
 
-        async function executeCardScan() {
-            const apiKey = apiKeyInput.value.trim();
-            if (!apiKey) return alert("Please save a valid Gemini Key on your Home Screen first.");
-
-            const ctx = canvas.getContext('2d');
-            canvas.width = video.videoWidth || 640;
-            canvas.height = video.videoHeight || 480;
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            
-            video.classList.add("hidden");
-            canvas.classList.remove("hidden");
-            
-            document.getElementById("shutterBtn").innerText = "⏳ Reading Card...";
-            const rawBase64 = canvas.toDataURL('image/jpeg', 0.85);
-
-            const payloadData = await analyzeCardWithGemini(rawBase64, apiKey);
-            
-            document.getElementById("shutterBtn").innerText = "📸 Run Auto-Scan";
-            video.classList.remove("hidden");
-            canvas.classList.add("hidden");
-
-            if (payloadData) {
-                renderEvaluationInterface(payloadData);
-            } else {
-                alert("AI processing error. Verify your system vault key is active.");
-            }
+        function toggle3DRotation() {
+            document.getElementById('spinningCardMesh').classList.toggle('flipped');
         }
 
-        async function analyzeCardWithGemini(base64String, authKey) {
-            const cleanedBase64 = base64String.replace(/^data:image\/(png|jpeg|jpg);base64,/, "");
-            const endpoint = `https://googleapis.com{authKey}`;
+        function processCapturedPhoto(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64Data = e.target.result;
+                
+                if (currentTargetSlot === 'front') {
+                    base64Front = base64Data;
+                    const img = document.getElementById('imgPreviewFront');
+                    img.src = base64Data;
+                    img.classList.remove('hidden');
+                    document.getElementById('labelFront').classList.add('opacity-0');
+                    document.getElementById('meshFaceFront').src = base64Data; // Sync into 3D view
+                } else {
+                    base64Back = base64Data;
+                    const img = document.getElementById('imgPreviewBack');
+                    img.src = base64Data;
+                    img.classList.remove('hidden');
+                    document.getElementById('labelBack').classList.add('opacity-0');
+                    document.getElementById('meshFaceBack').src = base64Data; // Sync into 3D view
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function runComprehensiveAIScan() {
+            if (!base64Front) return alert("Please capture the FRONT image slot to run analysis.");
             
-            const promptContext = {
-                contents: [{
-                    parts: [
-                        { text: "Analyze this trading card image. Identify its specifications. Return ONLY a valid JSON object matching this structure exactly without code blocks: {\"name\":\"Card Name\",\"set\":\"Set\",\"number\":\"#/#\",\"estRaw\":10.00,\"estGraded\":50.00,\"grade\":\"PSA 9\",\"flaws\":\"Minor corner whitening\",\"worthGrading\":true,\"tier\":\"pull\"}" },
+            // Automatically grab your configuration vault key token from your device's memory
+            const systemKey = localStorage.getItem("tcg_gemini_key") || localStorage.getItem("gemini_api_key") || localStorage.getItem("api_key");
