@@ -86,10 +86,10 @@
             const el = document.getElementById(id);
             if (!el) return;
             let startX = 0, currentRot = 0, savedRot = 0, isMoving = false;
-            el.addEventListener('touchstart', e => { startX = e.touches.clientX; isMoving = true; }, { passive: true });
+            el.addEventListener('touchstart', e => { startX = e.touches[0].clientX; isMoving = true; }, { passive: true });
             el.addEventListener('touchmove', e => {
                 if (!isMoving) return;
-                const deltaX = e.touches.clientX - startX;
+                const deltaX = e.touches[0].clientX - startX;
                 currentRot = savedRot + (deltaX * 0.5);
                 el.style.transform = `rotateY(${currentRot}deg)`;
             }, { passive: true });
@@ -99,6 +99,8 @@
         async function runEvaluation(frontImg, backImg) {
             const loader = document.getElementById('ai-loading');
             const container = document.getElementById('ai-payload');
+            
+            // Read key stored securely from index.html dashboard
             const apiKey = localStorage.getItem('tcg_auto_scanner_gemini_key');
 
             let record = {
@@ -112,7 +114,7 @@
 
             if (apiKey && frontImg && backImg) {
                 const url = `https://googleapis.com{apiKey}`;
-                const prompt = `Analyze this trading card front and back image. Identify card name, set, and number. Provide an evaluation matching this structure format exactly down to every line item:
+                const prompt = `Analyze this trading card front and back image. Identify card name, set, and number. Provide an evaluation matching this structure format exactly down to every line item without code block formatting:
                 NAME: [Name] \nSET: [Set] \nNUMBER: [Number] \nGRADE: [Grade] \nFLAWS: [Flaws] \nWORTH: [🟢/🟡/🔴 Yes/No] \nRAWVAL: [Raw Value number] \nESTVAL: [Graded Value number] \nPOP: [Pop Details] \nGRADER: [Grader] \nLIQUIDITY: [🟢/🟡/🔴 Details] \nAUTH: [Details] \nNEXT: [Details]`;
 
                 try {
@@ -132,15 +134,15 @@
                             }]
                         })
                     });
-                    const json = await res.json();
-                    if (json && json.candidates && json.candidates[0] && json.candidates[0].content && json.candidates[0].content.parts && json.candidates[0].content.parts[0] && json.candidates[0].content.parts[0].text) {
-                        const text = json.candidates[0].content.parts[0].text;
-                        const extract = (regex, fallback) => { const m = text.match(regex); return m ? m.trim() : fallback; };
-                        
-                        const grossGraded = parseFloat(extract(/ESTVAL:\s*\$?([0-9.]+)/, "220.00"));
-                        const calcFee = (grossGraded * 0.135).toFixed(2);
-                        const calcOutlay = (15.00 + 14.00 + 2.00 + parseFloat(calcFee)).toFixed(2);
-                        const calcPayout = (grossGraded - parseFloat(calcOutlay)).toFixed(2);
-
-                        record = {
-                            name: extract(/NAME:\s*(.+)/, record.name), set: extract(/SET:\s*(.+)/, record.set), number: extract(/NUMBER:\s*(.+)/, record.number),
+                    
+                    const data = await res.json();
+                    if (data && data.candidates && data.candidates[0].content.parts[0].text) {
+                        const lines = data.candidates[0].content.parts[0].text.split('\n');
+                        lines.forEach(line => {
+                            if(line.startsWith("NAME:")) record.name = line.replace("NAME:", "").trim();
+                            if(line.startsWith("SET:")) record.set = line.replace("SET:", "").trim();
+                            if(line.startsWith("NUMBER:")) record.number = line.replace("NUMBER:", "").trim();
+                            if(line.startsWith("GRADE:")) record.grade = line.replace("GRADE:", "").trim();
+                            if(line.startsWith("FLAWS:")) record.flaws = line.replace("FLAWS:", "").trim();
+                            if(line.startsWith("WORTH:")) record.worth = line.replace("WORTH:", "").trim();
+                            if(line.startsWith("RAWVAL:")) record.rawVal = line.replace("RAWVAL:", "").trim();
