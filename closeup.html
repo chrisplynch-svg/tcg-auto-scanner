@@ -3,194 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TCG Auto-Scanner - Close-Up (v5.5)</title>
-    <script src="https://tailwindcss.com"></script>
+    <title>Close-Up Scanner</title>
     <style>
-        /* Exact preservation of your original dark blue app branding */
-        body { 
-            background-color: #0B1528 !important; 
-            color: #ffffff !important; 
-            margin: 0; 
-            padding: 16px; 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-        }
-        .app-container { max-width: 440px; margin: 0 auto; text-align: center; }
-        
-        /* Original dual image box structures */
-        .photo-slot { 
-            background-color: #16223F; 
-            border: 2px dashed rgba(30, 58, 138, 0.6); 
-            border-radius: 12px; 
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        
-        /* 3D Card Animation Viewport Engine */
-        .card-perspective { perspective: 1000px; width: 140px; height: 196px; margin: 0 auto; }
-        .card-3d-object {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 0.6s ease;
-        }
-        .card-3d-object.flipped { transform: rotateY(180deg); }
-        .card-face {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            object-fit: cover;
-            background-color: #111A30;
-        }
-        .card-face.back { transform: rotateY(180deg); }
-
-        /* Traditional high-visibility button configurations */
-        .primary-action-btn { 
-            background-color: #16223F; 
-            border: 1px solid rgba(30, 58, 138, 0.8); 
-            color: #ffffff !important; 
-            border-radius: 12px; 
-        }
-        .primary-action-btn:active { transform: scale(0.97); }
+        body { background-color: #0B1528 !important; color: #ffffff !important; margin: 0; padding: 12px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; display: flex; justify-content: center; }
+        .app-container { width: 100%; max-width: 440px; display: flex; flex-direction: column; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid rgba(30, 58, 138, 0.4); position: relative; }
+        h1 { font-size: 15px; font-weight: 700; margin: 0; color: #ffffff; }
+        .version { font-size: 11px; font-family: monospace; color: #60A5FA; }
+        .home-btn { background-color: #1e3a8a; font-size: 11px; padding: 6px 12px; border-radius: 6px; text-decoration: none; color: #ffffff; font-weight: 600; }
+        .grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+        .scan-label { background-color: #16223F; border: 1px dashed #1e3a8a; border-radius: 12px; padding: 12px 8px; text-align: center; cursor: pointer; display: block; }
+        .scan-lbl-text { font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px; color: #ffffff; }
+        .preview-box { width: 100%; height: 110px; background-color: #0F1A30; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #6B7280; overflow: hidden; }
+        .preview-box img { width: 100%; height: 100%; object-fit: contain; }
+        .display-container { background-color: #131F3B; border: 1px solid rgba(30, 58, 138, 0.4); border-radius: 16px; padding: 24px 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 20px; min-height: 400px; }
+        .scene { perspective: 1200px; width: 250px; height: 350px; margin-bottom: 16px; }
+        .c3d { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.1s ease-out; }
+        .face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 14px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid rgba(59, 130, 246, 0.3); }
+        .face img { width: 100%; height: 100%; object-fit: contain; }
+        .back { transform: rotateY(180deg); }
+        .spin-text { font-size: 10px; color: #60A5FA; font-family: monospace; letter-spacing: 0.05em; text-transform: uppercase; background-color: rgba(15, 26, 48, 0.8); padding: 6px 16px; border-radius: 9999px; border: 1px solid rgba(30, 58, 138, 0.5); text-align: center; display: inline-block; }
+        .action-btn { display: block; width: 100%; background-color: #2563EB; color: #ffffff; font-weight: 700; padding: 14px 0; border-radius: 12px; text-align: center; text-decoration: none; font-size: 14px; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); margin-top: 4px; }
     </style>
 </head>
 <body>
-
-    <div class="app-container space-y-4">
-        <!-- HEADER LINK ACTIONS -->
-        <header class="flex justify-between items-center py-2 text-white">
-            <a href="index.html" class="text-white hover:text-blue-400 font-medium text-sm">← Home</a>
-            <h1 class="text-xl font-bold">🔍 Close-Up Scanner</h1>
-            <a href="decks.html" class="text-white hover:text-blue-400 text-sm">Vault 🗃️</a>
+    <div class="app-container">
+        <header>
+            <h1>Trading Card Grading <span class="version">v1.1</span></h1>
+            <a href="index.html" class="home-btn">🏠 Home</a>
         </header>
+        
+        <div class="grid-layout">
+            <label class="scan-label">
+                <span class="scan-lbl-text">Front Preview</span>
+                <input type="file" accept="image/*" capture="environment" style="display:none;" onchange="runImg(this,'front')">
+                <div id="p-front" class="preview-box">Scan Front</div>
+            </label>
+            <label class="scan-label">
+                <span class="scan-lbl-text">Back Preview</span>
+                <input type="file" accept="image/*" capture="environment" style="display:none;" onchange="runImg(this,'back')">
+                <div id="p-back" class="preview-box">Scan Back</div>
+            </label>
+        </div>
 
-        <!-- ORIGINAL FRONT & BACK IMAGE SHUTTER CONFIGURATION -->
-        <div class="grid grid-cols-2 gap-4 my-2">
-            <!-- Front Slot Wrapper -->
-            <div onclick="triggerCameraInput('front')" class="photo-slot aspect-[3/4] flex flex-col items-center justify-center p-4 relative">
-                <img id="imgPreviewFront" class="absolute inset-0 w-full h-full object-cover rounded-xl hidden">
-                <div id="labelFront" class="text-center space-y-1">
-                    <p class="text-2xl">📸</p>
-                    <p class="text-xs font-bold text-white">FRONT OF CARD</p>
-                    <p class="text-[10px] text-gray-400">Tap to snap snapshot</p>
+        <div class="display-container">
+            <div class="scene">
+                <div id="spin-1" class="c3d">
+                    <div class="face bg-[#1A2A4C]">
+                        <img id="m-front" style="display:none;">
+                        <p id="lbl-f" style="font-size: 12px; color:#9CA3AF; text-align:center; padding:0 12px;">Scan Front To View Image</p>
+                    </div>
+                    <div class="face back bg-[#1A2A4C]">
+                        <img id="m-back" style="display:none;">
+                        <p id="lbl-b" style="font-size: 12px; color:#9CA3AF;">Back Image Missing</p>
+                    </div>
                 </div>
             </div>
-
-            <!-- Back Slot Wrapper -->
-            <div onclick="triggerCameraInput('back')" class="photo-slot aspect-[3/4] flex flex-col items-center justify-center p-4 relative">
-                <img id="imgPreviewBack" class="absolute inset-0 w-full h-full object-cover rounded-xl hidden">
-                <div id="labelBack" class="text-center space-y-1">
-                    <p class="text-2xl">📸</p>
-                    <p class="text-xs font-bold text-white">BACK OF CARD</p>
-                    <p class="text-[10px] text-gray-400">Tap to check edges</p>
-                </div>
+            <div>
+                <p class="spin-text">Swipe To Spin Card</p>
             </div>
         </div>
 
-        <!-- HIDDEN WEBAPI HARDWARE NODES -->
-        <input type="file" id="cameraHardwareNode" accept="image/*" capture="environment" class="hidden" onchange="processCapturedPhoto(event)">
-
-        <!-- INTERACTIVE 3D SPINNING CARD MODULE -->
-        <div class="py-4">
-            <div class="card-perspective">
-                <div id="spinningCardMesh" onclick="toggle3DRotation()" class="card-3d-object">
-                    <!-- Front Frame Face -->
-                    <img id="meshFaceFront" src="https://pokemontcg.io" class="card-face front">
-                    <!-- Back Frame Face -->
-                    <img id="meshFaceBack" src="https://pokemontcg.io" class="card-face back">
-                </div>
-            </div>
-            <p class="text-[10px] text-gray-400 mt-2">Tap 3D asset frame to execute manual test flips</p>
-        </div>
-
-        <!-- EXECUTION SCAN BUTTONS -->
-        <button id="calcTriggerBtn" onclick="runComprehensiveAIScan()" class="primary-action-btn w-full py-3.5 text-sm font-bold uppercase bg-blue-600/20 border-blue-500/40">
-            🤖 Analyze & Appraise Double Snapshot
-        </button>
-
-        <!-- THE PRE-GRADING STATS BLUEPRINT BLOCK -->
-        <div id="resultOutput" class="bg-[#16223F] border border-blue-900/50 rounded-xl p-4 text-left hidden space-y-3">
-            <div class="flex justify-between items-start border-b border-blue-900/60 pb-2">
-                <div>
-                    <h2 id="cardTitle" class="font-bold text-white text-base">--</h2>
-                    <p id="cardMeta" class="text-xs text-gray-400">-- • --</p>
-                </div>
-                <span id="badgeTier" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-950 text-blue-400">--</span>
-            </div>
-
-            <div class="grid grid-cols-2 gap-y-2 gap-x-4 text-xs">
-                <div><span class="text-gray-400">Estimated Grade:</span> <strong id="valGrade" class="text-white block font-mono text-sm mt-0.5">--</strong></div>
-                <div><span class="text-gray-400">Worth Grading?</span> <strong id="valWorth" class="block text-sm mt-0.5">--</strong></div>
-                <div class="col-span-2 border-t border-white/5 my-0.5"></div>
-                <div><span class="text-gray-400">Raw Market Value:</span> <strong id="valRaw" class="text-gray-200 block font-mono text-sm mt-0.5">--</strong></div>
-                <div><span class="text-gray-400">Est. Graded Value:</span> <strong id="valGraded" class="text-green-400 block font-mono text-sm mt-0.5">--</strong></div>
-            </div>
-
-            <div class="bg-[#0B1528] p-2.5 rounded border border-blue-900/40 text-xs">
-                <span class="text-blue-400 block mb-1 text-[10px] uppercase font-bold tracking-wide">Appraisal Flaws Found:</span>
-                <p id="valFlaws" class="text-gray-300 italic text-[11px] leading-relaxed">--</p>
-            </div>
-
-            <div class="border-t border-blue-900/60 pt-2 text-xs space-y-1">
-                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Net Take-Home Math</span>
-                <div class="flex justify-between text-gray-400 text-[11px]"><span>Est. Gross Revenue:</span><span id="mathGross" class="font-mono text-white">--</span></div>
-                <div class="flex justify-between text-gray-400 text-[11px]"><span>Platform Deductions (13.5%):</span><span id="mathFees" class="font-mono text-red-400">--</span></div>
-                <div class="flex justify-between font-bold border-t border-white/5 pt-1 text-sm mt-1">
-                    <span>Net Margin Profit:</span>
-                    <span id="mathNet" class="font-mono text-green-400">--</span>
-                </div>
-            </div>
-        </div>
+        <a id="btn-go" href="info.html" class="action-btn">🔍 Generate Info Breakdown</a>
     </div>
 
-    <!-- BACKGROUND ROBUST PROCESSING ENGINE -->
     <script>
-        let currentTargetSlot = 'front';
-        let base64Front = null;
-        let base64Back = null;
+        window.addEventListener('load', () => {
+            initSpin('spin-1');
+            const cachedFront = localStorage.getItem("card-front");
+            const cachedBack = localStorage.getItem("card-back");
+            if(cachedFront) applyImageSource('front', cachedFront);
+            if(cachedBack) applyImageSource('back', cachedBack);
+        });
 
-        function triggerCameraInput(slot) {
-            currentTargetSlot = slot;
-            document.getElementById('cameraHardwareNode').click();
+        function runImg(input, face) {
+            if (input.files && input.files[0]) {
+                const r = new FileReader();
+                r.onload = function(e) {
+                    const src = e.target.result;
+                    localStorage.setItem(`card-${face}`, src);
+                    applyImageSource(face, src);
+                };
+                r.readAsDataURL(input.files[0]);
+            }
         }
 
-        function toggle3DRotation() {
-            document.getElementById('spinningCardMesh').classList.toggle('flipped');
+        function applyImageSource(face, src) {
+            document.getElementById(`p-${face}`).innerHTML = `<img src="${src}">`;
+            const m = document.getElementById(`m-${face}`);
+            if (m) { 
+                m.src = src; 
+                m.style.display = 'block'; 
+                m.style.width = '100%';
+                m.style.height = '100%';
+                m.style.objectFit = 'contain';
+            }
+            const lbl = document.getElementById(face === 'front' ? "lbl-f" : "lbl-b");
+            if (lbl) lbl.style.display = 'none';
         }
 
-        function processCapturedPhoto(event) {
-            const files = event.target.files;
-            if (!files || files.length === 0) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const base64Data = e.target.result;
-                
-                if (currentTargetSlot === 'front') {
-                    base64Front = base64Data;
-                    const img = document.getElementById('imgPreviewFront');
-                    img.src = base64Data;
-                    img.classList.remove('hidden');
-                    document.getElementById('labelFront').classList.add('opacity-0');
-                    document.getElementById('meshFaceFront').src = base64Data; 
-                } else {
-                    base64Back = base64Data;
-                    const img = document.getElementById('imgPreviewBack');
-                    img.src = base64Data;
-                    img.classList.remove('hidden');
-                    document.getElementById('labelBack').classList.add('opacity-0');
-                    document.getElementById('meshFaceBack').src = base64Data; 
-                }
-            };
-            reader.readAsDataURL(files[0]);
-        }
-
-        async function runComprehensiveAIScan() {
-            if (!base64Front) return alert("Please capture the FRONT image slot to run analysis.");
+        function initSpin(id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            let startX = 0, currentRot = 0, savedRot = 0, isMoving = false;
             
-            const systemKey = localStorage.getItem("tcg_gemini_key") || localStorage.getItem("gemini_api_key") || localStorage.getItem("api_key");
-            if (!systemKey) return alert("API Token Missing. Please insert your verification credentials on your main dashboard configuration bar.");
-
+            el.addEventListener('touchstart', e => { 
+                startX = e.touches[0].clientX; 
+                isMoving = true; 
+            }, { passive: true });
+            
+            el.addEventListener('touchmove', e => {
+                if (!isMoving) return;
+                const deltaX = e.touches[0].clientX - startX;
+                currentRot = savedRot + (deltaX * 0.5);
+                el.style.transform = `rotateY(${currentRot}deg)`;
+            }, { passive: true });
+            
+            el.addEventListener('touchend', () => { 
+                if (!isMoving) return; 
+                isMoving = false; 
+                savedRot = currentRot; 
+            });
+        }
+    </script>
+</body>
+</html>
