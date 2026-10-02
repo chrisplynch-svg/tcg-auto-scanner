@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TCG Scanner - Close-Up (v5.3)</title>
+    <title>Collection Vault - Close-Up Scanner</title>
     <script src="https://tailwindcss.com"></script>
     <style>
+        /* Restoring your pure original app look and custom color palette */
         body { 
             background-color: #0B1528 !important; 
             color: #ffffff !important; 
@@ -13,143 +14,116 @@
             padding: 16px; 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
         }
-        .app-container { max-width: 440px; margin: 0 auto; }
-        .preview-box { background-color: #16223F; border: 2px dashed rgba(30, 58, 138, 0.6); border-radius: 16px; position: relative; overflow: hidden; }
-        .result-card { background-color: #111A30; border: 1px solid rgba(30, 58, 138, 0.4); border-radius: 16px; padding: 16px; text-align: left; }
+        .app-container { max-width: 440px; margin: 0 auto; text-align: center; }
+        .preview-box { background-color: #16223F; border: 1px solid rgba(30, 58, 138, 0.5); border-radius: 12px; position: relative; overflow: hidden; }
+        .deck-card { background-color: #16223F; border: 1px solid rgba(30, 58, 138, 0.5); border-radius: 12px; padding: 16px; text-align: left; }
+        
+        /* Clear high-visibility colors for links and text overrides */
+        .visible-link { color: #ffffff !important; font-weight: 500; text-decoration: none; }
+        .visible-link:hover { color: #60a5fa !important; }
+        .action-button { background-color: #16223F; border: 1px solid rgba(30, 58, 138, 0.8); color: #ffffff !important; border-radius: 12px; }
+        .action-button:active { transform: scale(0.98); }
     </style>
 </head>
 <body>
 
-    <div class="app-container space-y-4 pt-4">
-        <!-- HEADER NAVIGATION: Fixed contrast contrast link bug -->
-        <header class="flex justify-between items-center py-2">
-            <a href="index.html" class="text-blue-400 font-semibold hover:text-blue-300 flex items-center gap-1">
-                <span>←</span> Back Home
-            </a>
-            <h1 class="text-base font-bold tracking-tight text-white/90">🔍 Close-Up Scanner</h1>
-            <a href="decks.html" class="text-xs bg-blue-900/50 text-blue-300 border border-blue-500/30 px-2 py-1 rounded font-medium">Vault 🗃️</a>
+    <div class="app-container space-y-4">
+        <!-- HEADER NAVIGATION: Forced to clean white text layout -->
+        <header class="flex justify-between items-center py-2 mb-2">
+            <a href="index.html" class="visible-link text-sm">← Home</a>
+            <h1 class="text-xl font-bold text-white">🔍 Close-Up Scanner</h1>
+            <a href="decks.html" class="visible-link text-sm">Vault 🗃️</a>
         </header>
 
-        <!-- SECURITY VAULT STATUS: Synced with home screen storage keys -->
-        <div class="p-3 bg-[#111A30] border border-blue-900/40 rounded-xl text-xs space-y-2">
-            <div class="flex justify-between items-center">
-                <span class="text-blue-400 font-medium flex items-center gap-1.5">
-                    <span>🔑</span> Gemini AI System Key
-                </span>
-                <span id="keyStatus" class="text-red-400 font-mono font-bold bg-red-950/40 px-2 py-0.5 rounded border border-red-500/20">🔒 Locked</span>
-            </div>
-            <input type="password" id="apiKeyInput" placeholder="Enter or sync your Gemini key..." 
-                   class="w-full bg-[#0E172A] border border-blue-900/60 rounded p-2 text-white font-mono text-xs focus:outline-none focus:border-blue-500">
+        <!-- HIDDEN MANAGEMENT ROW: Keeps key sync running without cluttering your clean screen -->
+        <div id="syncStatusRow" class="text-center text-xs text-gray-400 pb-2">
+            <span id="keyStatus">🔄 Checking system vault credentials...</span>
+            <input type="password" id="apiKeyInput" class="hidden">
         </div>
 
-        <!-- CAMERA VIEWPORT BOX -->
-        <div class="preview-box aspect-[3/4] w-full flex flex-col items-center justify-center shadow-inner">
+        <!-- CAMERA LIVE VIEWPORT & SNAPSHOT LAYER -->
+        <div class="preview-box aspect-[3/4] w-full flex flex-col items-center justify-center mb-4">
             <video id="cameraFeed" autoplay playsinline class="w-full h-full object-cover hidden"></video>
             <canvas id="photoCanvas" class="w-full h-full object-cover hidden"></canvas>
             
             <div id="cameraPlaceholder" class="text-center p-6 space-y-2">
-                <p class="text-4xl">📷</p>
-                <p class="text-sm font-semibold text-gray-300">Camera Interrupted</p>
-                <p class="text-[11px] text-gray-500 max-w-[220px] mx-auto">Tap "Activate Camera" below to request live video frames.</p>
+                <p class="text-3xl">📷</p>
+                <p class="text-sm font-semibold text-gray-300">Camera Standby</p>
+                <p class="text-[11px] text-gray-400 max-w-[220px]">Tap Activate Camera below to start live scanning feed.</p>
             </div>
         </div>
 
-        <!-- ACTION CONTROLLER INTERFACE -->
-        <div class="grid grid-cols-2 gap-3">
-            <button onclick="startCameraStreams()" class="bg-blue-950/60 hover:bg-blue-900/40 border border-blue-500/30 font-medium py-3 rounded-xl text-xs uppercase tracking-wider transition-all active:scale-95 text-blue-300">
+        <!-- ACTION BUTTONS: Formatted exactly like your primary interface selections -->
+        <div class="grid grid-cols-2 gap-3 mb-6">
+            <button onclick="startCameraStreams()" class="action-button py-3 text-sm font-semibold">
                 🔌 Activate Camera
             </button>
-            <button id="shutterBtn" onclick="executeCardScan()" disabled class="bg-blue-600 opacity-50 cursor-not-allowed font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition-all text-white">
+            <button id="shutterBtn" onclick="executeCardScan()" class="action-button py-3 text-sm font-bold bg-blue-600/20 border-blue-500/50">
                 📸 Run Auto-Scan
             </button>
         </div>
 
-        <!-- DEEP-DIVE PRE-GRADING METRICS DISPLAY -->
-        <div id="resultOutput" class="result-card hidden space-y-3 shadow-2xl">
-            <div class="flex justify-between items-start border-b border-blue-900/40 pb-2.5">
+        <!-- THE DEEP-DIVE PRE-GRADING BLUEPRINT DISPLAY -->
+        <div id="resultOutput" class="deck-card hidden space-y-3">
+            <div class="flex justify-between items-start border-b border-blue-900/60 pb-2">
                 <div>
                     <h2 id="cardTitle" class="font-bold text-white text-base">--</h2>
-                    <p id="cardMeta" class="text-xs text-gray-400 font-medium mt-0.5">--</p>
+                    <p id="cardMeta" class="text-xs text-gray-400 mt-0.5">--</p>
                 </div>
-                <div>
-                    <span id="badgeTier" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">--</span>
+                <div class="text-right">
+                    <span id="badgeTier" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-950 text-blue-400 border border-blue-500/20">--</span>
                 </div>
             </div>
 
-            <!-- Core appraisal metadata -->
-            <div class="grid grid-cols-2 gap-y-2.5 gap-x-4 text-xs">
-                <div><span class="text-gray-400 block mb-0.5">Estimated Grade:</span> <strong id="valGrade" class="text-white block text-sm font-mono font-bold">--</strong></div>
-                <div><span class="text-gray-400 block mb-0.5">Worth Grading?</span> <strong id="valWorth" class="block text-sm font-bold">--</strong></div>
-                <div class="col-span-2 border-t border-white/5 my-0.5"></div>
-                <div><span class="text-gray-400 block mb-0.5">Raw Market Value:</span> <strong id="valRaw" class="text-gray-300 block text-sm font-mono">--</strong></div>
-                <div><span class="text-gray-400 block mb-0.5">Est. Graded Value:</span> <strong id="valGraded" class="text-green-400 block text-sm font-mono font-bold">--</strong></div>
+            <!-- Deep-Dive Appraisal Metric Sub-blocks -->
+            <div class="grid grid-cols-2 gap-y-2 gap-x-4 text-xs">
+                <div><span class="text-gray-400">Estimated Grade:</span> <strong id="valGrade" class="text-white block font-mono text-sm mt-0.5">--</strong></div>
+                <div><span class="text-gray-400">Worth Grading?</span> <strong id="valWorth" class="block text-sm mt-0.5">--</strong></div>
+                <div class="col-span-2 border-t border-white/5 my-1"></div>
+                <div><span class="text-gray-400">Raw Market Value:</span> <strong id="valRaw" class="text-gray-200 block font-mono text-sm mt-0.5">--</strong></div>
+                <div><span class="text-gray-400">Est. Graded Value:</span> <strong id="valGraded" class="text-green-400 block font-mono text-sm mt-0.5">--</strong></div>
             </div>
 
-            <!-- Flaw registry tracking box -->
-            <div class="bg-[#0B1528] p-2.5 rounded-lg border border-blue-900/30 text-xs">
-                <span class="text-gray-400 font-medium block mb-1 text-[11px] uppercase tracking-wide">Surface Flaws Seen:</span>
-                <p id="valFlaws" class="text-gray-300 italic text-[11px] leading-relaxed">None detected.</p>
+            <!-- Condition Appraisal Log Box -->
+            <div class="bg-[#0B1528] p-2.5 rounded border border-blue-900/40 text-xs">
+                <span class="text-blue-400 block mb-1 text-[10px] uppercase font-bold tracking-wide">Flaws Seen:</span>
+                <p id="valFlaws" class="text-gray-300 italic text-[11px] leading-relaxed">Analyzing visual artifacts...</p>
             </div>
 
-            <!-- Net Profit Deductions Layout -->
-            <div class="border-t border-blue-900/40 pt-2 text-xs space-y-1">
-                <span class="text-[10px] font-bold text-blue-400 uppercase tracking-wider block mb-1.5">Net Profit Math Breakdown</span>
+            <!-- Net Profit Analytics Platform Logic -->
+            <div class="border-t border-blue-900/60 pt-2 text-xs space-y-1">
+                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Net Profit Math Breakdown</span>
                 <div class="flex justify-between text-gray-400 text-[11px]"><span>Est. Gross Revenue:</span><span id="mathGross" class="font-mono text-white">--</span></div>
                 <div class="flex justify-between text-gray-400 text-[11px]"><span>Est. Fees & Processing (13.5%):</span><span id="mathFees" class="font-mono text-red-400">--</span></div>
-                <div class="flex justify-between font-bold border-t border-white/5 pt-1.5 text-sm mt-1">
+                <div class="flex justify-between font-bold border-t border-white/5 pt-1 text-sm mt-1">
                     <span class="text-gray-200">Net Take-Home Margin:</span>
-                    <span id="mathNet" class="font-mono">--</span>
+                    <span id="mathNet" class="font-mono text-green-400">--</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPT INFRASTRUCTURE ENGINE -->
+    <!-- AI LOGIC PIPELINE LAYER -->
     <script>
         let localStream = null;
         const video = document.getElementById('cameraFeed');
         const canvas = document.getElementById('photoCanvas');
         const apiKeyInput = document.getElementById('apiKeyInput');
+        const statusText = document.getElementById('keyStatus');
 
-        // MULTI-SCREEN SYNC: Automatically pull keys shared by main dashboard memory stores
+        // Look for the securely saved key on load
         document.addEventListener("DOMContentLoaded", () => {
-            // Checks multiple common storage names used by index.html configuration vaults
             const storedKey = localStorage.getItem("tcg_gemini_key") || 
                               localStorage.getItem("gemini_api_key") || 
                               localStorage.getItem("api_key");
                               
             if (storedKey && storedKey.trim().length > 10) {
                 apiKeyInput.value = storedKey.trim();
-                updateKeyStatus(true);
+                statusText.innerHTML = "🟢 <span class='text-green-400'>System Vault Connected & Active</span>";
+            } else {
+                statusText.innerHTML = "🟡 <span class='text-yellow-400'>Vault key missing. Enter key on Home screen.</span>";
             }
         });
-
-        // Handle manual override changes locally inside this specific view
-        apiKeyInput.addEventListener("input", () => {
-            const cleanKey = apiKeyInput.value.trim();
-            if(cleanKey.length > 10) {
-                localStorage.setItem("tcg_gemini_key", cleanKey);
-                updateKeyStatus(true);
-            } else {
-                updateKeyStatus(false);
-            }
-        });
-
-        function updateKeyStatus(isValid) {
-            const status = document.getElementById("keyStatus");
-            const btn = document.getElementById("shutterBtn");
-            if (isValid) {
-                status.textContent = "🔓 Ready";
-                status.className = "text-green-400 font-mono font-bold bg-green-950/40 px-2 py-0.5 rounded border border-green-500/20";
-                btn.disabled = false;
-                btn.className = "bg-blue-600 hover:bg-blue-500 font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition-all text-white cursor-pointer shadow-lg shadow-blue-500/20 active:scale-95 animate-pulse";
-            } else {
-                status.textContent = "🔒 Locked";
-                status.className = "text-red-400 font-mono font-bold bg-red-950/40 px-2 py-0.5 rounded border border-red-500/20";
-                btn.disabled = true;
-                btn.className = "bg-blue-600 opacity-50 cursor-not-allowed font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition-all text-white";
-            }
-        }
 
         async function startCameraStreams() {
             try {
@@ -158,15 +132,44 @@
                 video.classList.remove("hidden");
                 document.getElementById("cameraPlaceholder").classList.add("hidden");
             } catch (err) {
-                alert("Could not access camera module. Ensure site uses HTTPS protocols.");
+                alert("Camera access denied. Ensure connection uses HTTPS.");
                 console.error(err);
             }
         }
 
         async function executeCardScan() {
             const apiKey = apiKeyInput.value.trim();
-            if (!apiKey) return alert("Please supply API credentials to execute lookups.");
+            if (!apiKey) return alert("Please save a valid Gemini Key on your Home Screen first.");
 
             const ctx = canvas.getContext('2d');
             canvas.width = video.videoWidth || 640;
             canvas.height = video.videoHeight || 480;
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            video.classList.add("hidden");
+            canvas.classList.remove("hidden");
+            
+            document.getElementById("shutterBtn").innerText = "⏳ Reading Card...";
+            const rawBase64 = canvas.toDataURL('image/jpeg', 0.85);
+
+            const payloadData = await analyzeCardWithGemini(rawBase64, apiKey);
+            
+            document.getElementById("shutterBtn").innerText = "📸 Run Auto-Scan";
+            video.classList.remove("hidden");
+            canvas.classList.add("hidden");
+
+            if (payloadData) {
+                renderEvaluationInterface(payloadData);
+            } else {
+                alert("AI processing error. Verify your system vault key is active.");
+            }
+        }
+
+        async function analyzeCardWithGemini(base64String, authKey) {
+            const cleanedBase64 = base64String.replace(/^data:image\/(png|jpeg|jpg);base64,/, "");
+            const endpoint = `https://googleapis.com{authKey}`;
+            
+            const promptContext = {
+                contents: [{
+                    parts: [
+                        { text: "Analyze this trading card image. Identify its specifications. Return ONLY a valid JSON object matching this structure exactly without code blocks: {\"name\":\"Card Name\",\"set\":\"Set\",\"number\":\"#/#\",\"estRaw\":10.00,\"estGraded\":50.00,\"grade\":\"PSA 9\",\"flaws\":\"Minor corner whitening\",\"worthGrading\":true,\"tier\":\"pull\"}" },
